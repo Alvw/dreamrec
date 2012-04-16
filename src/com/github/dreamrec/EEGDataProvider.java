@@ -1,7 +1,6 @@
 package com.github.dreamrec;
 
 import com.webkitchen.eeg.acquisition.EEGAcquisitionController;
-import com.webkitchen.eeg.acquisition.IRawSampleGenerator;
 import com.webkitchen.eeg.acquisition.IRawSampleListener;
 import com.webkitchen.eeg.acquisition.RawSample;
 import org.apache.commons.configuration.ConfigurationException;
@@ -11,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.LinkedList;
 
 import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
 
@@ -25,8 +23,7 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     private static final int FREQUENCY_DIVIDER = 25;
     private int packetNumber = -1;
     private final int chanel;
-    private LinkedList<Integer>  outputDataQueue = new LinkedList<Integer>();
-    private AveragingCounter averagingCounter = new AveragingCounter(FREQUENCY_DIVIDER);
+    private AveragingBuffer averagingBuffer = new AveragingBuffer(FREQUENCY_DIVIDER);
     private long startTime;
     private long stopTime;
 
@@ -57,7 +54,7 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     public void StopRecording() {
         stopTime = System.currentTimeMillis();
         EEGAcquisitionController.getInstance().stopReading();
-        int numberOfIncomingPackets = averagingCounter.getInvocationCounter();
+        int numberOfIncomingPackets = averagingBuffer.getIncomingCounter();
         log.info("StopTime: "+new Date(stopTime));
         log.info("Predefined data frequency = " +  dataFrequency);
         log.info("Real incoming data frequency = " + numberOfIncomingPackets * 1000/(stopTime - startTime));
@@ -72,20 +69,17 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     }
 
     public int read() {
-       return outputDataQueue.poll();
+       return averagingBuffer.read();
     }
 
     public int available() {
-        return outputDataQueue.size();
+        return averagingBuffer.available();
     }
 
     public void receiveSample(RawSample rawSample) {
         checkLostPackets(rawSample.getPacketNumber());
-        int dataValue = rawSample.getSamples()[chanel];
-        Integer averageValue = averagingCounter.getAverageValue(dataValue);
-        if(averageValue !=null){
-            outputDataQueue.add(averageValue);
-        }
+        int incomingValue = rawSample.getSamples()[chanel];
+        averagingBuffer.add(incomingValue);
     }
 
     private void checkLostPackets(int newPacketNumber) {
