@@ -8,9 +8,9 @@ import java.util.List;
 public class AveragingListView implements ListView<Integer>{
 
     int divider;
-    List<Integer> incomingData;
+    ListView<Integer> incomingData;
 
-    public AveragingListView(List<Integer> incomingData, int divider) {
+    public AveragingListView(ListView<Integer> incomingData, int divider) {
         this.incomingData = incomingData;
         this.divider = divider;
     }
@@ -20,12 +20,13 @@ public class AveragingListView implements ListView<Integer>{
     }
 
     public Integer get(int index) {
-        if(index > size()){
+        if(index >= size()){
             return 0;
         }
         int sum = 0;
-        for (int i = index; i < index+divider; i++) {
-              sum += incomingData.get(i);
+        int incomingDataIndex = index*divider;
+        for (int i = 0; i < divider; i++) {
+              sum += incomingData.get(incomingDataIndex+i);
 
         }
         return sum/divider;
