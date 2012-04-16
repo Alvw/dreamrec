@@ -5,9 +5,6 @@ package com.github.dreamrec;
  */
 public class DebugDataProvider implements IncomingDataProvider{
 
-    public void addDataListener(DataListener dataListener) {
-    }
-
     public void StartRecording() {
     }
 
@@ -15,6 +12,16 @@ public class DebugDataProvider implements IncomingDataProvider{
     }
 
     public double getIncomingDataFrequency() {
-        return 0;
+        throw new UnsupportedOperationException("todo");
+    }
+    public long getStartTime() {
+        throw new UnsupportedOperationException("todo");
+    }
+    public int read() {
+        throw new UnsupportedOperationException("todo");
+    }
+
+    public int available() {
+        throw new UnsupportedOperationException("todo");
     }
 }

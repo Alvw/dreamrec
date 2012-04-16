@@ -12,14 +12,18 @@ public class EEGDataProvider implements IncomingDataProvider{
     }
 
     public double getIncomingDataFrequency() {
-        return 0;
+        throw new UnsupportedOperationException("todo");
     }
 
     public long getStartTime() {
         throw new UnsupportedOperationException("todo");
     }
 
-    public void addDataListener() {
+    public int read() {
+        throw new UnsupportedOperationException("todo");
+    }
+
+    public int available() {
         throw new UnsupportedOperationException("todo");
     }
 }

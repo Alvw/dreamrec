@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public class Controller implements DataListener{
+public class Controller {
 
     Model model;
     IncomingDataProvider dataProvider;
@@ -26,9 +26,5 @@ public class Controller implements DataListener{
 
     void StopRecording(){
        //todo
-    }
-
-    public void dataReceived(int value) {
-        throw new UnsupportedOperationException("todo");
     }
 }

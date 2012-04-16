@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public interface IncomingDataProvider<T> {
+public interface IncomingDataProvider {
 
     void StartRecording();
 
@@ -13,5 +13,7 @@ public interface IncomingDataProvider<T> {
 
     long getStartTime();
 
-    void addDataListener();
+    int read();
+
+    int available();
 }
