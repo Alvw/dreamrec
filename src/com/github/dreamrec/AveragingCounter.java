@@ -22,4 +22,8 @@ public class AveragingCounter {
         }
         return null;
     }
+
+    public int getInvocationCounter() {
+        return invocationCounter;
+    }
 }

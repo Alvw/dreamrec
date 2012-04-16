@@ -5,7 +5,7 @@ package com.github.dreamrec;
  */
 public interface IncomingDataProvider {
 
-    void StartRecording();
+    void StartRecording() throws ApplicationException;
 
     void StopRecording();
 
