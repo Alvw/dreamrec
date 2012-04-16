@@ -20,9 +20,10 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     private static final int FREQUENCY_DIVIDER = 25;
     private int packetNumber = -1;
     private final int chanel;
-    private LinkedList<Integer> outputDataQueue = new LinkedList<Integer>();
-    private int incomingDataSum;// to calculate  average for 25 incoming values and reduce data frequency;
-    private int incomingDataCounter;// used to trigger averaging sum calculation
+    private LinkedList<Integer>     outputDataQueue = new LinkedList<Integer>();
+        private int incomingDataSum;// to calculate  average for 25 incoming values and reduce data frequency;
+        private int incomingDataCounter;// used to trigger averaging sum calculation
+        private AverageInvocationDivider averageInvocationDivider;
 
     public EEGDataProvider() throws ApplicationException {
         try {
@@ -33,6 +34,12 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
             log.error(msg);
             throw new ApplicationException(msg);
         }
+       /* averageInvocationDivider = new AverageInvocationDivider(FREQUENCY_DIVIDER) {
+            @Override
+            protected void invoke(Integer averageValue) {
+                outputDataQueue.add(averageValue);
+            }
+        };*/
     }
 
     public void StartRecording() {
@@ -60,12 +67,7 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     public void receiveSample(RawSample rawSample) {
         checkLostPackets(rawSample.getPacketNumber());
         int dataValue = rawSample.getSamples()[chanel];
-        incomingDataCounter++;
-        incomingDataSum+=dataValue;
-        if (incomingDataCounter % FREQUENCY_DIVIDER == 0) {
-            outputDataQueue.add(incomingDataSum/FREQUENCY_DIVIDER);
-            incomingDataSum = 0;
-        }
+//        averageInvocationDivider.count(dataValue);
     }
 
     private void checkLostPackets(int newPacketNumber) {
