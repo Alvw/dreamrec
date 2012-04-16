@@ -14,16 +14,15 @@ import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
 /**
  *
  */
-public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener {
+public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener{
 
     private static final Log log = LogFactory.getLog(EEGDataProvider.class);
     private static final int FREQUENCY_DIVIDER = 25;
     private int packetNumber = -1;
     private final int chanel;
-    private LinkedList<Integer>     outputDataQueue = new LinkedList<Integer>();
-        private int incomingDataSum;// to calculate  average for 25 incoming values and reduce data frequency;
-        private int incomingDataCounter;// used to trigger averaging sum calculation
-        private AverageInvocationDivider averageInvocationDivider;
+    private LinkedList<Integer>  outputDataQueue = new LinkedList<Integer>();
+    private AveragingCounter averagingCounter = new AveragingCounter(FREQUENCY_DIVIDER);
+
 
     public EEGDataProvider() throws ApplicationException {
         try {
@@ -34,12 +33,6 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
             log.error(msg);
             throw new ApplicationException(msg);
         }
-       /* averageInvocationDivider = new AverageInvocationDivider(FREQUENCY_DIVIDER) {
-            @Override
-            protected void invoke(Integer averageValue) {
-                outputDataQueue.add(averageValue);
-            }
-        };*/
     }
 
     public void StartRecording() {
@@ -67,7 +60,10 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
     public void receiveSample(RawSample rawSample) {
         checkLostPackets(rawSample.getPacketNumber());
         int dataValue = rawSample.getSamples()[chanel];
-//        averageInvocationDivider.count(dataValue);
+        Integer averageValue = averagingCounter.getAverageValue(dataValue);
+        if(averageValue !=null){
+            outputDataQueue.add(averageValue);
+        }
     }
 
     private void checkLostPackets(int newPacketNumber) {

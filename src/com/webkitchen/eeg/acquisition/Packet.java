@@ -16,7 +16,7 @@ final class Packet
     private final int[] samples;
 
     /**
-     * Creates a new <code>Packet</code> containing packet sequence number, channel count, and
+     * Creates a new <code>Packet</code> containing packet sequence number, channel getAverageValue, and
      * array of channel samples
      *
      * @param packetNumber the packet sequence number
