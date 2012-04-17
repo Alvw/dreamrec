@@ -7,14 +7,10 @@ import java.util.List;
 /**
  *
  */
-public class GComponentView implements IModelChangeListener {
+public class GComponentView {
 
     JPanel panel;
     List<IPainter> painters;
-
-    public void modelChanged(GComponentModel model) {
-        panel.repaint();
-    }
 
     private class GPanel extends JPanel{
         @Override

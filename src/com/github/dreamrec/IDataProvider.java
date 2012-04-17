@@ -5,9 +5,9 @@ package com.github.dreamrec;
  */
 public interface IDataProvider {
 
-    void StartRecording() throws ApplicationException;
+    void startRecording() throws ApplicationException;
 
-    void StopRecording();
+    void stopRecording();
 
     double getIncomingDataFrequency();
 

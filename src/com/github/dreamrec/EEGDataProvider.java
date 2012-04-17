@@ -40,7 +40,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener{
          EEGAcquisitionController.getInstance().getChannelSampleGenerator().addSampleListener(this,new int[]{chanel+1});
     }
 
-    public void StartRecording() throws ApplicationException {
+    public void startRecording() throws ApplicationException {
         try {
             EEGAcquisitionController.getInstance().startReading(false);
         } catch (IOException e) {
@@ -51,7 +51,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener{
         log.info("StartTime: "+ new Date(startTime));
     }
 
-    public void StopRecording() {
+    public void stopRecording() {
         stopTime = System.currentTimeMillis();
         EEGAcquisitionController.getInstance().stopReading();
         int numberOfIncomingPackets = averagingBuffer.getIncomingCounter();

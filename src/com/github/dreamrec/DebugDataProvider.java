@@ -5,10 +5,10 @@ package com.github.dreamrec;
  */
 public class DebugDataProvider implements IDataProvider {
 
-    public void StartRecording() {
+    public void startRecording() {
     }
 
-    public void StopRecording() {
+    public void stopRecording() {
     }
 
     public double getIncomingDataFrequency() {

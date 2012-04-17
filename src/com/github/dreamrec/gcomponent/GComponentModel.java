@@ -10,7 +10,6 @@ import java.util.List;
  */
 public class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel, ICursorPainterModel {
 
-    private List<IModelChangeListener> listeners;
     private Model model;
     private IListView<Integer> dataList;
     private int startIndex;

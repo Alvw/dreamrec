@@ -6,10 +6,15 @@ import java.util.List;
  *
  */
 public class Model {
-    private ListView<Integer> eyeDataList;
+    private ListView<Integer> eyeDataList = new ListView<Integer>();
     private double frequency;
     private long startTime;
     private int viewIndex;
+
+    public Model(double frequency, long startTime) {
+        this.frequency = frequency;
+        this.startTime = startTime;
+    }
 
     public List<Integer> getEyeDataList() {
         return eyeDataList;
@@ -23,16 +28,8 @@ public class Model {
         return frequency;
     }
 
-    public void setFrequency(double frequency) {
-        this.frequency = frequency;
-    }
-
     public long getStartTime() {
         return startTime;
-    }
-
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
     }
 
     public int getViewIndex() {
