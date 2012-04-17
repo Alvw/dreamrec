@@ -4,8 +4,12 @@ package com.github.dreamrec.gcomponent;
  *
  */
 public interface ITimePainterModel {
-
-    public double getTimeScale();
-    public long getStartTime();
-
+    /**
+     * number of data points per second
+     */
+    public double getFrequency();
+    /**
+     * in milliseconds
+     */
+    public long getStartGraphTime();
 }

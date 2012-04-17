@@ -7,7 +7,7 @@ import com.github.dreamrec.IListView;
  */
 public interface IGraphPainterModel {
 
-    public IListView<Integer> getDataList();
+    public IListView<Integer> getDataView();
 
     public int getStartIndex();
 
