@@ -26,4 +26,8 @@ public class AveragingListView implements IListView<Integer> {
         }
         return sum/divider;
     }
+
+    public int getTotalDivider() {
+        return divider*incomingData.getTotalDivider();
+    }
 }

@@ -6,4 +6,7 @@ import java.util.ArrayList;
  *
  */
 public class ListView<T> extends ArrayList<T> implements IListView<T>{
+    public int getTotalDivider() {
+        return 1;
+    }
 }
