@@ -38,8 +38,9 @@ public class ControllerTest {
         Model restoredModel = controller.getModel();
         assertTrue(model.getFrequency() == restoredModel.getFrequency());
         assertTrue(model.getStartTime() == restoredModel.getStartTime());
+        assertTrue(model.getEyeDataList().size() == restoredModel.getEyeDataList().size());
         for (int i = 0; i < model.getEyeDataList().size(); i++) {
-              assertTrue(model.getEyeDataList().get(i) == restoredModel.getEyeDataList().get(i));
+              assertTrue(model.getEyeDataList().get(i).equals(restoredModel.getEyeDataList().get(i)));
         }
     }
 }
