@@ -1,6 +1,6 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.ListView;
+import com.github.dreamrec.IListView;
 import com.github.dreamrec.Model;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class GComponentModel implements TimePainterModel, GraphPainterModel, YAx
 
     private List<ModelChangeListener> listeners;
     private Model model;
-    private ListView<Integer> dataList;
+    private IListView<Integer> dataList;
     private int startIndex;
     private double maxValue;
     private int ySize;
@@ -21,7 +21,7 @@ public class GComponentModel implements TimePainterModel, GraphPainterModel, YAx
     private int YAxisPosition;
     private int XAxisPosition;
 
-    public ListView<Integer> getDataList() {
+    public IListView<Integer> getDataList() {
         return dataList;
     }
 

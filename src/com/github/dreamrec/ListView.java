@@ -1,12 +1,9 @@
 package com.github.dreamrec;
 
+import java.util.ArrayList;
+
 /**
  *
  */
-public interface ListView<T> {
-
-    public int size();
-
-    public T get(int index);
-
+public class ListView<T> extends ArrayList<T> implements IListView<T>{
 }

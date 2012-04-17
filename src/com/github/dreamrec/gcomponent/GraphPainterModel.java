@@ -1,13 +1,13 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.ListView;
+import com.github.dreamrec.IListView;
 
 /**
  *
  */
 public interface GraphPainterModel {
 
-    public ListView<Integer> getDataList();
+    public IListView<Integer> getDataList();
 
     public int getStartIndex();
 
