@@ -5,11 +5,11 @@ import java.awt.*;
 /**
  *
  */
-public class GraphPainter implements Painter {
+public class GraphPainter implements IPainter {
 
-    private GraphPainterModel graphPainterModel;
+    private IGraphPainterModel graphPainterModel;
 
-    public GraphPainter(GraphPainterModel graphPainterModel) {
+    public GraphPainter(IGraphPainterModel graphPainterModel) {
         this.graphPainterModel = graphPainterModel;
     }
 

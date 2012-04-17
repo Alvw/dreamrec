@@ -16,7 +16,7 @@ import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
 /**
  *
  */
-public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener{
+public class EEGDataProvider implements IDataProvider, IRawSampleListener{
 
     private static final Log log = LogFactory.getLog(EEGDataProvider.class);
     private double dataFrequency;
@@ -68,8 +68,8 @@ public class EEGDataProvider implements IncomingDataProvider, IRawSampleListener
         return startTime;
     }
 
-    public int read() {
-       return averagingBuffer.read();
+    public int poll() {
+       return averagingBuffer.poll();
     }
 
     public int available() {

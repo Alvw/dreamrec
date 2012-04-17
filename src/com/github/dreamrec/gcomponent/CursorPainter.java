@@ -5,11 +5,11 @@ import java.awt.*;
 /**
  *
  */
-public class CursorPainter implements Painter {
+public class CursorPainter implements IPainter {
 
-    private CursorPainterModel cursorPainterModel;
+    private ICursorPainterModel cursorPainterModel;
 
-    public CursorPainter(CursorPainterModel cursorPainterModel) {
+    public CursorPainter(ICursorPainterModel cursorPainterModel) {
         this.cursorPainterModel = cursorPainterModel;
     }
 

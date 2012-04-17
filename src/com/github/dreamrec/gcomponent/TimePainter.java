@@ -5,9 +5,9 @@ import java.awt.*;
 /**
  *
  */
-public class TimePainter implements Painter {
+public class TimePainter implements IPainter {
 
-    private TimePainterModel timePainterModel;
+    private ITimePainterModel timePainterModel;
 
     public void paint(Graphics2D g) {
         throw new UnsupportedOperationException("todo");

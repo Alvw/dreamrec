@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public interface IncomingDataProvider {
+public interface IDataProvider {
 
     void StartRecording() throws ApplicationException;
 
@@ -13,7 +13,7 @@ public interface IncomingDataProvider {
 
     long getStartTime();
 
-    int read();
+    int poll();
 
     int available();
 }

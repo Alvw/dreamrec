@@ -6,7 +6,7 @@ package com.github.dreamrec;
 public class Controller {
 
     Model model;
-    IncomingDataProvider dataProvider;
+    IDataProvider dataProvider;
 
     public Controller(Model model) {
         this.model = model;

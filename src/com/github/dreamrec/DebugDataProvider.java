@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public class DebugDataProvider implements IncomingDataProvider{
+public class DebugDataProvider implements IDataProvider {
 
     public void StartRecording() {
     }
@@ -17,7 +17,7 @@ public class DebugDataProvider implements IncomingDataProvider{
     public long getStartTime() {
         throw new UnsupportedOperationException("todo");
     }
-    public int read() {
+    public int poll() {
         throw new UnsupportedOperationException("todo");
     }
 

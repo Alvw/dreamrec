@@ -3,7 +3,7 @@ package com.github.dreamrec.gcomponent;
 /**
  *
  */
-public interface ModelChangeListener {
+public interface IModelChangeListener {
 
     void modelChanged(GComponentModel model);
 

@@ -42,7 +42,7 @@ class DebuggingConnection implements INeuroServerConnection
     }
 
     /**
-     * Open the file as read-only
+     * Open the file as poll-only
      *
      * @throws java.io.IOException
      * @throws java.net.UnknownHostException

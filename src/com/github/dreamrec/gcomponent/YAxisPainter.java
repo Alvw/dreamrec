@@ -5,11 +5,11 @@ import java.awt.*;
 /**
  *
  */
-public class YAxisPainter implements Painter {
+public class YAxisPainter implements IPainter {
 
-   private YAxisPainterModel yAxisPainterModel;
+   private IYAxisPainterModel yAxisPainterModel;
 
-    public YAxisPainter(YAxisPainterModel yAxisPainterModel) {
+    public YAxisPainter(IYAxisPainterModel yAxisPainterModel) {
         this.yAxisPainterModel = yAxisPainterModel;
     }
 

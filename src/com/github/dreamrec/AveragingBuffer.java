@@ -24,7 +24,7 @@ public class AveragingBuffer  {
         }
     }
 
-    public int read() {
+    public int poll() {
         return averagedDataQueue.poll();
     }
 

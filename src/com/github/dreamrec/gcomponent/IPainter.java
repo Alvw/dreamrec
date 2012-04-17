@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  *
  */
-public interface Painter {
+public interface IPainter {
 
     void paint(Graphics2D g);
 

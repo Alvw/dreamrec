@@ -33,7 +33,7 @@ class NeuroServerReader extends Thread
     /**
      * Beginning reading any incoming data packets
      *
-     * @param debugMode true to read from a file for debugging, false to read from the EEG device
+     * @param debugMode true to poll from a file for debugging, false to poll from the EEG device
      * @throws IOException if we are unable to connect to the EEG device
      */
     public void startReading(boolean debugMode) throws IOException
@@ -143,7 +143,7 @@ class NeuroServerReader extends Thread
             }
             catch (IOException e)
             {
-                System.out.println("Unable to read the next packet");
+                System.out.println("Unable to poll the next packet");
                 e.printStackTrace();
             }
         }

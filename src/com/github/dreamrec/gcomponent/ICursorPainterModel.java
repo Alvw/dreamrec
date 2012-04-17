@@ -3,7 +3,7 @@ package com.github.dreamrec.gcomponent;
 /**
  *
  */
-public interface CursorPainterModel {
+public interface ICursorPainterModel {
 
     public int getCursorPosition();
 

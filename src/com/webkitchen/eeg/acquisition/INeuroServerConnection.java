@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 
 
 /**
- * Interface for connection objects which read EDF packets
+ * Interface for connection objects which poll EDF packets
  *
  * @author Amy Palke
  */

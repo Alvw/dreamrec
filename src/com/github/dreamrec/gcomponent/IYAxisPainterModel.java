@@ -3,7 +3,7 @@ package com.github.dreamrec.gcomponent;
 /**
  *
  */
-public interface YAxisPainterModel {
+public interface IYAxisPainterModel {
 
     public double getMaxValue();
 

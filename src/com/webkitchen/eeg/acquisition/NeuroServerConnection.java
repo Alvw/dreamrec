@@ -221,7 +221,7 @@ class NeuroServerConnection implements INeuroServerConnection
     private String sendCommand(String command, int responseCode) throws IOException
     {
         logger.debug("Sending: " + command + ", expecting: " + responseCode);
-        // Write command (terminated with CRLF) to server and read reply from server
+        // Write command (terminated with CRLF) to server and poll reply from server
         output.writeBytes(command + CRLF);
         String reply = input.readLine();
 
