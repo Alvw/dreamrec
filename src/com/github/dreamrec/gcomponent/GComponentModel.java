@@ -82,11 +82,11 @@ public class GComponentModel implements ITimePainterModel, IGraphPainterModel, I
     }
 
     public int getCursorPosition() {
-        return model.getViewIndex()/dataView.getTotalDivider() - startIndex;
+        return model.getFastGraphIndex()/dataView.getTotalDivider() - startIndex;
     }
 
     public void setCursorPosition(int newPosition){
-        model.setViewIndex((startIndex+newPosition)*dataView.getTotalDivider());
+        model.setFastGraphIndex((startIndex + newPosition) * dataView.getTotalDivider());
     }
 
     public int getCursorWidth() {
