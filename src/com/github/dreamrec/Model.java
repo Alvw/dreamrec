@@ -51,34 +51,57 @@ public class Model {
         startTime = 0;
     }
 
+    public int getCursorWidth() {
+        return xSize/DIVIDER;
+    }
+
      public int getCursorPosition() {
         return fastGraphIndex/DIVIDER - slowGraphIndex;
     }
+    
+    public void moveFastGraph(int newFastGraphIndex){
+       newFastGraphIndex = checkFastGraphIndexBounds(newFastGraphIndex);
+       fastGraphIndex = newFastGraphIndex;
+    }
+    //correct fastGraphIndex if it points to invalid data index: < 0 and >data list size
+    private int checkFastGraphIndexBounds(int newFastGraphIndex){
+        //index should be positive
+        if(newFastGraphIndex < 0){
+            newFastGraphIndex = 0;
+        }
+        // graphic can not be moved (index always = 0) if  data list size <= screen size
+        if(eyeDataList.size() <= xSize){
+            newFastGraphIndex = 0;
+        }
+        // maximum value of fastGraphIndex (the most left position of the graphic) < data list size - screen size)
+        if(newFastGraphIndex > eyeDataList.size()-xSize){
+            newFastGraphIndex = eyeDataList.size()-xSize;
+        }
+        return newFastGraphIndex;
+    }
 
     public void moveCursor(int newCursorPosition){
-        if (checkOutOfBounds(newCursorPosition)){
-            return;
-        }
+        newCursorPosition = checkCursorBounds(newCursorPosition);
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
         //adjust slowGraphIndex to place cursor at the beginning of the screen
-        if(getCursorPosition()<0){
+        if(getCursorPosition() < 0){
             slowGraphIndex+=getCursorPosition();
         }
          //adjust slowGraphIndex to place cursor at the end of the screen
-        if(getCursorPosition()>xSize){
-            slowGraphIndex-=getCursorPosition()-xSize;
+        if(getCursorPosition() > xSize-getCursorWidth()){
+            slowGraphIndex-=getCursorPosition()-xSize+getCursorWidth();
         }
     }
-    //check cursor points to valid data index: >=0 and < data list size
-    private boolean checkOutOfBounds(int newCursorPosition) {
+    //correct cursor positions if it points to invalid data index: < 0 and >data list size
+    private int checkCursorBounds(int newCursorPosition) {
         if(slowGraphIndex+newCursorPosition < 0){
-            return true;
+            newCursorPosition = -slowGraphIndex;
         }
-        if(slowGraphIndex+newCursorPosition>eyeDataList.size()/DIVIDER){
-            return true;
+        if(slowGraphIndex+newCursorPosition > eyeDataList.size()/DIVIDER - getCursorWidth()){
+            newCursorPosition = eyeDataList.size()/DIVIDER - getCursorWidth()- slowGraphIndex;
         }
-        return false;
+        return  newCursorPosition;
     }
 
 
