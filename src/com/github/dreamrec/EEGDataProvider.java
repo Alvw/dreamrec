@@ -21,6 +21,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener{
     private static final Log log = LogFactory.getLog(EEGDataProvider.class);
     private double dataFrequency;
     private static final int FREQUENCY_DIVIDER = 25;
+    private static final int INCOMING_DATA_MAX_VALUE = 1024;
     private int packetNumber = -1;
     private final int chanel;
     private AveragingBuffer averagingBuffer = new AveragingBuffer(FREQUENCY_DIVIDER);
@@ -79,7 +80,14 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener{
     public void receiveSample(RawSample rawSample) {
         checkLostPackets(rawSample.getPacketNumber());
         int incomingValue = rawSample.getSamples()[chanel];
+        checkIncomingValue(incomingValue);
         averagingBuffer.add(incomingValue);
+    }
+
+    private void checkIncomingValue(int incomingValue) {
+        if(Math.abs(incomingValue) > INCOMING_DATA_MAX_VALUE){
+             log.warn("Received value exceeds maximum. Value = "+incomingValue+"    Max value = "+INCOMING_DATA_MAX_VALUE);
+        }
     }
 
     private void checkLostPackets(int newPacketNumber) {

@@ -11,13 +11,15 @@ import static org.junit.Assert.*;
 /**
  *
  */
-public class ControllerTest {
+public class DataSaveManagerTest {
 
     File file;
+    Model model;
 
     @Before
     public void setup(){
-         file = new File("tralivali");
+        file = new File("tralivali");
+        model = new Model();
     }
 
     @After
@@ -26,16 +28,16 @@ public class ControllerTest {
     }
 
     @Test
-    public void saveToFileTest(){
+    public void saveToFileTest() throws ApplicationException {
         long startTime = System.currentTimeMillis();
-        Model model = new Model(13.3,startTime);
-        Controller controller = new Controller(model);
-        for (int i = 0; i < 10000; i++) {
+        model.setFrequency(13.3);
+        model.setStartTime(startTime);
+        for (int i = 0; i < 100000; i++) {
               model.addEyeData(i);
         }
-        controller.saveToFile(file);
-        controller.readFromFile(file);
-        Model restoredModel = controller.getModel();
+        new DataSaveManager().saveToFile(file, model);
+        Model restoredModel = new Model();
+        new DataSaveManager().readFromFile(file,restoredModel);
         assertTrue(model.getFrequency() == restoredModel.getFrequency());
         assertTrue(model.getStartTime() == restoredModel.getStartTime());
         assertTrue(model.getEyeDataList().size() == restoredModel.getEyeDataList().size());

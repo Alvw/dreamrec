@@ -37,60 +37,20 @@ public class Controller {
     }
 
     public void saveToFile(File file) {
-        DataOutputStream outStream = null;
-		try {
-			outStream = new DataOutputStream(new FileOutputStream(file));
-			saveStateToStream(outStream);
-		} catch (Exception e) {
-			log.error(e);
-            mainWindow.showMessage("Error while saving file " + file.getName());   // TODO create message bundle;
-		} finally {
-			try {
-				outStream.close();
-			} catch (IOException e) {
-				log.error(e);
-			}
-		}
+        try {   //todo remove try catch duplicating code
+            new DataSaveManager().saveToFile(file,model);
+        } catch (ApplicationException e) {
+            mainWindow.showMessage(e.getMessage());
+        }
     }
-
-    private void saveStateToStream(DataOutputStream outStream) throws IOException {
-        outStream.writeLong(model.getStartTime());
-        outStream.writeDouble(model.getFrequency());
-        for (int i = 0; i < model.getEyeDataList().size(); i++) {
-			outStream.writeShort((short)model.getEyeDataList().get(i).intValue());
-		}
-    }
-
 
     public void readFromFile(File file) {
-        DataInputStream dataInputStream = null;
-		try {
-			dataInputStream = new DataInputStream(new FileInputStream(file));
-			loadStateFromInStream(dataInputStream);
-		} catch (Exception e) {
-			log.error(e);
-            mainWindow.showMessage("Error reading file " + file.getName());
-		} finally {
-			try {
-				dataInputStream.close();
-			} catch (IOException e) {
-				log.error(e);
-			}
-		}
+        try {
+            new DataSaveManager().readFromFile(file,model);
+        } catch (ApplicationException e) {
+             mainWindow.showMessage(e.getMessage());
+        }
     }
-
-    private void loadStateFromInStream(DataInputStream inputStream) throws IOException {
-		try {
-            long startTime = inputStream.readLong();
-            double frequency = inputStream.readDouble();
-            model = new Model(frequency, startTime);
-			while (true) {
-                model.addEyeData(inputStream.readShort());
-			}
-		} catch (EOFException e) {
-			log.info("End of file");
-		}
-	}
 
     void StartRecording() {
         try {
@@ -98,14 +58,13 @@ public class Controller {
         } catch (ApplicationException e) {
             mainWindow.showMessage(e.getMessage());
         }
-        model = new Model(dataProvider.getIncomingDataFrequency(),dataProvider.getStartTime());
+        model.clear();
+        model.setFrequency(dataProvider.getIncomingDataFrequency());
+        model.setStartTime(dataProvider.getStartTime());
     }
 
     void StopRecording() {
         dataProvider.stopRecording();
     }
-    //todo delete
-    public Model getModel(){
-        return model;
-    }
+
 }

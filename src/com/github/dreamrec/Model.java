@@ -11,11 +11,6 @@ public class Model {
     private long startTime;
     private int viewIndex;
 
-    public Model(double frequency, long startTime) {
-        this.frequency = frequency;
-        this.startTime = startTime;
-    }
-
     public List<Integer> getEyeDataList() {
         return eyeDataList;
     }
@@ -38,6 +33,19 @@ public class Model {
 
     public void setViewIndex(int viewIndex) {
         this.viewIndex = viewIndex;
+    }
+
+    public void setFrequency(double frequency) {
+        this.frequency = frequency;
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+    public void clear(){
+        eyeDataList.clear();
+        frequency = 0;
+        startTime = 0;
     }
 }
 

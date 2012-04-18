@@ -82,16 +82,20 @@ public class GComponentModel implements ITimePainterModel, IGraphPainterModel, I
     }
 
     public int getCursorPosition() {
-        //setter for this value
-        throw new UnsupportedOperationException("todo");
+        return model.getViewIndex()/dataView.getTotalDivider() - startIndex;
+    }
+
+    public void setCursorPosition(int newPosition){
+        model.setViewIndex((startIndex+newPosition)*dataView.getTotalDivider());
     }
 
     public int getCursorWidth() {
-        //calculated value
-        throw new UnsupportedOperationException("todo");
+        return xSize/dataView.getTotalDivider();
     }
 
-    public void setStartIndex(int startIndex){
-         throw new UnsupportedOperationException("todo");
+    public void setStartIndex(int newStartIndex){
+        int oldCursorPosition = getCursorPosition();
+        startIndex = newStartIndex;
+        setCursorPosition(oldCursorPosition);
     }
 }
