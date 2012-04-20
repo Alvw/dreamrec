@@ -6,7 +6,7 @@ import java.util.List;
  *
  */
 public class Model {
-    private int xSize = 1200;
+    private int xSize = 1200; //data points per screen.
     public static final int DIVIDER = 120; //frequency divider for slow graphics
     private ListView<Integer> eyeDataList = new ListView<Integer>();   //list with raw incoming data of eye movements
     private double frequency; //frequency Hz of the incoming data (for fast graphics)
@@ -34,8 +34,8 @@ public class Model {
         return fastGraphIndex;
     }
 
-    public void setFastGraphIndex(int fastGraphIndex) {
-        this.fastGraphIndex = fastGraphIndex;
+    public int getSlowGraphIndex() {
+        return slowGraphIndex;
     }
 
     public void setFrequency(double frequency) {
@@ -45,6 +45,19 @@ public class Model {
     public void setStartTime(long startTime) {
         this.startTime = startTime;
     }
+
+    public int getXSize() {
+        return xSize;
+    }
+
+    public void setXSize(int xSize) {
+        this.xSize = xSize;
+    }
+
+    public int dataSize(){
+        return eyeDataList.size();
+    }
+
     public void clear(){
         eyeDataList.clear();
         frequency = 0;
@@ -52,7 +65,7 @@ public class Model {
     }
 
     public int getCursorWidth() {
-        return xSize/DIVIDER;
+        return xSize /DIVIDER;
     }
 
      public int getCursorPosition() {
@@ -63,19 +76,20 @@ public class Model {
        newFastGraphIndex = checkFastGraphIndexBounds(newFastGraphIndex);
        fastGraphIndex = newFastGraphIndex;
     }
-    //correct fastGraphIndex if it points to invalid data index: < 0 and >data list size
+
+    //correct fastGraphIndex if it points to invalid data index: < 0 and >data list dataSize
     private int checkFastGraphIndexBounds(int newFastGraphIndex){
         //index should be positive
         if(newFastGraphIndex < 0){
             newFastGraphIndex = 0;
-        }
-        // graphic can not be moved (index always = 0) if  data list size <= screen size
-        if(eyeDataList.size() <= xSize){
+        } else
+        // graphic can not be moved (index always = 0) if  data list dataSize <= screen dataSize
+        if(dataSize() <= xSize){
             newFastGraphIndex = 0;
-        }
-        // maximum value of fastGraphIndex (the most left position of the graphic) < data list size - screen size)
-        if(newFastGraphIndex > eyeDataList.size()-xSize){
-            newFastGraphIndex = eyeDataList.size()-xSize;
+        } else
+        // maximum value of fastGraphIndex (the most left position of the graphic) < data list dataSize - screen dataSize)
+        if(newFastGraphIndex > dataSize()- xSize){
+            newFastGraphIndex = dataSize()- xSize;
         }
         return newFastGraphIndex;
     }
@@ -87,24 +101,26 @@ public class Model {
         //adjust slowGraphIndex to place cursor at the beginning of the screen
         if(getCursorPosition() < 0){
             slowGraphIndex+=getCursorPosition();
-        }
+        } else
          //adjust slowGraphIndex to place cursor at the end of the screen
-        if(getCursorPosition() > xSize-getCursorWidth()){
-            slowGraphIndex-=getCursorPosition()-xSize+getCursorWidth();
+        if(getCursorPosition() > xSize -getCursorWidth()){
+            slowGraphIndex-=getCursorPosition()- xSize +getCursorWidth();
         }
     }
-    //correct cursor positions if it points to invalid data index: < 0 and >data list size
+    //correct cursor positions if it points to invalid data index: < 0 and >data list dataSize
     private int checkCursorBounds(int newCursorPosition) {
         if(slowGraphIndex+newCursorPosition < 0){
             newCursorPosition = -slowGraphIndex;
-        }
-        if(slowGraphIndex+newCursorPosition > eyeDataList.size()/DIVIDER - getCursorWidth()){
-            newCursorPosition = eyeDataList.size()/DIVIDER - getCursorWidth()- slowGraphIndex;
+        } else if(slowGraphIndex+newCursorPosition > dataSize()/DIVIDER - getCursorWidth()){
+            newCursorPosition = dataSize()/DIVIDER - getCursorWidth()- slowGraphIndex;
         }
         return  newCursorPosition;
     }
 
 
+    public void moveSlowGraph(int i) {
+        //todo
+    }
 }
 
 

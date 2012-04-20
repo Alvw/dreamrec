@@ -32,7 +32,7 @@ public class DataSaveManagerTest {
         long startTime = System.currentTimeMillis();
         model.setFrequency(13.3);
         model.setStartTime(startTime);
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
               model.addEyeData(i);
         }
         new DataSaveManager().saveToFile(file, model);
