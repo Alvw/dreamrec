@@ -24,65 +24,57 @@ public class SlowTimePainter implements IPainter {
 
     public void paint(Graphics2D g) {
         if (timePainterModel.getStartGraphTime() == 0) return;
-        long minValue = timePainterModel.getStartGraphTime();
-        for (int i = 1; i < timePainterModel.getXSize() * 1440000 / step + 1; i++) {
-            int value = (minValue / step) * step + i * step;
-            int relativeIndex = (int) ((value - minValue) / 12000);
-
-
-            paintPoint(g, 60000);
-            drawMark(g, 60000, timePainterModel.getXSize(), oneMinuteMarkBuilder);
-            drawMark(g, 120000, timePainterModel.getXSize(), twoMinutesMarkBuilder);
-            drawMark(g, 600000, timePainterModel.getXSize(), tenMinutesMarkBuilder);
-            drawMark(g, 1800000, timePainterModel.getXSize(), slowTimeStampsBuilder);
-        }
+        drawMark(g, minute, new PointPainter());
+        drawMark(g, twoMinute, new TPainter());
+        drawMark(g, tenMinute, new TrianglePainter());
+        drawMark(g, thirtyMinute, new TimeStampPainter());
     }
 
-    private void drawMark1(Graphics2D g, int step, IPainter markPainter) {
-        int markPosition = (startValue / step) * step;
 
-        while (markPosition < timePainterModel.getXSize()) {
+    private void drawMark(Graphics2D g, int step, PeriodicPainter markPainter) {
+        long markTime = (timePainterModel.getStartGraphTime() / step + 1) * step;
+        int markPosition = (int)((markTime - timePainterModel.getStartGraphTime())*timePainterModel.getFrequency()/1000);
+
+        while (markTime < timePainterModel.getXSize()) {
             markPainter.paint(g, markPosition);
-            markPosition += step;
+            markTime += step;
         }
     }
 
-    protected void drawMark(Graphics2D g, int step, int xSize, MarkBuilder markBuilder) {
-        long minValue = timePainterModel.getStartGraphTime();
-        for (int i = 1; i < xSize * 1440000 / step + 1; i++) {
-            long value = (minValue / step) * step + i * step;
-            int relativeIndex = (int) ((value - minValue) / 12000);
-            markBuilder.buildMark(g, relativeIndex, value);
 
-            if (timePainterModel.getStartGraphTime() == 0) return;
-            paintPoint(g, 60000);
-            paintT(g, 120000, timePainterModel.getXSize());
-            drawMark(g, 600000, timePainterModel.getXSize(), tenMinutesMarkBuilder);
-            drawMark(g, 1800000, timePainterModel.getXSize(), slowTimeStampsBuilder);
+    interface PeriodicPainter {
+        public void paint(Graphics2D g, int x);
+    }
 
+    class PointPainter implements PeriodicPainter {
+        public void paint(Graphics2D g, int x) {
+            g.drawLine(x, 0, x, 0);
         }
     }
 
-    private void paintPoint(Graphics2D g, int x) {
-        g.drawLine(x, 0, x, 0);
+    class TPainter implements PeriodicPainter {
+        public void paint(Graphics2D g, int x) {
+            g.drawLine(x - 1, 0, x + 1, 0);
+            g.drawLine(x, 0, x, 5);
+        }
     }
 
-    private void paintT(Graphics2D g, int x) {
-        g.drawLine(x - 1, 0, x + 1, 0);
-        g.drawLine(x, 0, x, 5);
+    class TrianglePainter implements PeriodicPainter {
+        public void paint(Graphics2D g, int x) {
+            GeneralPath triangel = new GeneralPath();
+            triangel.moveTo(x - 3, 0);
+            triangel.lineTo(x + 3, 0);
+            triangel.lineTo(x, 6);
+            triangel.lineTo(x - 3, 0);
+            g.fill(triangel);
+        }
     }
 
-    private void paintTriangle(Graphics2D g, int x) {
-        GeneralPath triangel = new GeneralPath();
-        triangel.moveTo(x - 3, 0);
-        triangel.lineTo(x + 3, 0);
-        triangel.lineTo(x, 6);
-        triangel.lineTo(x - 3, 0);
-        g.fill(triangel);
-    }
-
-    private void paintTime(Graphics2D g, int x, long time) {
-        String timeStamp = dateFormat.format(new Date(time));
-        g.drawString(timeStamp, x - 15, +18);
+    class TimeStampPainter implements PeriodicPainter {
+        public void paint(Graphics2D g, int x) {
+            long time = timePainterModel.getStartGraphTime() + (long)(x*1000/timePainterModel.getFrequency());
+            String timeStamp = dateFormat.format(new Date(time));
+            g.drawString(timeStamp, x - 15, +18);
+        }
     }
 }
