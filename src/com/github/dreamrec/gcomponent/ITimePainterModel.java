@@ -12,4 +12,6 @@ public interface ITimePainterModel {
      * in milliseconds
      */
     public long getStartGraphTime();
+
+    public int getXSize();
 }
