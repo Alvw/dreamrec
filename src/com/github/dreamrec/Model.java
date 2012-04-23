@@ -71,31 +71,28 @@ public class Model {
      public int getCursorPosition() {
         return fastGraphIndex/DIVIDER - slowGraphIndex;
     }
-    
+
     public void moveFastGraph(int newFastGraphIndex){
-       newFastGraphIndex = checkFastGraphIndexBounds(newFastGraphIndex);
+       newFastGraphIndex = checkGraphIndexBounds(newFastGraphIndex, dataSize());
        fastGraphIndex = newFastGraphIndex;
     }
 
-    //correct fastGraphIndex if it points to invalid data index: < 0 and >data list dataSize
-    private int checkFastGraphIndexBounds(int newFastGraphIndex){
-        //index should be positive
-        if(newFastGraphIndex < 0){
-            newFastGraphIndex = 0;
-        } else
-        // graphic can not be moved (index always = 0) if  data list dataSize <= screen dataSize
-        if(dataSize() <= xSize){
-            newFastGraphIndex = 0;
-        } else
-        // maximum value of fastGraphIndex (the most left position of the graphic) < data list dataSize - screen dataSize)
-        if(newFastGraphIndex > dataSize()- xSize){
-            newFastGraphIndex = dataSize()- xSize;
-        }
-        return newFastGraphIndex;
+     public void moveSlowGraph(int newSlowGraphIndex) {
+        newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, dataSize() / DIVIDER);
+        slowGraphIndex = newSlowGraphIndex;
+    }
+
+    //correct graph index if it points to invalid data. Should be > 0 and < (dataSize - xSize)
+    private int checkGraphIndexBounds(int newIndex, int dataSize){
+        int maxValue = dataSize - xSize;
+        maxValue = maxValue < 0 ? 0 : maxValue;
+        newIndex = newIndex < 0 ? 0 : newIndex;
+        newIndex = newIndex > maxValue ? maxValue : newIndex;
+        return newIndex;
     }
 
     public void moveCursor(int newCursorPosition){
-        newCursorPosition = checkCursorBounds(newCursorPosition);
+        newCursorPosition = checkCursorBounds(newCursorPosition, dataSize()/DIVIDER);
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
         //adjust slowGraphIndex to place cursor at the beginning of the screen
@@ -107,19 +104,15 @@ public class Model {
             slowGraphIndex-=getCursorPosition()- xSize +getCursorWidth();
         }
     }
-    //correct cursor positions if it points to invalid data index: < 0 and >data list dataSize
-    private int checkCursorBounds(int newCursorPosition) {
-        if(slowGraphIndex+newCursorPosition < 0){
-            newCursorPosition = -slowGraphIndex;
-        } else if(slowGraphIndex+newCursorPosition > dataSize()/DIVIDER - getCursorWidth()){
-            newCursorPosition = dataSize()/DIVIDER - getCursorWidth()- slowGraphIndex;
-        }
+
+    //correct cursor positions if it points to invalid data index: < 0 and > dataSize
+    private int checkCursorBounds(int newCursorPosition, int dataSize) {
+        int minValue = - slowGraphIndex; //the most left position on the screen
+        int maxValue = dataSize - slowGraphIndex - getCursorWidth();//the most right position on the screen
+        maxValue = maxValue < minValue ? minValue : maxValue;
+        newCursorPosition = newCursorPosition < minValue ? minValue : newCursorPosition;
+        newCursorPosition = newCursorPosition > maxValue ? maxValue : newCursorPosition;
         return  newCursorPosition;
-    }
-
-
-    public void moveSlowGraph(int i) {
-        //todo
     }
 }
 

@@ -34,11 +34,11 @@ public class ModelTest {
         assertTrue(model_100.getSlowGraphIndex() == 0);
         Model model_1000 = getModel(1500*Model.DIVIDER);
         model_1000.moveSlowGraph(1600);
-        assertTrue(model_1000.getSlowGraphIndex() == 400);
+        assertTrue(model_1000.getSlowGraphIndex() == 300);
         model_1000.moveSlowGraph(1400);
-        assertTrue(model_1000.getSlowGraphIndex() == 400);
-        model_1000.moveSlowGraph(300);
-        assertTrue(model_1000.getFastGraphIndex() == 300);
+        assertTrue(model_1000.getSlowGraphIndex() == 300);
+        model_1000.moveSlowGraph(200);
+        assertTrue(model_1000.getSlowGraphIndex() == 200);
     }
 
     private Model getModel(int dataSize){
