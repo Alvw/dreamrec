@@ -13,8 +13,6 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected double maxValue = 200;
     protected int ySize = 200;
     protected double yZoom = 1;
-    protected int YAxisPosition = 20;
-    protected int XAxisPosition = 20;
 
     public GComponentModel(Model model, IListView<Integer> dataView) {
         this.model = model;
@@ -31,14 +29,6 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
 
     public void setYZoom(double yZoom) {
         this.yZoom = yZoom;
-    }
-
-    public void setYAxisPosition(int YAxisPosition) {
-        this.YAxisPosition = YAxisPosition;
-    }
-
-    public void setXAxisPosition(int XAxisPosition) {
-        this.XAxisPosition = XAxisPosition;
     }
 
     public IListView<Integer> getDataView() {
