@@ -33,12 +33,19 @@ public class SlowTimePainter implements IPainter {
 
     private void drawMark(Graphics2D g, int step, PeriodicPainter markPainter) {
         long markTime = (timePainterModel.getStartGraphTime() / step + 1) * step;
-        int markPosition = (int)((markTime - timePainterModel.getStartGraphTime())*timePainterModel.getFrequency()/1000);
 
-        while (markTime < timePainterModel.getXSize()) {
-            markPainter.paint(g, markPosition);
+        while (markPosition(markTime) < timePainterModel.getXSize()) {
+            markPainter.paint(g, markPosition(markTime));
             markTime += step;
         }
+    }
+    
+    private int markPosition(long markTime){
+        return (int)((markTime - timePainterModel.getStartGraphTime())*timePainterModel.getFrequency()/1000);
+    }
+    
+    private long markTime(int markPosition){
+        return timePainterModel.getStartGraphTime() + (long)(markPosition*1000/timePainterModel.getFrequency());
     }
 
 
@@ -61,19 +68,18 @@ public class SlowTimePainter implements IPainter {
 
     class TrianglePainter implements PeriodicPainter {
         public void paint(Graphics2D g, int x) {
-            GeneralPath triangel = new GeneralPath();
-            triangel.moveTo(x - 3, 0);
-            triangel.lineTo(x + 3, 0);
-            triangel.lineTo(x, 6);
-            triangel.lineTo(x - 3, 0);
-            g.fill(triangel);
+            GeneralPath triangle = new GeneralPath();
+            triangle.moveTo(x - 3, 0);
+            triangle.lineTo(x + 3, 0);
+            triangle.lineTo(x, 6);
+            triangle.lineTo(x - 3, 0);
+            g.fill(triangle);
         }
     }
 
     class TimeStampPainter implements PeriodicPainter {
         public void paint(Graphics2D g, int x) {
-            long time = timePainterModel.getStartGraphTime() + (long)(x*1000/timePainterModel.getFrequency());
-            String timeStamp = dateFormat.format(new Date(time));
+            String timeStamp = dateFormat.format(new Date(markTime(x)));
             g.drawString(timeStamp, x - 15, +18);
         }
     }
