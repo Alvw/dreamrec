@@ -19,8 +19,4 @@ public class FistDerivativeAbsView implements IListView<Integer>{
         }
         return (Math.abs(incomingData.get(index) - incomingData.get(index-1)));
     }
-
-    public int getTotalDivider() {
-        return incomingData.getTotalDivider();
-    }
 }

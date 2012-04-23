@@ -6,18 +6,15 @@ import com.github.dreamrec.Model;
 /**
  *
  */
-public class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel, ICursorPainterModel {
+public abstract class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel {
 
-    private Model model;
-
-    private IListView<Integer> dataView;  // todo consider refactoring
-    private int startIndex;
-    private double maxValue = 200;
-    private int ySize = 200;
-    private int xSize = 1200;
-    private double yZoom = 1;
-    private int YAxisPosition = 20;
-    private int XAxisPosition = 20;
+    protected Model model;
+    protected IListView<Integer> dataView;  // todo consider refactoring
+    protected double maxValue = 200;
+    protected int ySize = 200;
+    protected double yZoom = 1;
+    protected int YAxisPosition = 20;
+    protected int XAxisPosition = 20;
 
     public GComponentModel(Model model, IListView<Integer> dataView) {
         this.model = model;
@@ -30,10 +27,6 @@ public class GComponentModel implements ITimePainterModel, IGraphPainterModel, I
 
     public void setYSize(int ySize) {
         this.ySize = ySize;
-    }
-
-    public void setXSize(int xSize) {
-        this.xSize = xSize;
     }
 
     public void setYZoom(double yZoom) {
@@ -52,10 +45,6 @@ public class GComponentModel implements ITimePainterModel, IGraphPainterModel, I
         return dataView;
     }
 
-    public int getStartIndex() {
-       return startIndex;
-    }
-
     public double getMaxValue() {
         return maxValue;
     }
@@ -69,33 +58,15 @@ public class GComponentModel implements ITimePainterModel, IGraphPainterModel, I
     }
 
     public int getXSize() {
-        return xSize;
+        return model.getXSize();
     }
 
-    public double getFrequency() {
-           return model.getFrequency()/dataView.getTotalDivider();
+     public long getStartGraphTime() {
+        return model.getStartTime() + (long)(getStartIndex() * 1000 /getFrequency());
     }
 
-    public long getStartGraphTime() {
-            return model.getStartTime()+(long)(startIndex*1000/getFrequency());
+    public abstract int getStartIndex();
 
-    }
+    public abstract double getFrequency();
 
-    public int getCursorPosition() {
-        return model.getFastGraphIndex()/dataView.getTotalDivider() - startIndex;
-    }
-
-    public void setCursorPosition(int newPosition){
-//        model.setFastGraphIndex((startIndex + newPosition) * dataView.getTotalDivider());
-    }
-
-    public int getCursorWidth() {
-        return xSize/dataView.getTotalDivider();
-    }
-
-    public void setStartIndex(int newStartIndex){
-        int oldCursorPosition = getCursorPosition();
-        startIndex = newStartIndex;
-        setCursorPosition(oldCursorPosition);
-    }
 }

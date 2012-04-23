@@ -107,8 +107,8 @@ public class Model {
 
     //correct cursor positions if it points to invalid data index: < 0 and > dataSize
     private int checkCursorBounds(int newCursorPosition, int dataSize) {
-        int minValue = - slowGraphIndex; //the most left position on the screen
-        int maxValue = dataSize - slowGraphIndex - getCursorWidth();//the most right position on the screen
+        int minValue = - slowGraphIndex;
+        int maxValue = dataSize - slowGraphIndex - getCursorWidth();
         maxValue = maxValue < minValue ? minValue : maxValue;
         newCursorPosition = newCursorPosition < minValue ? minValue : newCursorPosition;
         newCursorPosition = newCursorPosition > maxValue ? maxValue : newCursorPosition;

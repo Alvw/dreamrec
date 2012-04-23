@@ -29,8 +29,4 @@ public class SecondDerivativeView implements IListView<Integer>{
                 incomingData.get(index);
         return incomingData.get(index - 4) - sum / 30;
     }
-
-    public int getTotalDivider() {
-        return incomingData.getTotalDivider();
-    }
 }
