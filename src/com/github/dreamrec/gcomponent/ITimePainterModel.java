@@ -5,7 +5,7 @@ package com.github.dreamrec.gcomponent;
  */
 public interface ITimePainterModel {
     /**
-     * number of data points per second
+     * number of data points per SECOND
      */
     public double getFrequency();
     /**
