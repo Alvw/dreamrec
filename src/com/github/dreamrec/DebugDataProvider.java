@@ -1,27 +1,58 @@
 package com.github.dreamrec;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.LinkedList;
+
 /**
  *
  */
 public class DebugDataProvider implements IDataProvider {
 
+    private int delay = 100; //milliseconds
+    private Timer timer;
+    private LinkedList<Integer> eyeDataQueue = new LinkedList<Integer>();
+    private int sampleCounter;
+    private long startTime;
+
+    public DebugDataProvider() {
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                appendEyeDataSample();
+            }
+        };
+        timer = new Timer(delay, taskPerformer);
+    }
+
+    private void appendEyeDataSample() {
+        sampleCounter++;
+        eyeDataQueue.add((int)(1000*Math.sin(sampleCounter/10.0)));
+    }
+
+
     public void startRecording() {
+        timer.start();
+        startTime = System.currentTimeMillis();
     }
 
     public void stopRecording() {
+        timer.stop();
     }
 
     public double getIncomingDataFrequency() {
-        throw new UnsupportedOperationException("todo");
+       return 1000/delay;
     }
+
     public long getStartTime() {
-        throw new UnsupportedOperationException("todo");
+        return startTime;
     }
+
     public int poll() {
-        throw new UnsupportedOperationException("todo");
+       return eyeDataQueue.poll();
     }
 
     public int available() {
-        throw new UnsupportedOperationException("todo");
+        return eyeDataQueue.size();
     }
 }
