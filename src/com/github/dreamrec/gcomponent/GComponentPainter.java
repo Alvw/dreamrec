@@ -6,7 +6,7 @@ import java.awt.geom.AffineTransform;
 /**
  *
  */
-public class GComponentPainter implements IPainter<GComponentModel> {
+public abstract class GComponentPainter implements IPainter<GComponentModel> {
 
 
     protected IPainter timePainter;
