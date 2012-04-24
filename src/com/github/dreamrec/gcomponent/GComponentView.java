@@ -20,6 +20,7 @@ public class GComponentView extends JPanel {
         }
         setPreferredSize(new Dimension(gModel.getXSize() + gModel.getLeftIndent() + gModel.getRightIndent(),
                 gModel.getYSize() + gModel.getTopIndent() + gModel.getBottomIndent()));
+        setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
 
     @Override

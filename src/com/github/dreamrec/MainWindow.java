@@ -12,12 +12,22 @@ import java.awt.*;
 public class MainWindow extends JFrame {
 
 
-    public MainWindow(GComponentModel... gComponentModels) {
+    public MainWindow(final GComponentModel... gComponentModels) {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI(gComponentModels);
+            }
+        });
+    }
+
+    private void createAndShowGUI(GComponentModel[] gComponentModels) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLayout(new GridLayout(0, 1));
+        JPanel mainPanel = new JPanel(new GridLayout(0, 1)) ;
         for (GComponentModel gComponentModel : gComponentModels) {
-            add(new GComponentView(gComponentModel));
+            mainPanel.add(new GComponentView(gComponentModel));
         }
+        add(mainPanel);
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);

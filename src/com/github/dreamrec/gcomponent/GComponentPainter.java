@@ -28,13 +28,13 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
         } else{
             transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize() + gModel.getTopIndent());
         }
-        g.setTransform(transform);
+        g.transform(transform);
         timePainter.paint(g, gModel);
         yAxisPainter.paint(g, gModel);
-        transform.concatenate(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
-        g.setTransform(transform);
+        g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
         graphPainter.paint(g, gModel);
         cursorPainter.paint(g, gModel);
+
         g.setTransform(previousTransform);
     }
 

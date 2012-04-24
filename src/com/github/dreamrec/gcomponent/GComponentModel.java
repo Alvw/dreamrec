@@ -17,17 +17,12 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected int rightIndent = 0;
     protected int topIndent = 0;
     protected int bottomIndent = 20;
-
     protected boolean isXCentered = false;
-
-
 
     public GComponentModel(Model model, IListView<Integer> dataView) {
         this.model = model;
         this.dataView = dataView;
     }
-
-
 
     /**
      *  place X axes to the screen center
