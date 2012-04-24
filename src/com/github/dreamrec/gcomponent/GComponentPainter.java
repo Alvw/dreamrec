@@ -21,8 +21,13 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
 
     public void paint(Graphics2D g, GComponentModel gModel) {
         AffineTransform previousTransform = g.getTransform();
-        //move the origin of coordinates to (xAxisPosition, leftIndent)
-        AffineTransform transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize() - gModel.getXAxisPosition());
+        //move the origin of coordinates
+        AffineTransform transform = null;
+        if(gModel.isXCentered){
+            transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize()/2 + gModel.getTopIndent());
+        } else{
+            transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize() + gModel.getTopIndent());
+        }
         g.setTransform(transform);
         timePainter.paint(g, gModel);
         yAxisPainter.paint(g, gModel);

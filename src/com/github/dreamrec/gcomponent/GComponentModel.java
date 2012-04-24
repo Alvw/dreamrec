@@ -14,23 +14,44 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected int ySize = 200;
     protected double yZoom = 1;
     protected int leftIndent = 50;
-    protected int xAxisPosition = 20;
-    protected int xIndent = 20;
+    protected int rightIndent = 0;
+    protected int topIndent = 0;
+    protected int bottomIndent = 20;
+
+    protected boolean isXCentered = false;
+
+
 
     public GComponentModel(Model model, IListView<Integer> dataView) {
         this.model = model;
         this.dataView = dataView;
     }
 
+
+
+    /**
+     *  place X axes to the screen center
+     */
+    public void centreX(){
+        isXCentered = true;
+        bottomIndent = bottomIndent/2;
+        topIndent = bottomIndent;
+    }
+
     public int getLeftIndent() {
         return leftIndent;
     }
 
-    public int getXAxisPosition() {
-        return xAxisPosition;
+    public int getRightIndent() {
+        return rightIndent;
     }
-    public void moveXAxisToCenter(){
-        xAxisPosition =
+
+    public int getTopIndent() {
+        return topIndent;
+    }
+
+    public int getBottomIndent() {
+        return bottomIndent;
     }
 
     public void setMaxValue(double maxValue) {

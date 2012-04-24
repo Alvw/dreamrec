@@ -9,7 +9,7 @@ public class DreamRec {
 //       IListView<Integer>  slowDreamView = new AveragingListView(new FistDerivativeAbsView(model.getEyeDataList()), 120);
         ListView<Integer> eyeDataList = model.getEyeDataList();
         GComponentModel eyeDataGModel = new GComponentFastModel(model,eyeDataList);
-        eyeDataGModel.setXAxisPosition((eyeDataGModel.getYSize()/2 + eyeDataGModel.);//todo fix values
+        eyeDataGModel.centreX();
         MainWindow mainWindow = new MainWindow(eyeDataGModel);
         IDataProvider dataProvider = new DebugDataProvider();
         Controller controller = new Controller(model,mainWindow,dataProvider);

@@ -18,7 +18,8 @@ public class GComponentView extends JPanel {
         } else if (gModel instanceof GComponentSlowModel) {
             componentPainter = new GComponentSlowPainter();
         }
-        setPreferredSize(new Dimension(gModel.getXSize() + gModel.leftIndent, gModel.getYSize() + gModel.xAxisPosition));
+        setPreferredSize(new Dimension(gModel.getXSize() + gModel.getLeftIndent() + gModel.getRightIndent(),
+                gModel.getYSize() + gModel.getTopIndent() + gModel.getBottomIndent()));
     }
 
     @Override
