@@ -6,10 +6,10 @@ import java.awt.*;
  *
  */
 public class CursorPainter implements IPainter<ICursorPainterModel> {
-
-    private ICursorPainterModel cursorPainterModel;
-
     public void paint(Graphics2D g, ICursorPainterModel paintModel) {
-        throw new UnsupportedOperationException("todo");
+        int x = paintModel.getCursorPosition();
+        int width = paintModel.getCursorWidth();
+        int height = paintModel.getYSize();
+        g.drawRect(x,0,width,height);
     }
 }

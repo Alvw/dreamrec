@@ -14,7 +14,7 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
     protected IPainter graphPainter;
     protected IPainter cursorPainter;
 
-     public void GComponentPainter() {
+    public void GComponentPainter() {
         yAxisPainter = new YAxisPainter();
         graphPainter = new GraphPainter();
     }

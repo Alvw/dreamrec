@@ -13,18 +13,18 @@ public class GComponentView extends JPanel {
 
     public GComponentView(GComponentModel gModel) {
         this.gModel = gModel;
-        if(gModel instanceof GComponentFastModel){
+        if (gModel instanceof GComponentFastModel) {
             componentPainter = new GComponentFastPainter();
-        } else if(gModel instanceof GComponentSlowModel){
+        } else if (gModel instanceof GComponentSlowModel) {
             componentPainter = new GComponentSlowPainter();
         }
-        setPreferredSize(new Dimension(gModel.getXSize()+gModel.YAxisPosition,gModel.getYSize()+gModel.XAxisPosition));
+        setPreferredSize(new Dimension(gModel.getXSize() + gModel.YAxisPosition, gModel.getYSize() + gModel.XAxisPosition));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D) g;
         componentPainter.paint(g2d, gModel);
     }
 

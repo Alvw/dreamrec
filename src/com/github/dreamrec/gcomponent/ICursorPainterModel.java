@@ -9,4 +9,6 @@ public interface ICursorPainterModel {
 
     public int getCursorWidth();
 
+    public int getYSize();
+
 }
