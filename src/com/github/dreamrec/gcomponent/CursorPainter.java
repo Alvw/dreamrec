@@ -5,15 +5,11 @@ import java.awt.*;
 /**
  *
  */
-public class CursorPainter implements IPainter {
+public class CursorPainter implements IPainter<ICursorPainterModel> {
 
     private ICursorPainterModel cursorPainterModel;
 
-    public CursorPainter(ICursorPainterModel cursorPainterModel) {
-        this.cursorPainterModel = cursorPainterModel;
-    }
-
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, ICursorPainterModel paintModel) {
         throw new UnsupportedOperationException("todo");
     }
 }

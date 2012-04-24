@@ -5,15 +5,9 @@ import java.awt.*;
 /**
  *
  */
-public class FastTimePainter implements IPainter {
+public class FastTimePainter implements IPainter<ITimePainterModel> {
 
-    private ITimePainterModel timePainterModel;
-
-    public FastTimePainter(ITimePainterModel timePainterModel) {
-        this.timePainterModel = timePainterModel;
-    }
-
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, ITimePainterModel paintModel) {
         throw new UnsupportedOperationException("todo");
     }
 }

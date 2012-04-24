@@ -5,17 +5,9 @@ import java.awt.*;
 /**
  *
  */
-public class YAxisPainter implements IPainter {
+public class YAxisPainter implements IPainter<IYAxisPainterModel> {
 
-   private IYAxisPainterModel yAxisPainterModel;
-
-    public YAxisPainter(IYAxisPainterModel yAxisPainterModel) {
-        this.yAxisPainterModel = yAxisPainterModel;
-    }
-
-    public void paint(Graphics2D g) {
-        //
+    public void paint(Graphics2D g, IYAxisPainterModel paintModel) {
         throw new UnsupportedOperationException("todo");
     }
-
 }

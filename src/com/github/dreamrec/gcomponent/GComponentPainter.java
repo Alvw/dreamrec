@@ -6,38 +6,30 @@ import java.awt.geom.AffineTransform;
 /**
  *
  */
-public class GComponentPainter implements IPainter {
+public class GComponentPainter implements IPainter<GComponentModel> {
 
 
-    protected GComponentModel gModel;
     protected IPainter timePainter;
     protected IPainter yAxisPainter;
     protected IPainter graphPainter;
     protected IPainter cursorPainter;
 
-    public GComponentPainter(GComponentModel gModel) {
-        this.gModel = gModel;
-        yAxisPainter = new YAxisPainter(gModel);
-        graphPainter = new GraphPainter(gModel);
-        if (gModel instanceof GComponentFastModel) {
-            cursorPainter = new EmptyPainter();
-            timePainter = new FastTimePainter(gModel);
-        } else if (gModel instanceof GComponentSlowModel) {
-            GComponentSlowModel gSlowModel = (GComponentSlowModel) gModel;
-            cursorPainter = new CursorPainter(gSlowModel);
-            timePainter = new SlowTimePainter(gModel);
-        }
+     public void GComponentPainter() {
+        yAxisPainter = new YAxisPainter();
+        graphPainter = new GraphPainter();
     }
 
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, GComponentModel gModel) {
         AffineTransform previousTransform = g.getTransform();
         //move the origin of coordinates to (xAxisPosition, yAxisPosition)
         g.setTransform(AffineTransform.getTranslateInstance(gModel.getXAxisPosition(), gModel.getYAxisPosition()));
-        timePainter.paint(g);
-        yAxisPainter.paint(g);
+        timePainter.paint(g, gModel);
+        yAxisPainter.paint(g, gModel);
         g.setTransform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
-        graphPainter.paint(g);
-        cursorPainter.paint(g);
+        graphPainter.paint(g, gModel);
+        cursorPainter.paint(g, gModel);
         g.setTransform(previousTransform);
     }
+
+
 }

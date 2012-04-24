@@ -7,7 +7,7 @@ import java.awt.*;
  */
 public class EmptyPainter implements IPainter {
 
-    public void paint(Graphics2D g) {
+    public void paint(Graphics2D g, Object paintModel) {
         //do nothing
     }
 }
