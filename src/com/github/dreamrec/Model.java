@@ -14,7 +14,7 @@ public class Model {
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
 
-    public List<Integer> getEyeDataList() {
+    public ListView<Integer> getEyeDataList() {
         return eyeDataList;
     }
 

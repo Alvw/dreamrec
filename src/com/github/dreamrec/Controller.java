@@ -20,7 +20,9 @@ public class Controller {
     private MainWindow mainWindow;
     private static final Log log = LogFactory.getLog(Controller.class);
 
-    public Controller(Model _model) {
+    public Controller(Model _model, MainWindow _mainWindow, IDataProvider dataProvider) {
+        this.dataProvider = dataProvider;
+        this.mainWindow = _mainWindow;
         this.model = _model;
         repaintTimer = new Timer(REPAINT_DELAY,new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -52,7 +54,7 @@ public class Controller {
         }
     }
 
-    void StartRecording() {
+    public void startRecording() {
         try {
             dataProvider.startRecording();
         } catch (ApplicationException e) {
@@ -61,10 +63,12 @@ public class Controller {
         model.clear();
         model.setFrequency(dataProvider.getIncomingDataFrequency());
         model.setStartTime(dataProvider.getStartTime());
+        repaintTimer.start();
     }
 
-    void StopRecording() {
+    public void stopRecording() {
         dataProvider.stopRecording();
+        repaintTimer.stop();
     }
 
 }

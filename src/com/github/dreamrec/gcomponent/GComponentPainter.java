@@ -14,18 +14,20 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
     protected IPainter graphPainter;
     protected IPainter cursorPainter;
 
-    public void GComponentPainter() {
+    public GComponentPainter() {
         yAxisPainter = new YAxisPainter();
         graphPainter = new GraphPainter();
     }
 
     public void paint(Graphics2D g, GComponentModel gModel) {
         AffineTransform previousTransform = g.getTransform();
-        //move the origin of coordinates to (xAxisPosition, yAxisPosition)
-        g.setTransform(AffineTransform.getTranslateInstance(gModel.getXAxisPosition(), gModel.getYAxisPosition()));
+        //move the origin of coordinates to (xAxisPosition, leftIndent)
+        AffineTransform transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize() - gModel.getXAxisPosition());
+        g.setTransform(transform);
         timePainter.paint(g, gModel);
         yAxisPainter.paint(g, gModel);
-        g.setTransform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
+        transform.concatenate(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
+        g.setTransform(transform);
         graphPainter.paint(g, gModel);
         cursorPainter.paint(g, gModel);
         g.setTransform(previousTransform);

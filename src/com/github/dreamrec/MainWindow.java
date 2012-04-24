@@ -5,7 +5,6 @@ import com.github.dreamrec.gcomponent.GComponentView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 
 /**
  *
@@ -13,7 +12,7 @@ import java.util.List;
 public class MainWindow extends JFrame {
 
 
-    public MainWindow(List<GComponentModel> gComponentModels) {
+    public MainWindow(GComponentModel... gComponentModels) {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new GridLayout(0, 1));
         for (GComponentModel gComponentModel : gComponentModels) {
