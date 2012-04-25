@@ -90,7 +90,7 @@ public class Controller {
     }
 
     public void scrollCursorForward() {
-        model.moveCursor(model.getCursorPosition() + CURSOR_SCROLL_STEP);
+        model.moveFastGraph(model.getFastGraphIndex()+CURSOR_SCROLL_STEP*Model.DIVIDER);
         if(model.isFastGraphIndexMaximum()){
             isAutoScroll = true;
         }
@@ -98,7 +98,7 @@ public class Controller {
     }
 
     public void scrollCursorBackward() {
-        model.moveCursor(model.getCursorPosition() - CURSOR_SCROLL_STEP);
+        model.moveFastGraph(model.getFastGraphIndex()- CURSOR_SCROLL_STEP*Model.DIVIDER);
         isAutoScroll = false;
         mainWindow.repaint();
     }
