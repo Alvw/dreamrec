@@ -20,9 +20,9 @@ public class MainWindow extends JFrame {
     private JPanel mainPanel;
     private JPanel scrollPanel;
     private Model model;
-    private JScrollBar scrollBar;
     private Controller controller;
     private java.util.List<JPanel>  SlowGComponentPanels;
+    private ScrollBarPanel scrollBar;
 
     public MainWindow(final GComponentModel... gComponentModels) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -42,12 +42,9 @@ public class MainWindow extends JFrame {
             }
         }
         add(mainPanel, BorderLayout.NORTH);
-        
-        int scrollExtent = 10; //model.getXSize()*model.getXSize()/model.getDataSize();
-        scrollBar = new JScrollBar(Adjustable.HORIZONTAL,0,scrollExtent,0,model.getXSize());
-        JPanel scrollBarPanel = new JPanel();
-        scrollBarPanel.add(scrollBar);
-        add(scrollBarPanel, BorderLayout.CENTER);
+        scrollBar = new ScrollBarPanel(model);
+        scrollBar.setVisible(false);
+        add(scrollBar, BorderLayout.CENTER);
         registerKeyActions();
         pack();
         // place the window to the screen center
@@ -73,11 +70,22 @@ public class MainWindow extends JFrame {
     public void setController(Controller _controller){
         controller = _controller;
         scrollBar.addAdjustmentListener(new AdjustmentListener() {
-            @Override
             public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                   controller.scrollSlowGraph(10);
+                controller.scrollSlowGraph(adjustmentEvent.getValue());
             }
         });
         setActionMap(new GUIActions(controller).getActionMap());
+    }
+
+    @Override
+    public void repaint() {
+        super.repaint();
+        if(model.getSlowDataSize() > model.getXSize()){
+            if(!scrollBar.isVisible()){
+                scrollBar.setVisible(true);
+                pack();
+            }
+            scrollBar.updateModel();
+        }
     }
 }

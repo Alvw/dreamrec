@@ -77,7 +77,7 @@ public class Model {
     }
 
     public void moveSlowGraph(int newSlowGraphIndex) {
-        newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, getDataSize() / DIVIDER);
+        newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, getSlowDataSize());
         slowGraphIndex = newSlowGraphIndex;
     }
 
@@ -89,10 +89,14 @@ public class Model {
         return newIndex;
     }
 
-    private int getIndexMax(int dataSize) {
+    public int getIndexMax(int dataSize) {
         int maxValue = dataSize - xSize - 1;
         maxValue = maxValue < 0 ? 0 : maxValue;
         return maxValue;
+    }
+
+    public int getSlowDataSize(){
+        return getDataSize()/DIVIDER;
     }
 
     public boolean isFastGraphIndexMaximum() {
@@ -104,7 +108,7 @@ public class Model {
     }
 
     public void moveCursor(int newCursorPosition) {
-        newCursorPosition = checkCursorIndexBounds(newCursorPosition, getDataSize() / DIVIDER);
+        newCursorPosition = checkCursorIndexBounds(newCursorPosition, getSlowDataSize());
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
         checkCursorScreenBounds();

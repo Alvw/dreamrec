@@ -104,12 +104,6 @@ public class Controller {
     }
 
     public void scrollSlowGraph(int scrollPosition) {
-        //doSmth
-        if(model.isFastGraphIndexMaximum()){
-            isAutoScroll = true;
-        }
+//        model.moveSlowGraph(scrollPosition);
     }
-
-
-
 }
