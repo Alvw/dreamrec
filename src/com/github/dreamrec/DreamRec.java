@@ -25,6 +25,6 @@ public class DreamRec {
         Controller controller = new Controller(model,mainWindow,dataProvider);
         controller.startRecording();
 
-        mainWindow.setActionMap(new GUIActions(controller).getActionMap());
+        mainWindow.setController(controller);
     }
 }

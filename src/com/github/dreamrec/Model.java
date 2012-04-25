@@ -52,7 +52,7 @@ public class Model {
         this.xSize = xSize;
     }
 
-    public int dataSize() {
+    public int getDataSize() {
         return eyeDataList.size();
     }
 
@@ -71,17 +71,17 @@ public class Model {
     }
 
     public void moveFastGraph(int newFastGraphIndex) {
-        newFastGraphIndex = checkGraphIndexBounds(newFastGraphIndex, dataSize());
+        newFastGraphIndex = checkGraphIndexBounds(newFastGraphIndex, getDataSize());
         fastGraphIndex = newFastGraphIndex;
         checkCursorScreenBounds();
     }
 
     public void moveSlowGraph(int newSlowGraphIndex) {
-        newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, dataSize() / DIVIDER);
+        newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, getDataSize() / DIVIDER);
         slowGraphIndex = newSlowGraphIndex;
     }
 
-    //correct graph index if it points to invalid data. Should be > 0 and < (dataSize - xSize)
+    //correct graph index if it points to invalid data. Should be > 0 and < (getDataSize - xSize)
     private int checkGraphIndexBounds(int newIndex, int dataSize) {
         int maxValue = getIndexMax(dataSize);
         newIndex = newIndex < 0 ? 0 : newIndex;
@@ -96,15 +96,15 @@ public class Model {
     }
 
     public boolean isFastGraphIndexMaximum() {
-        return fastGraphIndex == getIndexMax(dataSize());
+        return fastGraphIndex == getIndexMax(getDataSize());
     }
 
     public void setFastGraphIndexMaximum() {
-         moveFastGraph(getIndexMax(dataSize()));
+         moveFastGraph(getIndexMax(getDataSize()));
     }
 
     public void moveCursor(int newCursorPosition) {
-        newCursorPosition = checkCursorIndexBounds(newCursorPosition, dataSize() / DIVIDER);
+        newCursorPosition = checkCursorIndexBounds(newCursorPosition, getDataSize() / DIVIDER);
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
         checkCursorScreenBounds();
@@ -121,7 +121,7 @@ public class Model {
             }
     }
 
-    //correct cursor positions if it points to invalid data index: < 0 and > dataSize
+    //correct cursor positions if it points to invalid data index: < 0 and > getDataSize
     private int checkCursorIndexBounds(int newCursorPosition, int dataSize) {
         int minValue = -slowGraphIndex;
         int maxValue = dataSize - slowGraphIndex - getCursorWidth() - 1;

@@ -33,6 +33,10 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         topIndent = bottomIndent;
     }
 
+    public Model getModel() {
+        return model;
+    }
+
     public int getLeftIndent() {
         return leftIndent;
     }
