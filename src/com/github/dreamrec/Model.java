@@ -113,7 +113,7 @@ public class Model {
     private void checkCursorScreenBounds() {
         //adjust slowGraphIndex to place cursor at the beginning of the screen
         if (getCursorPosition() < 0) {
-            slowGraphIndex -= getCursorPosition();
+            slowGraphIndex += getCursorPosition();
         } else
             //adjust slowGraphIndex to place cursor at the end of the screen
             if (getCursorPosition() > xSize - getCursorWidth() - 1) {
