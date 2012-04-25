@@ -4,8 +4,8 @@ package com.github.dreamrec;
  *
  */
 public class Model {
-    private int xSize = 1200; //data points per screen.
-    public static final int DIVIDER = 120; //frequency divider for slow graphics
+    private int xSize = 200; //data points per screen.
+    public static final int DIVIDER = 10; //frequency divider for slow graphics
     private ListView<Integer> eyeDataList = new ListView<Integer>();   //list with raw incoming data of eye movements
     private double frequency; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
@@ -100,7 +100,7 @@ public class Model {
     }
 
     public void setFastGraphIndexMaximum() {
-         fastGraphIndex = getIndexMax(dataSize());
+         moveFastGraph(getIndexMax(dataSize()));
     }
 
     public void moveCursor(int newCursorPosition) {
@@ -114,11 +114,11 @@ public class Model {
     private void checkCursorScreenBounds() {
         //adjust slowGraphIndex to place cursor at the beginning of the screen
         if (getCursorPosition() < 0) {
-            slowGraphIndex += getCursorPosition();
+            slowGraphIndex -= getCursorPosition();
         } else
             //adjust slowGraphIndex to place cursor at the end of the screen
-            if (getCursorPosition() > xSize - getCursorWidth()) {
-                slowGraphIndex -= getCursorPosition() - xSize + getCursorWidth();
+            if (getCursorPosition() > xSize - getCursorWidth() - 1) {
+                slowGraphIndex += getCursorPosition() - xSize + getCursorWidth();
             }
     }
 
