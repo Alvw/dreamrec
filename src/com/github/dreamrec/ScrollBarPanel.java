@@ -18,9 +18,8 @@ public class ScrollBarPanel extends JScrollBar{
         if(model.getSlowDataSize()<model.getXSize()){
             return;
         }
+
         BoundedRangeModel boundedRangeModel = getModel();
-        boundedRangeModel.setMaximum(model.getSlowDataSize());
-        boundedRangeModel.setExtent(model.getXSize());
-        boundedRangeModel.setValue(model.getSlowGraphIndex());
+        boundedRangeModel.setRangeProperties(model.getSlowGraphIndex(),model.getXSize(),0,model.getSlowDataSize(),false);
     }
 }
