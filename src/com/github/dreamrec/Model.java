@@ -1,7 +1,5 @@
 package com.github.dreamrec;
 
-import java.util.List;
-
 /**
  *
  */
@@ -54,65 +52,84 @@ public class Model {
         this.xSize = xSize;
     }
 
-    public int dataSize(){
+    public int dataSize() {
         return eyeDataList.size();
     }
 
-    public void clear(){
+    public void clear() {
         eyeDataList.clear();
         frequency = 0;
         startTime = 0;
     }
 
     public int getCursorWidth() {
-        return xSize /DIVIDER;
+        return xSize / DIVIDER;
     }
 
-     public int getCursorPosition() {
-        return fastGraphIndex/DIVIDER - slowGraphIndex;
+    public int getCursorPosition() {
+        return fastGraphIndex / DIVIDER - slowGraphIndex;
     }
 
-    public void moveFastGraph(int newFastGraphIndex){
-       newFastGraphIndex = checkGraphIndexBounds(newFastGraphIndex, dataSize());
-       fastGraphIndex = newFastGraphIndex;
+    public void moveFastGraph(int newFastGraphIndex) {
+        newFastGraphIndex = checkGraphIndexBounds(newFastGraphIndex, dataSize());
+        fastGraphIndex = newFastGraphIndex;
+        checkCursorScreenBounds();
     }
 
-     public void moveSlowGraph(int newSlowGraphIndex) {
+    public void moveSlowGraph(int newSlowGraphIndex) {
         newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, dataSize() / DIVIDER);
         slowGraphIndex = newSlowGraphIndex;
     }
 
     //correct graph index if it points to invalid data. Should be > 0 and < (dataSize - xSize)
-    private int checkGraphIndexBounds(int newIndex, int dataSize){
-        int maxValue = dataSize - xSize;
-        maxValue = maxValue < 0 ? 0 : maxValue;
+    private int checkGraphIndexBounds(int newIndex, int dataSize) {
+        int maxValue = getIndexMax(dataSize);
         newIndex = newIndex < 0 ? 0 : newIndex;
         newIndex = newIndex > maxValue ? maxValue : newIndex;
         return newIndex;
     }
 
-    public void moveCursor(int newCursorPosition){
-        newCursorPosition = checkCursorBounds(newCursorPosition, dataSize()/DIVIDER);
+    private int getIndexMax(int dataSize) {
+        int maxValue = dataSize - xSize - 1;
+        maxValue = maxValue < 0 ? 0 : maxValue;
+        return maxValue;
+    }
+
+    public boolean isFastGraphIndexMaximum() {
+        return fastGraphIndex == getIndexMax(dataSize());
+    }
+
+    public void setFastGraphIndexMaximum() {
+         fastGraphIndex = getIndexMax(dataSize());
+    }
+
+    public void moveCursor(int newCursorPosition) {
+        newCursorPosition = checkCursorIndexBounds(newCursorPosition, dataSize() / DIVIDER);
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
+        checkCursorScreenBounds();
+
+    }
+
+    private void checkCursorScreenBounds() {
         //adjust slowGraphIndex to place cursor at the beginning of the screen
-        if(getCursorPosition() < 0){
-            slowGraphIndex+=getCursorPosition();
+        if (getCursorPosition() < 0) {
+            slowGraphIndex += getCursorPosition();
         } else
-         //adjust slowGraphIndex to place cursor at the end of the screen
-        if(getCursorPosition() > xSize -getCursorWidth()){
-            slowGraphIndex-=getCursorPosition()- xSize +getCursorWidth();
-        }
+            //adjust slowGraphIndex to place cursor at the end of the screen
+            if (getCursorPosition() > xSize - getCursorWidth()) {
+                slowGraphIndex -= getCursorPosition() - xSize + getCursorWidth();
+            }
     }
 
     //correct cursor positions if it points to invalid data index: < 0 and > dataSize
-    private int checkCursorBounds(int newCursorPosition, int dataSize) {
-        int minValue = - slowGraphIndex;
-        int maxValue = dataSize - slowGraphIndex - getCursorWidth();
+    private int checkCursorIndexBounds(int newCursorPosition, int dataSize) {
+        int minValue = -slowGraphIndex;
+        int maxValue = dataSize - slowGraphIndex - getCursorWidth() - 1;
         maxValue = maxValue < minValue ? minValue : maxValue;
         newCursorPosition = newCursorPosition < minValue ? minValue : newCursorPosition;
         newCursorPosition = newCursorPosition > maxValue ? maxValue : newCursorPosition;
-        return  newCursorPosition;
+        return newCursorPosition;
     }
 }
 
