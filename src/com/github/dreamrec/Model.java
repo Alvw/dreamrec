@@ -108,7 +108,6 @@ public class Model {
         // move cursor to new position, even if this new position is out of the screen
         fastGraphIndex = (slowGraphIndex + newCursorPosition) * DIVIDER;
         checkCursorScreenBounds();
-
     }
 
     private void checkCursorScreenBounds() {

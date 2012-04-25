@@ -8,8 +8,8 @@ import java.awt.*;
 public class CursorPainter implements IPainter<ICursorPainterModel> {
     public void paint(Graphics2D g, ICursorPainterModel paintModel) {
         int x = paintModel.getCursorPosition();
-        int width = paintModel.getCursorWidth();
-        int height = paintModel.getYSize();
+        int width = paintModel.getCursorWidth()-2;
+        int height = paintModel.getYSize() - 10;
         g.drawRect(x,0,width,height);
     }
 }
