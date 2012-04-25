@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class Controller {
 
-    public static final int REPAINT_DELAY = 1000;//milliseconds
+    public static final int REPAINT_DELAY = 100;//milliseconds
     private Timer repaintTimer;
     private Model model;
     private IDataProvider dataProvider;
