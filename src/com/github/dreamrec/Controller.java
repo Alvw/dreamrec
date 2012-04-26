@@ -103,6 +103,10 @@ public class Controller {
         mainWindow.repaint();
     }
 
+    public void moveCursor(int newPosition){
+        model.moveCursor(newPosition);
+    }
+
     public void scrollSlowGraph(int scrollPosition) {
         model.moveSlowGraph(scrollPosition);
         isAutoScroll = false;

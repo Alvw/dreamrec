@@ -22,6 +22,10 @@ public class GComponentView extends JPanel {
                 gModel.getYSize() + gModel.getTopIndent() + gModel.getBottomIndent()));
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
+    
+    public GComponentModel getComponentModel(){
+        return gModel;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {

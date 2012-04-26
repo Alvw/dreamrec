@@ -1,15 +1,15 @@
 package com.github.dreamrec;
 
 import com.github.dreamrec.gcomponent.GComponentModel;
+import com.github.dreamrec.gcomponent.GComponentSlowModel;
 import com.github.dreamrec.gcomponent.GComponentView;
 
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.util.ArrayList;
+
 import static com.github.dreamrec.GUIActions.*;
 
 /**
@@ -21,7 +21,7 @@ public class MainWindow extends JFrame {
     private JPanel scrollPanel;
     private Model model;
     private Controller controller;
-    private java.util.List<JPanel>  SlowGComponentPanels;
+    private java.util.List<GComponentView>  slowGComponentPanels = new ArrayList<GComponentView>();
     private SlowGraphScrollBar slowGraphScrollBar;
 
     public MainWindow(final GComponentModel... gComponentModels) {
@@ -36,9 +36,13 @@ public class MainWindow extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         mainPanel = new JPanel(new GridLayout(0, 1)) ;
         for (GComponentModel gComponentModel : gComponentModels) {
-            mainPanel.add(new GComponentView(gComponentModel));
+            GComponentView gComponentPanel = new GComponentView(gComponentModel);
+            mainPanel.add(gComponentPanel);
             if(model == null){
                 model = gComponentModel.getModel();
+            }
+            if(gComponentModel instanceof GComponentSlowModel){
+               slowGComponentPanels.add(gComponentPanel);
             }
         }
         add(mainPanel, BorderLayout.NORTH);
@@ -75,6 +79,16 @@ public class MainWindow extends JFrame {
             }
         });
         setActionMap(new GUIActions(controller).getActionMap());
+
+        for (final GComponentView slowGComponentPanel : slowGComponentPanels) {
+            slowGComponentPanel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent mouseEvent) {
+                    int newPosition = mouseEvent.getX() - slowGComponentPanel.getComponentModel().getLeftIndent();
+                    controller.moveCursor(newPosition);
+                }
+            });
+        }
     }
 
     @Override
