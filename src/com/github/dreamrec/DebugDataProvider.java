@@ -4,17 +4,19 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
  */
 public class DebugDataProvider implements IDataProvider {
 
-    private int delay = 10; //milliseconds
+    private int delay = 50; //milliseconds
     private Timer timer;
     private LinkedList<Integer> eyeDataQueue = new LinkedList<Integer>();
     private int sampleCounter;
     private long startTime;
+    private Random rnd = new Random();
 
     public DebugDataProvider() {
         ActionListener taskPerformer = new ActionListener() {
@@ -27,7 +29,8 @@ public class DebugDataProvider implements IDataProvider {
 
     private void appendEyeDataSample() {
         sampleCounter++;
-        eyeDataQueue.add((int)(100*Math.sin(sampleCounter/10.0)));
+//        eyeDataQueue.add((int)(100*Math.sin(sampleCounter/10.0)));
+        eyeDataQueue.add(rnd.nextInt(100));
     }
 
 
