@@ -105,5 +105,6 @@ public class Controller {
 
     public void scrollSlowGraph(int scrollPosition) {
         model.moveSlowGraph(scrollPosition);
+        isAutoScroll = false;
     }
 }

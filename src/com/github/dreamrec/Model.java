@@ -79,7 +79,16 @@ public class Model {
     public void moveSlowGraph(int newSlowGraphIndex) {
         newSlowGraphIndex = checkGraphIndexBounds(newSlowGraphIndex, getSlowDataSize());
         slowGraphIndex = newSlowGraphIndex;
+        if(getCursorPosition()<0){
+            moveCursor(0);
+        }
+        int cursorMaxPosition = xSize - getCursorWidth() -1;
+        if(getCursorPosition() > cursorMaxPosition){
+            moveCursor(cursorMaxPosition);
+        }
     }
+
+
 
     //correct graph index if it points to invalid data. Should be > 0 and < (getDataSize - xSize)
     private int checkGraphIndexBounds(int newIndex, int dataSize) {
