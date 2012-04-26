@@ -3,19 +3,13 @@ package com.github.dreamrec;
 /**
  *
  */
-public class AveragingListView implements IListView<Integer> {
+public class AveragingListView extends DoNothingListView{
 
-    int divider;
-    IListView<Integer> incomingData;
 
-    public AveragingListView(IListView<Integer> incomingData, int divider) {
-        this.incomingData = incomingData;
+    public AveragingListView(int divider) {
         this.divider = divider;
     }
 
-    public int size() {
-        return incomingData.size()/divider;
-    }
 
     public Integer get(int index) {
         int sum = 0;
@@ -26,4 +20,5 @@ public class AveragingListView implements IListView<Integer> {
         }
         return sum/divider;
     }
+
 }

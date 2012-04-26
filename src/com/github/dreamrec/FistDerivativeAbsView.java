@@ -1,17 +1,10 @@
 package com.github.dreamrec;
 
 
-public class FistDerivativeAbsView implements IListView<Integer>{
+public class FistDerivativeAbsView extends  DoNothingListView{
 
-    IListView<Integer> incomingData;
 
-    public FistDerivativeAbsView(IListView<Integer> incomingData) {
-        this.incomingData = incomingData;
-    }
 
-    public int size() {
-        return incomingData.size();
-    }
 
     public Integer get(int index) {
         if(index == 0){

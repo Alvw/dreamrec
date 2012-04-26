@@ -7,24 +7,19 @@ import com.github.dreamrec.gcomponent.GComponentSlowModel;
 public class DreamRec {
     public static void main(String[] args) {
 
-        Model model = new Model();
 
-        IListView<Integer>  slowDreamView = new AveragingListView(new FistDerivativeAbsView(model.getEyeDataList()), Model.DIVIDER);
-        GComponentModel slowDreamGModel = new GComponentSlowModel(model,slowDreamView);
 
-        ListView<Integer> eyeDataList = model.getEyeDataList();
-        GComponentModel eyeDataGModel = new GComponentFastModel(model,eyeDataList);
+        IListView<Integer>  slowDreamView = new ChainListView(new FistDerivativeAbsView(),new AveragingListView(Model.DIVIDER));
+        IListView<Integer> fastDreamView = new ChainListView(new FistDerivativeAbsView());
 
-        IListView<Integer> fastDerivativeView = new FistDerivativeAbsView(model.getEyeDataList());
-        GComponentModel fastDerivativeViewGModel = new GComponentFastModel(model,fastDerivativeView);
+        Model model = new Model(fastDreamView, new DoNothingListView(),slowDreamView) ;
 
-        eyeDataGModel.centreX();
-        MainWindow mainWindow = new MainWindow(fastDerivativeViewGModel,eyeDataGModel,slowDreamGModel);
+
+
         IDataProvider dataProvider = new DebugDataProvider();
-
-        Controller controller = new Controller(model,mainWindow,dataProvider);
+        Controller controller = new Controller(model,dataProvider);
+        MainWindow mainWindow = new MainWindow(model,controller);
+        controller.setMainWindow(mainWindow);
         controller.startRecording();
-
-        mainWindow.setController(controller);
     }
 }

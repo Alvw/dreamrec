@@ -3,17 +3,10 @@ package com.github.dreamrec;
 /**
  *
  */
-public class SecondDerivativeView implements IListView<Integer>{
+public class SecondDerivativeView extends DoNothingListView{
 
-    IListView<Integer> incomingData;
 
-    public SecondDerivativeView(IListView<Integer> incomingData) {
-        this.incomingData = incomingData;
-    }
 
-    public int size() {
-       return incomingData.size();
-    }
 
     public Integer get(int index) {
         if(index < 8){
