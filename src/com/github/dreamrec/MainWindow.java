@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
     private Model model;
     private Controller controller;
     private java.util.List<JPanel>  SlowGComponentPanels;
-    private ScrollBarPanel scrollBar;
+    private SlowGraphScrollBar slowGraphScrollBar;
 
     public MainWindow(final GComponentModel... gComponentModels) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -42,9 +42,9 @@ public class MainWindow extends JFrame {
             }
         }
         add(mainPanel, BorderLayout.NORTH);
-        scrollBar = new ScrollBarPanel(model);
-        scrollBar.setVisible(false);
-        add(scrollBar, BorderLayout.CENTER);
+        slowGraphScrollBar = new SlowGraphScrollBar(model);
+        slowGraphScrollBar.setVisible(false);
+        add(slowGraphScrollBar, BorderLayout.CENTER);
         registerKeyActions();
         pack();
         // place the window to the screen center
@@ -69,7 +69,7 @@ public class MainWindow extends JFrame {
     
     public void setController(Controller _controller){
         controller = _controller;
-        scrollBar.addAdjustmentListener(new AdjustmentListener() {
+        slowGraphScrollBar.addScrollListener(new AdjustmentListener() {
             public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
                 controller.scrollSlowGraph(adjustmentEvent.getValue());
             }
@@ -81,11 +81,11 @@ public class MainWindow extends JFrame {
     public void repaint() {
         super.repaint();
         if(model.getSlowDataSize() > model.getXSize()){
-            if(!scrollBar.isVisible()){
-                scrollBar.setVisible(true);
+            if(!slowGraphScrollBar.isVisible()){
+                slowGraphScrollBar.setVisible(true);
                 pack();
             }
-            scrollBar.updateModel();
+            slowGraphScrollBar.updateModel();
         }
     }
 }

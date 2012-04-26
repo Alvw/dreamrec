@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class DebugDataProvider implements IDataProvider {
 
-    private int delay = 50; //milliseconds
+    private int delay = 10; //milliseconds
     private Timer timer;
     private LinkedList<Integer> eyeDataQueue = new LinkedList<Integer>();
     private int sampleCounter;
