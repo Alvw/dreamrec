@@ -1,0 +1,23 @@
+package com.github.dreamrec;
+
+/**
+ *
+ */
+public class AveragingFilter extends Filter<Integer> {
+
+    public AveragingFilter(IFilter<Integer> inputData, int divider) {
+        super(inputData);
+        this.divider = divider;
+    }
+
+    @Override
+    protected Integer doFilter(int index) {
+        int sum = 0;
+        int incomingDataIndex = index*divider;
+        for (int i = 0; i < divider; i++) {
+            sum += inputData.get(incomingDataIndex+i);
+
+        }
+        return sum/divider;
+    }
+}

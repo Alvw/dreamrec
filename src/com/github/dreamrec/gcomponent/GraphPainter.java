@@ -1,7 +1,6 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.IListView;
-
+import com.github.dreamrec.IFilter;
 import java.awt.*;
 
 /**
@@ -10,7 +9,7 @@ import java.awt.*;
 public class GraphPainter implements IPainter<IGraphPainterModel> {
 
     public void paint(Graphics2D g, IGraphPainterModel paintModel) {
-        IListView<Integer> points = paintModel.getDataView();
+        IFilter<Integer> points = paintModel.getDataView();
         int[] z = {-1, 0};
         int size = points.size();
         int pointsPerScreen = paintModel.getXSize();

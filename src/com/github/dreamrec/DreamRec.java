@@ -9,13 +9,13 @@ public class DreamRec {
 
         Model model = new Model();
 
-        IListView<Integer>  slowDreamView = new AveragingListView(new FistDerivativeAbsView(model.getEyeDataList()), Model.DIVIDER);
+        Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
         GComponentModel slowDreamGModel = new GComponentSlowModel(model,slowDreamView);
 
-        ListView<Integer> eyeDataList = model.getEyeDataList();
+        DataList<Integer> eyeDataList = model.getEyeDataList();
         GComponentModel eyeDataGModel = new GComponentFastModel(model,eyeDataList);
 
-        IListView<Integer> fastDerivativeView = new FistDerivativeAbsView(model.getEyeDataList());
+        Filter<Integer> fastDerivativeView = new FirstDerivativeAbsFilter(model.getEyeDataList());
         GComponentModel fastDerivativeViewGModel = new GComponentFastModel(model,fastDerivativeView);
 
         eyeDataGModel.centreX();
