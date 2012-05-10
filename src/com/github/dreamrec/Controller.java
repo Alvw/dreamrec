@@ -27,9 +27,9 @@ public class Controller {
         this.model = _model;
     }
 
-    public void setMainWindow(MainWindow _mainWindow){
+    public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
-         repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
+        repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
                 mainWindow.repaint();
@@ -40,8 +40,8 @@ public class Controller {
     private void updateModel() {
         while (dataProvider.available() > 0) {
             model.addEyeData(dataProvider.poll());
-            if(isAutoScroll){
-               model.setFastGraphIndexMaximum();
+            if (isAutoScroll) {
+                model.setFastGraphIndexMaximum();
             }
         }
     }
@@ -93,25 +93,27 @@ public class Controller {
     }
 
     public void scrollCursorForward() {
-        model.moveFastGraph(model.getFastGraphIndex()+CURSOR_SCROLL_STEP*Model.DIVIDER);
-        if(model.isFastGraphIndexMaximum()){
+        model.moveFastGraph(model.getFastGraphIndex() + CURSOR_SCROLL_STEP * Model.DIVIDER);
+        if (model.isFastGraphIndexMaximum()) {
             isAutoScroll = true;
         }
         mainWindow.repaint();
     }
 
     public void scrollCursorBackward() {
-        model.moveFastGraph(model.getFastGraphIndex()- CURSOR_SCROLL_STEP*Model.DIVIDER);
+        model.moveFastGraph(model.getFastGraphIndex() - CURSOR_SCROLL_STEP * Model.DIVIDER);
         isAutoScroll = false;
         mainWindow.repaint();
     }
 
-    public void moveCursor(int newPosition){
+    public void moveCursor(int newPosition) {
         model.moveCursor(newPosition);
+        mainWindow.repaint();
     }
 
     public void scrollSlowGraph(int scrollPosition) {
         model.moveSlowGraph(scrollPosition);
         isAutoScroll = false;
+        mainWindow.repaint();
     }
 }

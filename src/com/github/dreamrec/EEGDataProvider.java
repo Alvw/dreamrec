@@ -19,7 +19,7 @@ import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
 public class EEGDataProvider implements IDataProvider, IRawSampleListener{
 
     private static final Log log = LogFactory.getLog(EEGDataProvider.class);
-    private double dataFrequency;
+    private double dataFrequency = 10.284;//Hz
     private static final int FREQUENCY_DIVIDER = 25;
     private static final int INCOMING_DATA_MAX_VALUE = 1024;
     private int packetNumber = -1;

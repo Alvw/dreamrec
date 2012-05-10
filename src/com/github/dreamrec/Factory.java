@@ -59,6 +59,7 @@ public class Factory {
                 int rotation = e.getWheelRotation();
                 GComponentModel gModel = gComponentView.getComponentModel();
                 gModel.setYZoom(gModel.getYZoom() * (1+rotation/10.0));
+                gComponentView.repaint();
             }
         });
 

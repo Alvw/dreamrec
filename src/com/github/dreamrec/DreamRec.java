@@ -11,6 +11,5 @@ public class DreamRec {
         Controller controller = new Controller(model,dataProvider);
         MainWindow mainWindow = new MainWindow(controller,model);
         controller.setMainWindow(mainWindow);
-        controller.startRecording();
     }
 }
