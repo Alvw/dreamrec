@@ -44,9 +44,9 @@ public class MainWindow extends JFrame {
         Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
         mainPanel.add(Factory.getGComponentView(slowDreamView, model, controller));
 
-        add(mainPanel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.CENTER);
         graphScrollBar = Factory.getSlowGraphScrollBar(model, controller);
-        add(graphScrollBar, BorderLayout.CENTER);
+        add(graphScrollBar, BorderLayout.SOUTH);
         registerKeyActions();
         pack();
         // place the window to the screen center

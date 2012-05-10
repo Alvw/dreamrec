@@ -5,10 +5,7 @@ import com.github.dreamrec.gcomponent.GComponentModel;
 import com.github.dreamrec.gcomponent.GComponentSlowModel;
 import com.github.dreamrec.gcomponent.GComponentView;
 
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 /**
  *
@@ -16,9 +13,10 @@ import java.awt.event.MouseEvent;
 public class Factory {
 
     public static GComponentView getGComponentView(Filter filter, Model model,final Controller controller){
+        GComponentView gComponentView;
         if(filter.divider() == Model.DIVIDER){    //todo consider refactoring if else to polymorphism.
             final GComponentModel gModel = new GComponentSlowModel(model,filter);
-            final GComponentView gComponentView = new GComponentView(gModel);
+            gComponentView = new GComponentView(gModel);
             gComponentView.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent mouseEvent) {
@@ -26,14 +24,26 @@ public class Factory {
                     controller.moveCursor(newPosition);
                 }
             });
-            return gComponentView;
         }else if (filter.divider() == 1){
             GComponentModel gModel = new GComponentFastModel(model,filter);
-            final GComponentView gComponentView = new GComponentView(gModel);
-            return gComponentView;
+            gComponentView = new GComponentView(gModel);            
         } else {
             throw new UnsupportedOperationException("divider = " + filter.divider() + " .Shoud be 1 or " + Model.DIVIDER);
         }
+        addComponentListener(gComponentView, model);
+        return gComponentView;
+    }
+    
+    private static void addComponentListener(final GComponentView gComponentView, final Model model){
+        gComponentView.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent componentEvent) {
+                GComponentModel gModel = gComponentView.getComponentModel();
+                gModel.setYSize(componentEvent.getComponent().getHeight() - gModel.getTopIndent() - gModel.getBottomIndent());
+                model.setXSize(componentEvent.getComponent().getWidth() - gModel.getLeftIndent() - gModel.getRightIndent());
+            }
+        });
+        
     }
 
     public static GraphScrollBar getSlowGraphScrollBar(Model model, final Controller controller) {
