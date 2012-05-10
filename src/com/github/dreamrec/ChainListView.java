@@ -11,12 +11,13 @@ public class ChainListView implements IListView<Integer> {
 
     public ChainListView(IListView<Integer>... listViews) {
         firstListView = listViews[0];
-        lastListView =  listViews[0];
         divider *= listViews[0].getDivider();
+        lastListView = listViews[listViews.length-1];
+        IListView<Integer> prevListView = firstListView;
         if (listViews.length > 1) {
             for (int i = 1; i < listViews.length; i++) {
-                listViews[i].setInputDataList(lastListView);
-                lastListView = listViews[i];
+                listViews[i].setInputDataList(prevListView);
+                prevListView = listViews[i];
                 divider *= listViews[i].getDivider();
             }
         }
