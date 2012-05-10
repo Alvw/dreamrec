@@ -22,15 +22,10 @@ public class Controller {
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
 
-    public Controller(Model _model,  IDataProvider dataProvider) {
+    public Controller(Model _model, MainWindow _mainWindow, IDataProvider dataProvider) {
         this.dataProvider = dataProvider;
+        this.mainWindow = _mainWindow;
         this.model = _model;
-
-    }
-
-    public void setMainWindow(MainWindow mainWindow_){
-        mainWindow = mainWindow_;
-        //todo something with timer
         repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
@@ -38,7 +33,6 @@ public class Controller {
             }
         });
     }
-
 
     private void updateModel() {
         while (dataProvider.available() > 0) {

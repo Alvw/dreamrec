@@ -1,12 +1,5 @@
 package com.github.dreamrec;
 
-import com.github.dreamrec.gcomponent.GComponentFastModel;
-import com.github.dreamrec.gcomponent.GComponentModel;
-import com.github.dreamrec.gcomponent.GComponentSlowModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  *
  */
@@ -18,25 +11,6 @@ public class Model {
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
-    private List<GComponentModel> gModels = new ArrayList<GComponentModel>();
-
-
-    public Model(IListView<Integer>... listViews) {
-        for (IListView<Integer> listView : listViews) {
-            listView.setInputDataList(eyeDataList);
-            if(listView.getDivider() == 1){
-               gModels.add(new GComponentFastModel(this,listView)); 
-            }else if(listView.getDivider() == DIVIDER){
-                gModels.add(new GComponentSlowModel(this,listView));
-            }else{
-                throw new RuntimeException("Filters are not correct");
-            }
-        }
-    }
-
-    public List<GComponentModel> getGModels() {
-        return gModels;
-    }
 
     public ListView<Integer> getEyeDataList() {
         return eyeDataList;

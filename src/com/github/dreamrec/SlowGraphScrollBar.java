@@ -15,15 +15,10 @@ public class SlowGraphScrollBar extends JScrollBar implements AdjustmentListener
     private boolean notifyListeners;
     private List<AdjustmentListener> listenerList = new ArrayList<AdjustmentListener>();
 
-    public SlowGraphScrollBar(Model model, final Controller controller) {
+    public SlowGraphScrollBar(Model model) {
         super(JScrollBar.HORIZONTAL);
         this.model = model;
         addAdjustmentListener(this);
-        addScrollListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                controller.scrollSlowGraph(adjustmentEvent.getValue());
-            }
-        });
     }
 
     public void updateModel() {

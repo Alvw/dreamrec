@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class AveragingListViewTest {
 
-/*
+
 
     @Test
     public void testSize(){
@@ -42,5 +42,4 @@ public class AveragingListViewTest {
         }
         return data;
     }
-    */
 }
