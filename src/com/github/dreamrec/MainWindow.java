@@ -1,13 +1,11 @@
 package com.github.dreamrec;
 
-import com.github.dreamrec.gcomponent.GComponentModel;
-import com.github.dreamrec.gcomponent.GComponentSlowModel;
 import com.github.dreamrec.gcomponent.GComponentView;
-
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import static com.github.dreamrec.GUIActions.*;
@@ -18,45 +16,47 @@ import static com.github.dreamrec.GUIActions.*;
 public class MainWindow extends JFrame {
 
     private JPanel mainPanel;
-    private JPanel scrollPanel;
     private Model model;
     private Controller controller;
-    private java.util.List<GComponentView>  slowGComponentPanels = new ArrayList<GComponentView>();
-    private SlowGraphScrollBar slowGraphScrollBar;
+    private GraphScrollBar graphScrollBar;
 
-    public MainWindow(final GComponentModel... gComponentModels) {
+    public MainWindow(Controller controller, Model model) {
+        this.controller = controller;
+        this.model = model;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI(gComponentModels);
+                createAndShowGUI();
             }
         });
     }
 
-    private void createAndShowGUI(GComponentModel[] gComponentModels) {
+    private void createAndShowGUI() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        mainPanel = new JPanel(new GridLayout(0, 1)) ;
-        for (GComponentModel gComponentModel : gComponentModels) {
-            GComponentView gComponentPanel = new GComponentView(gComponentModel);
-            mainPanel.add(gComponentPanel);
-            if(model == null){
-                model = gComponentModel.getModel();
-            }
-            if(gComponentModel instanceof GComponentSlowModel){
-               slowGComponentPanels.add(gComponentPanel);
-            }
-        }
+        mainPanel = new JPanel(new GridLayout(0, 1));
+
+        Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
+        mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
+
+        GComponentView eyeDataView = Factory.getGComponentView(model.getEyeDataList(), model, controller);
+        mainPanel.add(eyeDataView);
+        eyeDataView.getComponentModel().centreX();
+
+        Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
+        mainPanel.add(Factory.getGComponentView(slowDreamView, model, controller));
+
         add(mainPanel, BorderLayout.NORTH);
-        slowGraphScrollBar = new SlowGraphScrollBar(model);
-        slowGraphScrollBar.setVisible(false);
-        add(slowGraphScrollBar, BorderLayout.CENTER);
+        graphScrollBar = Factory.getSlowGraphScrollBar(model, controller);
+        add(graphScrollBar, BorderLayout.CENTER);
         registerKeyActions();
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);
         setVisible(true);
+        setActionMap(new GUIActions(controller).getActionMap());
     }
 
-    public void setActionMap(ActionMap actionMap){
+
+    public void setActionMap(ActionMap actionMap) {
         mainPanel.setActionMap(actionMap);
     }
 
@@ -65,41 +65,15 @@ public class MainWindow extends JFrame {
     }
 
     private void registerKeyActions() {
-	    mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK), SAVE_ACTION);
-	    mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK), OPEN_ACTION);
-	    mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), SCROLL_CURSOR_BACKWARD_ACTION);
-	    mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), SCROLL_CURSOR_FORWARD_ACTION);
-	}
-    
-    public void setController(Controller _controller){
-        controller = _controller;
-        slowGraphScrollBar.addScrollListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                controller.scrollSlowGraph(adjustmentEvent.getValue());
-            }
-        });
-        setActionMap(new GUIActions(controller).getActionMap());
-
-        for (final GComponentView slowGComponentPanel : slowGComponentPanels) {
-            slowGComponentPanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent mouseEvent) {
-                    int newPosition = mouseEvent.getX() - slowGComponentPanel.getComponentModel().getLeftIndent();
-                    controller.moveCursor(newPosition);
-                }
-            });
-        }
+        mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK), SAVE_ACTION);
+        mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK), OPEN_ACTION);
+        mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), SCROLL_CURSOR_BACKWARD_ACTION);
+        mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), SCROLL_CURSOR_FORWARD_ACTION);
     }
 
     @Override
     public void repaint() {
         super.repaint();
-        if(model.getSlowDataSize() > model.getXSize()){
-            if(!slowGraphScrollBar.isVisible()){
-                slowGraphScrollBar.setVisible(true);
-                pack();
-            }
-            slowGraphScrollBar.updateModel();
-        }
+        graphScrollBar.updateModel();
     }
 }

@@ -9,13 +9,13 @@ import java.util.List;
 /**
  *
  */
-public class SlowGraphScrollBar extends JScrollBar implements AdjustmentListener {
+public class GraphScrollBar extends JScrollBar implements AdjustmentListener {
 
-    private Model model;
+    private GraphScrollBarModel model;
     private boolean notifyListeners;
     private List<AdjustmentListener> listenerList = new ArrayList<AdjustmentListener>();
 
-    public SlowGraphScrollBar(Model model) {
+    public GraphScrollBar(GraphScrollBarModel model) {
         super(JScrollBar.HORIZONTAL);
         this.model = model;
         addAdjustmentListener(this);
@@ -23,15 +23,15 @@ public class SlowGraphScrollBar extends JScrollBar implements AdjustmentListener
 
     public void updateModel() {
         notifyListeners = false;
-        if (model.getSlowDataSize() < model.getXSize()) {
+        if (model.graphSize() < model.screenSize()) {
             return;
         }
         BoundedRangeModel boundedRangeModel = getModel();
-        boundedRangeModel.setRangeProperties(model.getSlowGraphIndex(), model.getXSize(), 0, model.getSlowDataSize(), false);
+        boundedRangeModel.setRangeProperties(model.graphIndex(), model.screenSize(), 0, model.graphSize(), false);
     }
 
     /**
-     * Add listeners than do not respond to updateModel() method invocation;
+     * Add listeners that do not respond to updateModel() method invocation;
      */
     public void addScrollListener(AdjustmentListener adjustmentListener) {
         listenerList.add(adjustmentListener);
@@ -45,6 +45,5 @@ public class SlowGraphScrollBar extends JScrollBar implements AdjustmentListener
         } else {
             notifyListeners = true;
         }
-
     }
 }

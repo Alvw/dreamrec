@@ -90,7 +90,7 @@ public class Model {
 
 
 
-    //correct graph index if it points to invalid data. Should be > 0 and < (getDataSize - xSize)
+    //correct graph index if it points to invalid data. Should be > 0 and < (graphSize - xSize)
     private int checkGraphIndexBounds(int newIndex, int dataSize) {
         int maxValue = getIndexMax(dataSize);
         newIndex = newIndex < 0 ? 0 : newIndex;
@@ -134,7 +134,7 @@ public class Model {
             }
     }
 
-    //correct cursor positions if it points to invalid data index: < 0 and > getDataSize
+    //correct cursor positions if it points to invalid data index: < 0 and > graphSize
     private int checkCursorIndexBounds(int newCursorPosition, int dataSize) {
         int minValue = -slowGraphIndex;
         int maxValue = dataSize - slowGraphIndex - getCursorWidth() - 1;
