@@ -14,27 +14,38 @@ public class Factory {
 
     public static GComponentView getGComponentView(Filter filter, Model model, final Controller controller) {
         GComponentView gComponentView;
-        if (filter.divider() == Model.DIVIDER) {    //todo consider refactoring if else to polymorphism.
-            final GComponentModel gModel = new GComponentSlowModel(model, filter);
-            gComponentView = new GComponentView(gModel);
-            gComponentView.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent mouseEvent) {
-                    int newPosition = mouseEvent.getX() - gModel.getLeftIndent();
-                    controller.moveCursor(newPosition);
-                }
-            });
+        if (filter.divider() == Model.DIVIDER) {
+            gComponentView = createSlowGComponent(filter, model, controller);
         } else if (filter.divider() == 1) {
-            GComponentModel gModel = new GComponentFastModel(model, filter);
-            gComponentView = new GComponentView(gModel);
+            gComponentView = createFastGComponent(filter, model);
         } else {
             throw new UnsupportedOperationException("divider = " + filter.divider() + " .Shoud be 1 or " + Model.DIVIDER);
         }
-        addComponentListener(gComponentView, model);
+        addGComponentListeners(gComponentView, model);
         return gComponentView;
     }
 
-    private static void addComponentListener(final GComponentView gComponentView, final Model model) {
+    private static GComponentView createFastGComponent(Filter filter, Model model) {
+        GComponentView gComponentView;GComponentModel gModel = new GComponentFastModel(model, filter);
+        gComponentView = new GComponentView(gModel);
+        return gComponentView;
+    }
+
+    private static GComponentView createSlowGComponent(Filter filter, Model model, final Controller controller) {
+        GComponentView gComponentView;
+        final GComponentModel gModel = new GComponentSlowModel(model, filter);
+        gComponentView = new GComponentView(gModel);
+        gComponentView.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                int newPosition = mouseEvent.getX() - gModel.getLeftIndent();
+                controller.moveCursor(newPosition);
+            }
+        });
+        return gComponentView;
+    }
+
+    private static void addGComponentListeners(final GComponentView gComponentView, final Model model) {
         gComponentView.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent componentEvent) {
