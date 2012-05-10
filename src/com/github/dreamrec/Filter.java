@@ -26,7 +26,7 @@ public abstract class Filter<T> implements IFilter {
     }
     
     private void checkIndexBounds(int index){
-        if(index < size() || index < 0 ){
+        if(index > size() || index < 0 ){
             throw  new IndexOutOfBoundsException("index:  "+index+",size:  "+size());
         }
     }
