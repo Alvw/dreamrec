@@ -11,6 +11,8 @@ public class GUIActions {
     public static final String OPEN_ACTION = "open";
     public static final String SCROLL_CURSOR_FORWARD_ACTION = "scroll_forward";
     public static final String SCROLL_CURSOR_BACKWARD_ACTION = "scroll_backward";
+    public static final String START_RECORDING_ACTION = "start_recording";
+    public static final String STOP_RECORDING_ACTION = "stop_recording";
 
     private ActionMap actionMap = new ActionMap();
 
@@ -20,6 +22,8 @@ public class GUIActions {
         getActionMap().put(OPEN_ACTION, new OpenAction());
         getActionMap().put(SCROLL_CURSOR_BACKWARD_ACTION, new ScrollFastGraphBackwardAction());
         getActionMap().put(SCROLL_CURSOR_FORWARD_ACTION, new ScrollFastGraphForwardAction());
+        getActionMap().put(START_RECORDING_ACTION, new StartRecordingAction());
+        getActionMap().put(STOP_RECORDING_ACTION, new StopRecordingAction());
     }
 
     public ActionMap getActionMap() {
@@ -59,6 +63,18 @@ public class GUIActions {
 
         public void actionPerformed(ActionEvent e) {
             controller.readFromFile();
+        }
+    }
+
+    class StartRecordingAction extends AbstractAction{
+        public void actionPerformed(ActionEvent e) {
+            controller.startRecording();
+        }
+    }
+
+    class StopRecordingAction extends AbstractAction{
+        public void actionPerformed(ActionEvent e) {
+            controller.stopRecording();
         }
     }
 }
