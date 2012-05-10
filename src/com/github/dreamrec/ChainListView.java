@@ -6,13 +6,13 @@ package com.github.dreamrec;
 public class ChainListView implements IListView<Integer> {
     IListView<Integer> firstListView;
     IListView<Integer> lastListView;
-    int divider;
+    int divider = 1;
 
 
     public ChainListView(IListView<Integer>... listViews) {
         firstListView = listViews[0];
         lastListView =  listViews[0];
-        divider = listViews[0].getDivider();
+        divider *= listViews[0].getDivider();
         if (listViews.length > 1) {
             for (int i = 1; i < listViews.length; i++) {
                 listViews[i].setInputDataList(lastListView);
