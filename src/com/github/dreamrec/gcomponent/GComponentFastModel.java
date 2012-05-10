@@ -1,6 +1,6 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.IFilter;
+import com.github.dreamrec.Filter;
 import com.github.dreamrec.Model;
 
 /**
@@ -8,7 +8,7 @@ import com.github.dreamrec.Model;
  */
 public class GComponentFastModel extends GComponentModel{
 
-    public GComponentFastModel(Model model, IFilter<Integer> dataView) {
+    public GComponentFastModel(Model model, Filter<Integer> dataView) {
         super(model, dataView);
     }
 

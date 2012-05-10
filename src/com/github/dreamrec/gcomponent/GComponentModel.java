@@ -1,6 +1,6 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.IFilter;
+import com.github.dreamrec.Filter;
 import com.github.dreamrec.Model;
 
 /**
@@ -9,7 +9,7 @@ import com.github.dreamrec.Model;
 public abstract class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel {
 
     protected Model model;
-    protected IFilter<Integer> dataView;  // todo consider refactoring
+    protected Filter<Integer> dataView;  // todo consider refactoring
     protected double maxValue = 200;
     protected int ySize = 200;
     protected double yZoom = 1;
@@ -19,7 +19,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected int bottomIndent = 20;
     protected boolean isXCentered = false;
 
-    public GComponentModel(Model model, IFilter<Integer> dataView) {
+    public GComponentModel(Model model, Filter<Integer> dataView) {
         this.model = model;
         this.dataView = dataView;
     }
@@ -65,7 +65,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         this.yZoom = yZoom;
     }
 
-    public IFilter<Integer> getDataView() {
+    public Filter<Integer> getDataView() {
         return dataView;
     }
 

@@ -5,7 +5,7 @@ package com.github.dreamrec;
  */
 public class AveragingFilter extends AbstractFilter<Integer> {
 
-    public AveragingFilter(IFilter<Integer> inputData, int divider) {
+    public AveragingFilter(Filter<Integer> inputData, int divider) {
         super(inputData);
         this.divider = divider;
     }

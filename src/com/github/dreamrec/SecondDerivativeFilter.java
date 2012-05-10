@@ -5,7 +5,7 @@ package com.github.dreamrec;
  */
 public class SecondDerivativeFilter extends AbstractFilter<Integer> {
 
-    public SecondDerivativeFilter(IFilter<Integer> inputData) {
+    public SecondDerivativeFilter(Filter<Integer> inputData) {
         super(inputData);
     }
 

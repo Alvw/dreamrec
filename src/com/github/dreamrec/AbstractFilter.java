@@ -3,11 +3,11 @@ package com.github.dreamrec;
 /**
  *
  */
-public abstract class AbstractFilter<T> implements IFilter {
+public abstract class AbstractFilter<T> implements Filter {
     protected int divider = 1;
-    protected final IFilter<T> inputData;
+    protected final Filter<T> inputData;
 
-    public AbstractFilter(IFilter<T> inputData) {
+    public AbstractFilter(Filter<T> inputData) {
         this.inputData = inputData;        
     }
 

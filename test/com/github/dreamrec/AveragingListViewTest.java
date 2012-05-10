@@ -32,7 +32,7 @@ public class AveragingListViewTest {
         avgView.get(4);
     }
 
-    private IFilter<Integer> getTestData(int size){
+    private Filter<Integer> getTestData(int size){
         DataList<Integer> data = new DataList<Integer>();
         for (int i = 0; i < size; i++) {
               data.add(i);
