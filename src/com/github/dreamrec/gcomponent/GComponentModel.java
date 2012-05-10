@@ -12,7 +12,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected Filter<Integer> dataView;  // todo consider refactoring
     protected double maxValue = 200;
     protected int ySize = 200;
-    protected double yZoom = 1;
+    protected double yZoom = 0.3;
     protected int leftIndent = 50;
     protected int rightIndent = 0;
     protected int topIndent = 0;

@@ -29,11 +29,16 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
             transform = AffineTransform.getTranslateInstance(gModel.getLeftIndent(), gModel.getYSize() + gModel.getTopIndent());
         }
         g.transform(transform);
+        g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
+        g.setColor(Color.YELLOW);
+        graphPainter.paint(g, gModel);
+        g.setColor(Color.RED);
+        cursorPainter.paint(g, gModel);
+
+        g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
+        g.setColor(Color.GREEN);
         timePainter.paint(g, gModel);
         yAxisPainter.paint(g, gModel);
-        g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
-        graphPainter.paint(g, gModel);
-        cursorPainter.paint(g, gModel);
 
         g.setTransform(previousTransform);
     }
