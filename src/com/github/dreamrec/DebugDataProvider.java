@@ -30,7 +30,7 @@ public class DebugDataProvider implements IDataProvider {
     private void appendEyeDataSample() {
         sampleCounter++;
 //        eyeDataQueue.add((int)(100*Math.sin(sampleCounter/10.0)));
-        eyeDataQueue.add(rnd.nextInt(100));
+        eyeDataQueue.add(rnd.nextInt(100)-50);
     }
 
 
