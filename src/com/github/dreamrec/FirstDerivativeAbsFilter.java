@@ -1,7 +1,7 @@
 package com.github.dreamrec;
 
 
-public class FirstDerivativeAbsFilter extends Filter<Integer> {
+public class FirstDerivativeAbsFilter extends AbstractFilter<Integer> {
 
     public FirstDerivativeAbsFilter(IFilter<Integer> inputData) {
         super(inputData);

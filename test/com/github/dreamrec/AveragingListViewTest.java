@@ -13,7 +13,7 @@ public class AveragingListViewTest {
 
     @Test
     public void testSize(){
-        Filter<Integer> avgView = new AveragingFilter(getTestData(9),10);
+        AbstractFilter<Integer> avgView = new AveragingFilter(getTestData(9),10);
         assertTrue(avgView.size() == 0);
 
 
@@ -28,7 +28,7 @@ public class AveragingListViewTest {
 
     @Test (expected = IndexOutOfBoundsException.class)
     public void testOutOfBoundsIndex(){
-        Filter<Integer> avgView = new AveragingFilter(getTestData(35),10);
+        AbstractFilter<Integer> avgView = new AveragingFilter(getTestData(35),10);
         avgView.get(4);
     }
 

@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public class AveragingFilter extends Filter<Integer> {
+public class AveragingFilter extends AbstractFilter<Integer> {
 
     public AveragingFilter(IFilter<Integer> inputData, int divider) {
         super(inputData);

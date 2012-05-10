@@ -3,7 +3,7 @@ package com.github.dreamrec;
 /**
  *
  */
-public class SecondDerivativeFilter extends Filter<Integer> {
+public class SecondDerivativeFilter extends AbstractFilter<Integer> {
 
     public SecondDerivativeFilter(IFilter<Integer> inputData) {
         super(inputData);

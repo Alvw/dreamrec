@@ -1,6 +1,6 @@
 package com.github.dreamrec.gcomponent;
 
-import com.github.dreamrec.Filter;
+import com.github.dreamrec.AbstractFilter;
 import com.github.dreamrec.Model;
 
 /**
@@ -9,7 +9,7 @@ import com.github.dreamrec.Model;
 public class GComponentSlowModel extends GComponentModel implements ICursorPainterModel{
 
 
-    public GComponentSlowModel(Model model, Filter<Integer> dataView) {
+    public GComponentSlowModel(Model model, AbstractFilter<Integer> dataView) {
         super(model, dataView);
     }
 
