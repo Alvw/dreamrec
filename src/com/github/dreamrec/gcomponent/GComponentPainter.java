@@ -32,7 +32,7 @@ public abstract class GComponentPainter implements IPainter<GComponentModel> {
         g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
         g.setColor(Color.YELLOW);
         graphPainter.paint(g, gModel);
-        g.setColor(Color.RED);
+        g.setColor(Color.MAGENTA);
         cursorPainter.paint(g, gModel);
 
         g.transform(AffineTransform.getScaleInstance(1.0, -1.0)); // y flip transformation
