@@ -72,10 +72,4 @@ public class MainWindow extends JFrame {
         mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK), START_RECORDING_ACTION);
         mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), STOP_RECORDING_ACTION);
     }
-
-    @Override
-    public void repaint() {
-        super.repaint();
-        graphScrollBar.updateModel();
-    }
 }

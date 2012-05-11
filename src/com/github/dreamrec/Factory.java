@@ -21,7 +21,7 @@ public class Factory {
         } else {
             throw new UnsupportedOperationException("divider = " + filter.divider() + " .Shoud be 1 or " + Model.DIVIDER);
         }
-        addGComponentListeners(gComponentView, model);
+        addGComponentListeners(gComponentView, controller);
         return gComponentView;
     }
 
@@ -45,13 +45,13 @@ public class Factory {
         return gComponentView;
     }
 
-    private static void addGComponentListeners(final GComponentView gComponentView, final Model model) {
+    private static void addGComponentListeners(final GComponentView gComponentView, final Controller controller) {
         gComponentView.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent componentEvent) {
                 GComponentModel gModel = gComponentView.getComponentModel();
                 gModel.setYSize(componentEvent.getComponent().getHeight() - gModel.getTopIndent() - gModel.getBottomIndent());
-                model.setXSize(componentEvent.getComponent().getWidth() - gModel.getLeftIndent() - gModel.getRightIndent());
+                controller.changeXSize(componentEvent.getComponent().getWidth() - gModel.getLeftIndent() - gModel.getRightIndent());
             }
         });
         gComponentView.addMouseWheelListener(new MouseWheelListener() {
@@ -92,6 +92,10 @@ public class Factory {
 
         public int screenSize() {
             return model.getXSize();
+        }
+
+        public void addModelUpdateListener(ModelUpdateListener listener) {
+            model.addModelUpdateListener(listener);
         }
     }
 }

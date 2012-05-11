@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class Controller {
 
-    public static final int REPAINT_DELAY = 100;//milliseconds
+    public static final int REPAINT_DELAY = 10;//milliseconds
     private Timer repaintTimer;
     private Model model;
     private IDataProvider dataProvider;
@@ -31,19 +31,10 @@ public class Controller {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                updateModel();
+                model.updateEyeDataList(dataProvider, isAutoScroll);
                 mainWindow.repaint();
             }
         });
-    }
-
-    private void updateModel() {
-        while (dataProvider.available() > 0) {
-            model.addEyeData(dataProvider.poll());
-            if (isAutoScroll) {
-                model.setFastGraphIndexMaximum();
-            }
-        }
     }
 
     public void saveToFile() {
@@ -90,6 +81,11 @@ public class Controller {
         dataProvider.stopRecording();
         repaintTimer.stop();
         isAutoScroll = false;
+    }
+
+    public void changeXSize(int xSize) {
+        model.setXSize(xSize);
+        mainWindow.repaint();
     }
 
     public void scrollCursorForward() {

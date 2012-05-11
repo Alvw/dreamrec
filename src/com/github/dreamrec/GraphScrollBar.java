@@ -9,25 +9,27 @@ import java.util.List;
 /**
  *
  */
-public class GraphScrollBar extends JScrollBar implements AdjustmentListener {
+public class GraphScrollBar extends JScrollBar implements AdjustmentListener, ModelUpdateListener {
 
     private GraphScrollBarModel model;
     private boolean notifyListeners;
     private List<AdjustmentListener> listenerList = new ArrayList<AdjustmentListener>();
 
-    public GraphScrollBar(GraphScrollBarModel model) {
+    public GraphScrollBar(GraphScrollBarModel model_) {
         super(JScrollBar.HORIZONTAL);
-        this.model = model;
+        model = model_;
         addAdjustmentListener(this);
+       model.addModelUpdateListener(this);
     }
 
-    public void updateModel() {
+    public void modelUpdated() {
+        BoundedRangeModel boundedRangeModel = getModel();
         notifyListeners = false;
         if (model.graphSize() < model.screenSize()) {
-            return;
+            boundedRangeModel.setRangeProperties(0, model.screenSize(), 0, model.graphSize(), false);
+        }else{
+            boundedRangeModel.setRangeProperties(model.graphIndex(), model.screenSize(), 0, model.graphSize(), false);
         }
-        BoundedRangeModel boundedRangeModel = getModel();
-        boundedRangeModel.setRangeProperties(model.graphIndex(), model.screenSize(), 0, model.graphSize(), false);
     }
 
     /**
