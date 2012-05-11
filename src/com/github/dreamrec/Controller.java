@@ -31,10 +31,19 @@ public class Controller {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                model.updateEyeDataList(dataProvider, isAutoScroll);
+                updateModel();
                 mainWindow.repaint();
             }
         });
+    }
+
+    protected void updateModel() {
+        while (dataProvider.available() > 0) {
+            model.addEyeData(dataProvider.poll());
+        }
+        if (isAutoScroll) {
+            model.setFastGraphIndexMaximum();
+        }
     }
 
     public void saveToFile() {

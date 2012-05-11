@@ -15,28 +15,8 @@ public class Model {
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
 
-    private List<ModelUpdateListener> modelUpdateListeners = new ArrayList<ModelUpdateListener>();
 
 
-    private void notifyListeners(){
-        for (ModelUpdateListener listener : modelUpdateListeners) {
-             listener.modelUpdated();
-        }
-    }
-
-    public void addModelUpdateListener(ModelUpdateListener listener){
-         modelUpdateListeners.add(listener);
-    }
-
-    public void updateEyeDataList(IDataProvider dataProvider, boolean isAutoScroll) {
-        while (dataProvider.available() > 0) {
-            addEyeData(dataProvider.poll());
-        }
-        if (isAutoScroll) {
-            setFastGraphIndexMaximum();
-        }
-        notifyListeners();
-    }
 
     public DataList<Integer> getEyeDataList() {
         return eyeDataList;
@@ -77,7 +57,6 @@ public class Model {
     public void setXSize(int xSize) {
         this.xSize = xSize;
         checkCursorScreenBounds();
-        notifyListeners();
     }
 
     public int getDataSize() {
@@ -88,7 +67,6 @@ public class Model {
         eyeDataList.clear();
         frequency = 0;
         startTime = 0;
-        notifyListeners();
     }
 
     public int getCursorWidth() {

@@ -93,10 +93,6 @@ public class Factory {
         public int screenSize() {
             return model.getXSize();
         }
-
-        public void addModelUpdateListener(ModelUpdateListener listener) {
-            model.addModelUpdateListener(listener);
-        }
     }
 }
 

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  *
  */
-public class GraphScrollBar extends JScrollBar implements AdjustmentListener, ModelUpdateListener {
+public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
 
     private GraphScrollBarModel model;
     private boolean notifyListeners;
@@ -19,10 +19,9 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener, Mo
         super(JScrollBar.HORIZONTAL);
         model = model_;
         addAdjustmentListener(this);
-       model.addModelUpdateListener(this);
     }
 
-    public void modelUpdated() {
+    public void updateModel() {
         BoundedRangeModel boundedRangeModel = getModel();
         notifyListeners = false;
         if (model.graphSize() < model.screenSize()) {
