@@ -1,6 +1,7 @@
 package com.github.dreamrec;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.util.ArrayList;
@@ -22,13 +23,11 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
     }
 
     public void updateModel() {
+        if(model == null) return;
         BoundedRangeModel boundedRangeModel = getModel();
         notifyListeners = false;
-        if (model.graphSize() < model.screenSize()) {
-            boundedRangeModel.setRangeProperties(0, model.screenSize(), 0, model.graphSize(), false);
-        }else{
-            boundedRangeModel.setRangeProperties(model.graphIndex(), model.screenSize(), 0, model.graphSize(), false);
-        }
+        int value = model.graphSize() < model.screenSize() ? 0 : model.graphIndex();
+        boundedRangeModel.setRangeProperties(value, model.screenSize(), 0, model.graphSize(), false);
     }
 
     /**
@@ -46,5 +45,11 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
         } else {
             notifyListeners = true;
         }
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        updateModel();
+        super.paintComponent(g);
     }
 }
