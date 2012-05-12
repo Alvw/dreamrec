@@ -1,6 +1,8 @@
 package com.github.dreamrec;
 
-import java.util.LinkedList;
+
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -8,7 +10,7 @@ import java.util.LinkedList;
 public class AveragingBuffer  {
     private int incomingCounter;
     protected int divider;
-    private LinkedList<Integer> averagedDataQueue = new LinkedList<Integer>();
+    private Queue<Integer> averagedDataQueue = new ConcurrentLinkedQueue<Integer>();
     protected int sumValue;
 
     public AveragingBuffer(int divider) {
@@ -19,7 +21,7 @@ public class AveragingBuffer  {
         incomingCounter++;
         sumValue += incomingValue;
         if(incomingCounter % divider == 0){
-            averagedDataQueue.add(sumValue / divider);
+            averagedDataQueue.offer(sumValue / divider);
             sumValue = 0;
         }
     }
