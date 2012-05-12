@@ -18,10 +18,12 @@ public class MainWindow extends JFrame {
     private Model model;
     private Controller controller;
     private GraphScrollBar graphScrollBar;
+    private ActionMap actionMap;
 
     public MainWindow(Controller controller, Model model) {
         this.controller = controller;
         this.model = model;
+        actionMap = new GUIActions(controller).getActionMap();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();
@@ -30,6 +32,7 @@ public class MainWindow extends JFrame {
     }
 
     private void createAndShowGUI() {
+        setTitle("DreamRec");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         mainPanel = new JPanel(new GridLayout(0, 1));
 
@@ -46,12 +49,15 @@ public class MainWindow extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
         graphScrollBar = Factory.getSlowGraphScrollBar(model, controller);
         add(graphScrollBar, BorderLayout.SOUTH);
+        setActionMap(actionMap);
         registerKeyActions();
+        setJMenuBar(new MainMenu(actionMap));
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);
         setVisible(true);
-        setActionMap(new GUIActions(controller).getActionMap());
+
+
     }
 
 

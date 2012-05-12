@@ -11,8 +11,8 @@ public class GUIActions {
     public static final String OPEN_ACTION = "open";
     public static final String SCROLL_CURSOR_FORWARD_ACTION = "scroll_forward";
     public static final String SCROLL_CURSOR_BACKWARD_ACTION = "scroll_backward";
-    public static final String START_RECORDING_ACTION = "start_recording";
-    public static final String STOP_RECORDING_ACTION = "stop_recording";
+    public static final String START_RECORDING_ACTION = "start";
+    public static final String STOP_RECORDING_ACTION = "stop";
 
     private ActionMap actionMap = new ActionMap();
 
@@ -67,12 +67,19 @@ public class GUIActions {
     }
 
     class StartRecordingAction extends AbstractAction{
+        StartRecordingAction() {
+            super("Start");
+        }
+
         public void actionPerformed(ActionEvent e) {
             controller.startRecording();
         }
     }
 
     class StopRecordingAction extends AbstractAction{
+        StopRecordingAction() {
+            super("Stop");
+        }
         public void actionPerformed(ActionEvent e) {
             controller.stopRecording();
         }
