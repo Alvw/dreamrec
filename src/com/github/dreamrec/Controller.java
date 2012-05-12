@@ -49,34 +49,11 @@ public class Controller {
     }
 
     public void saveToFile() {
-        final JFileChooser fileChooser = new JFileChooser();
-        SimpleDateFormat format= new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        String suggestedFileName = format.format(new Date(System.currentTimeMillis()));
-        fileChooser.setSelectedFile(new File(suggestedFileName));
-        int fileChooserState = fileChooser.showSaveDialog(mainWindow);
-
-        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try {
-                new DataSaveManager().saveToFile(file, model);
-            } catch (ApplicationException e) {
-                mainWindow.showMessage(e.getMessage());
-            }
-        }
+        new DataSaveManager().saveToFile(mainWindow, model);
     }
 
     public void readFromFile() {
-        final JFileChooser fileChooser = new JFileChooser();
-        int fileChooserState = fileChooser.showOpenDialog(mainWindow);
-        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
-            try {
-                File file = fileChooser.getSelectedFile();
-                new DataSaveManager().readFromFile(file, model);
-            } catch (ApplicationException e) {
-                mainWindow.showMessage(e.getMessage());
-            }
-            mainWindow.repaint();
-        }
+        new DataSaveManager().readFromFile(mainWindow, model);
     }
 
     public void startRecording() {
