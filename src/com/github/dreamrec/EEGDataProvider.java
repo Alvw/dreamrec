@@ -79,7 +79,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener{
 
     public void receiveSample(RawSample rawSample) {
         checkLostPackets(rawSample.getPacketNumber());
-        int incomingValue = rawSample.getSamples()[chanel];
+        int incomingValue = rawSample.getSamples()[0];
         checkIncomingValue(incomingValue);
         averagingBuffer.add(incomingValue);
     }
