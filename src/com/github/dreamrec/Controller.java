@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *
@@ -48,7 +50,11 @@ public class Controller {
 
     public void saveToFile() {
         final JFileChooser fileChooser = new JFileChooser();
+        SimpleDateFormat format= new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        String suggestedFileName = format.format(new Date(System.currentTimeMillis()));
+        fileChooser.setSelectedFile(new File(suggestedFileName));
         int fileChooserState = fileChooser.showSaveDialog(mainWindow);
+
         if (fileChooserState == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
             try {
