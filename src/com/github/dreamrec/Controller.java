@@ -6,16 +6,13 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  *
  */
 public class Controller {
 
-    public static final int REPAINT_DELAY = 10;//milliseconds
+    public static final int REPAINT_DELAY = 1000;//milliseconds
     private Timer repaintTimer;
     private Model model;
     private IDataProvider dataProvider;
