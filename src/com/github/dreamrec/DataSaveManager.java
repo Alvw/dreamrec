@@ -84,7 +84,7 @@ public class DataSaveManager {
     public void readFromFile(MainWindow mainWindow, Model model) {
 
         final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record file", "drm"));
+        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record", "drm"));
         setLastVisitedDirectory(fileChooser);
         int fileChooserState = fileChooser.showOpenDialog(mainWindow);
         if (fileChooserState == JFileChooser.APPROVE_OPTION) {

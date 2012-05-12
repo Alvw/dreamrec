@@ -33,12 +33,12 @@ public class Factory {
 
     private static GComponentView createSlowGComponent(Filter filter, Model model, final Controller controller) {
         GComponentView gComponentView;
-        final GComponentModel gModel = new GComponentSlowModel(model, filter);
+        final GComponentSlowModel gModel = new GComponentSlowModel(model, filter);
         gComponentView = new GComponentView(gModel);
         gComponentView.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                int newPosition = mouseEvent.getX() - gModel.getLeftIndent();
+                int newPosition = mouseEvent.getX() - gModel.getLeftIndent() - gModel.getCursorWidth()/2;
                 controller.moveCursor(newPosition);
             }
         });
