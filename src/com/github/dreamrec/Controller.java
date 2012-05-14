@@ -21,8 +21,7 @@ public class Controller {
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
 
-    public Controller(Model _model, IDataProvider dataProvider) {
-        this.dataProvider = dataProvider;
+    public Controller(Model _model) {
         this.model = _model;
     }
 
@@ -64,15 +63,16 @@ public class Controller {
 
     public void startRecording() {
         try {
+            dataProvider = new EEGDataProvider();
             dataProvider.startRecording();
+            model.clear();
+            model.setFrequency(dataProvider.getIncomingDataFrequency());
+            model.setStartTime(dataProvider.getStartTime());
+            repaintTimer.start();
+            isAutoScroll = true;
         } catch (ApplicationException e) {
             mainWindow.showMessage(e.getMessage());
         }
-        model.clear();
-        model.setFrequency(dataProvider.getIncomingDataFrequency());
-        model.setStartTime(dataProvider.getStartTime());
-        repaintTimer.start();
-        isAutoScroll = true;
     }
 
     public void stopRecording() {

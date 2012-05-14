@@ -7,15 +7,7 @@ import com.github.dreamrec.gcomponent.GComponentSlowModel;
 public class DreamRec {
     public static void main(String[] args) {
         Model model = new Model();
-//        IDataProvider dataProvider = new DebugDataProvider();
-        IDataProvider dataProvider = null;
-        try {
-            dataProvider = new EEGDataProvider();
-        } catch (ApplicationException e) {
-            //todo refactor
-            e.printStackTrace();
-        }
-        Controller controller = new Controller(model,dataProvider);
+        Controller controller = new Controller(model);
         MainWindow mainWindow = new MainWindow(controller,model);
         controller.setMainWindow(mainWindow);
     }
