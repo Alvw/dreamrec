@@ -1,13 +1,10 @@
 package com.github.dreamrec;
 
-import com.github.dreamrec.gcomponent.GComponentFastModel;
-import com.github.dreamrec.gcomponent.GComponentModel;
-import com.github.dreamrec.gcomponent.GComponentSlowModel;
-
 public class DreamRec {
     public static void main(String[] args) {
-        Model model = new Model();
-        Controller controller = new Controller(model);
+        ApplicationProperties applicationProperties = new ApplicationProperties();
+        Model model = Factory.getModel(applicationProperties);
+        Controller controller = new Controller(model,applicationProperties);
         MainWindow mainWindow = new MainWindow(controller,model);
         controller.setMainWindow(mainWindow);
     }

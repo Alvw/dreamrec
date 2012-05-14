@@ -11,7 +11,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
+import static com.github.dreamrec.ApplicationProperties.APPLICATION_PROPERTIES;
 
 /**
  * Saves measurement data to file and reads from it
@@ -82,7 +82,6 @@ public class DataSaveManager {
 
 
     public void readFromFile (MainWindow mainWindow, Model model) throws ApplicationException {
-
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record", "drm"));
         setLastVisitedDirectory(fileChooser);

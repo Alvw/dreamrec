@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import static com.github.dreamrec.GUIActions.*;
 
@@ -33,7 +35,13 @@ public class MainWindow extends JFrame {
 
     private void createAndShowGUI() {
         setTitle("DreamRec");
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                controller.closeApplication();
+            }
+        });
+
         mainPanel = new JPanel(new GridLayout(0, 1));
 
         Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
@@ -66,7 +74,7 @@ public class MainWindow extends JFrame {
     }
 
     public void showMessage(String s) {
-        JOptionPane.showMessageDialog(null, s);
+        JOptionPane.showMessageDialog(this, s);
     }
 
     private void registerKeyActions() {

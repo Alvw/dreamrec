@@ -17,12 +17,15 @@ public class Controller {
     private Model model;
     private IDataProvider dataProvider;
     private MainWindow mainWindow;
+    private ApplicationProperties applicationProperties;
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
 
-    public Controller(Model _model) {
-        this.model = _model;
+    public Controller(Model model, ApplicationProperties applicationProperties) {
+        this.model = model;
+        this.applicationProperties = applicationProperties;
+
     }
 
     public void setMainWindow(MainWindow _mainWindow) {
@@ -83,6 +86,7 @@ public class Controller {
 
     public void changeXSize(int xSize) {
         model.setXSize(xSize);
+        applicationProperties.setXSize(xSize);
         mainWindow.repaint();
     }
 
@@ -109,5 +113,9 @@ public class Controller {
         model.moveSlowGraph(scrollPosition);
         isAutoScroll = false;
         mainWindow.repaint();
+    }
+
+    public void closeApplication(){
+        applicationProperties.save();
     }
 }

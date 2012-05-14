@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.github.dreamrec.ApplicationSettings.APPLICATION_PROPERTIES;
+import static com.github.dreamrec.ApplicationProperties.APPLICATION_PROPERTIES;
 
 /**
  *

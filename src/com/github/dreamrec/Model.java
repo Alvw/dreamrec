@@ -7,16 +7,13 @@ import java.util.List;
  *
  */
 public class Model {
-    private int xSize = 1200; //data points per screen.
+    private int xSize; //data points per screen.
     public static final int DIVIDER = 120; //frequency divider for slow graphics
     private DataList<Integer> eyeDataList = new DataList<Integer>();   //list with raw incoming data of eye movements
     private double frequency; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
-
-
-
 
     public DataList<Integer> getEyeDataList() {
         return eyeDataList;

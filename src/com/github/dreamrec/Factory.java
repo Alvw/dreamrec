@@ -74,6 +74,12 @@ public class Factory {
         });
         return scrollBar;
     }
+    
+    public static Model getModel(ApplicationProperties applicationProperties){
+        Model model = new Model();
+        model.setXSize(applicationProperties.getXSize());
+        return model;
+    }
 
     static class ScrollBarModelAdapter implements GraphScrollBarModel {
         private Model model;
