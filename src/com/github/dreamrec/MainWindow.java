@@ -39,6 +39,7 @@ public class MainWindow extends JFrame {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
                 controller.closeApplication();
+                System.exit(0);
             }
         });
 
