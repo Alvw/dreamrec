@@ -12,7 +12,8 @@ public class DreamRec {
         try {
             dataProvider = new EEGDataProvider();
         } catch (ApplicationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            //todo refactor
+            e.printStackTrace();
         }
         Controller controller = new Controller(model,dataProvider);
         MainWindow mainWindow = new MainWindow(controller,model);
