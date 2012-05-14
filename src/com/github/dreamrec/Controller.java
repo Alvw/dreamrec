@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
  */
 public class Controller {
 
+    public static final String DEBUG_PROVIDER = "Debug Provider";
+    public static final String EEG_PROVIDER = "EEG Provider";
     public static final int REPAINT_DELAY = 1000;//milliseconds
     private Timer repaintTimer;
     private Model model;
@@ -21,6 +23,7 @@ public class Controller {
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
+    private String dataProviderName;
 
     public Controller(Model model, ApplicationProperties applicationProperties) {
         this.model = model;
@@ -66,7 +69,7 @@ public class Controller {
 
     public void startRecording() {
         try {
-            dataProvider = new EEGDataProvider();
+            dataProvider = Factory.getDataProvider(applicationProperties.getDataProvider());
             dataProvider.startRecording();
             model.clear();
             model.setFrequency(dataProvider.getIncomingDataFrequency());
@@ -117,5 +120,9 @@ public class Controller {
 
     public void closeApplication(){
         applicationProperties.save();
+    }
+
+    public void setDataProvider(String providerName) {
+        applicationProperties.setDataProvider(providerName);
     }
 }

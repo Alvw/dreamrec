@@ -81,6 +81,16 @@ public class Factory {
         return model;
     }
 
+    public static IDataProvider getDataProvider(String dataProviderName) throws ApplicationException {
+        if(dataProviderName.equals(Controller.DEBUG_PROVIDER)){
+            return new DebugDataProvider();
+        } else if(dataProviderName.equals(Controller.EEG_PROVIDER)){
+            return new EEGDataProvider();
+        } else {
+            throw new ApplicationException("Wrong data provider name");
+        }
+    }
+
     static class ScrollBarModelAdapter implements GraphScrollBarModel {
         private Model model;
 

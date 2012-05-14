@@ -13,6 +13,7 @@ public class GUIActions {
     public static final String SCROLL_CURSOR_BACKWARD_ACTION = "scroll_backward";
     public static final String START_RECORDING_ACTION = "start";
     public static final String STOP_RECORDING_ACTION = "stop";
+    public static final String SELECT_DATA_PROVIDER_ACTION = "select_data_provider";
 
     private ActionMap actionMap = new ActionMap();
 
@@ -24,6 +25,7 @@ public class GUIActions {
         getActionMap().put(SCROLL_CURSOR_FORWARD_ACTION, new ScrollFastGraphForwardAction());
         getActionMap().put(START_RECORDING_ACTION, new StartRecordingAction());
         getActionMap().put(STOP_RECORDING_ACTION, new StopRecordingAction());
+        getActionMap().put(SELECT_DATA_PROVIDER_ACTION, new SelectDataProviderAction());
     }
 
     public ActionMap getActionMap() {
@@ -82,6 +84,14 @@ public class GUIActions {
         }
         public void actionPerformed(ActionEvent e) {
             controller.stopRecording();
+        }
+    }
+
+    class SelectDataProviderAction extends AbstractAction{
+
+        public void actionPerformed(ActionEvent e) {
+           String providerName = ((JMenuItem)e.getSource()).getText();
+           controller.setDataProvider(providerName);
         }
     }
 }
