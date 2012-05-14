@@ -46,11 +46,19 @@ public class Controller {
     }
 
     public void saveToFile() {
-        new DataSaveManager().saveToFile(mainWindow, model);
+        try {
+            new DataSaveManager().saveToFile(mainWindow, model);
+        } catch (ApplicationException e) {
+            mainWindow.showMessage(e.getMessage());
+        }
     }
 
     public void readFromFile() {
-        new DataSaveManager().readFromFile(mainWindow, model);
+        try {
+            new DataSaveManager().readFromFile(mainWindow, model);
+        } catch (ApplicationException e) {
+            mainWindow.showMessage(e.getMessage());
+        }
         mainWindow.repaint();
     }
 

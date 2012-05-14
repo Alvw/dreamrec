@@ -22,7 +22,7 @@ public class DataSaveManager {
     public static final String DIRECTORY_NAME = "data_save_directory";
     private static final Log log = LogFactory.getLog(DataSaveManager.class);
 
-    public void saveToFile(MainWindow mainWindow, Model model) {
+    public void saveToFile(MainWindow mainWindow, Model model) throws ApplicationException {
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record file", "drm"));
         SimpleDateFormat format = new SimpleDateFormat("dd_MM_yyyy_HH_mm");
@@ -39,7 +39,7 @@ public class DataSaveManager {
                 saveStateToStream(outStream, model);
             } catch (Exception e) {
                 log.error(e);
-                mainWindow.showMessage("Error while saving file " + file.getName());
+                throw new ApplicationException("Error while saving file " + file.getName());
             } finally {
                 try {
                     outStream.close();
@@ -81,7 +81,7 @@ public class DataSaveManager {
     }
 
 
-    public void readFromFile (MainWindow mainWindow, Model model){
+    public void readFromFile (MainWindow mainWindow, Model model) throws ApplicationException {
 
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record", "drm"));
@@ -90,18 +90,19 @@ public class DataSaveManager {
         if (fileChooserState == JFileChooser.APPROVE_OPTION) {
             saveDirectoryLocation(fileChooser);
             DataInputStream dataInputStream = null;
+            File file = null;
             try {
-                File file = fileChooser.getSelectedFile();
+                file = fileChooser.getSelectedFile();
                 dataInputStream = new DataInputStream(new FileInputStream(file));
                 loadStateFromInStream(dataInputStream, model);
             } catch (Exception e) {
-                mainWindow.showMessage(e.getMessage());
+                log.error(e);
+                throw new ApplicationException("Error while reading from file " + file.getName());
             } finally {
                 try {
                     dataInputStream.close();
                 } catch (IOException e) {
                     log.error(e);
-                    mainWindow.showMessage("Error reading file");
                 }
             }
         }
