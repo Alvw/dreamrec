@@ -51,6 +51,7 @@ public class Controller {
 
     public void readFromFile() {
         new DataSaveManager().readFromFile(mainWindow, model);
+        mainWindow.repaint();
     }
 
     public void startRecording() {

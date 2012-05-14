@@ -22,7 +22,7 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
         addAdjustmentListener(this);
     }
 
-    public void updateModel() {
+    public void synchronizeBoundedRangeModel() {
         if(model == null) return;
         BoundedRangeModel boundedRangeModel = getModel();
         notifyListeners = false;
@@ -31,7 +31,7 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
     }
 
     /**
-     * Add listeners that do not respond to updateModel() method invocation;
+     * Add listeners that do not respond to synchronizeBoundedRangeModel() method invocation;
      */
     public void addScrollListener(AdjustmentListener adjustmentListener) {
         listenerList.add(adjustmentListener);
@@ -49,7 +49,7 @@ public class GraphScrollBar extends JScrollBar implements AdjustmentListener{
 
     @Override
     protected void paintComponent(Graphics g) {
-        updateModel();
+        synchronizeBoundedRangeModel();
         super.paintComponent(g);
     }
 }

@@ -81,7 +81,7 @@ public class DataSaveManager {
     }
 
 
-    public void readFromFile(MainWindow mainWindow, Model model) {
+    public void readFromFile (MainWindow mainWindow, Model model){
 
         final JFileChooser fileChooser = new JFileChooser();
         fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record", "drm"));
@@ -104,7 +104,6 @@ public class DataSaveManager {
                     mainWindow.showMessage("Error reading file");
                 }
             }
-            mainWindow.repaint();
         }
 
 
