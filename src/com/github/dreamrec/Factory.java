@@ -85,7 +85,7 @@ public class Factory {
         if(dataProviderName.equals(Controller.DEBUG_PROVIDER)){
             return new DebugDataProvider();
         } else if(dataProviderName.equals(Controller.EEG_PROVIDER)){
-            return new EEGDataProvider(applicationProperties);
+            return new EEGDataProvider(applicationProperties.getChanel(), applicationProperties.getIncomingDataFrequency());
         } else {
             throw new ApplicationException("Wrong data provider name");
         }

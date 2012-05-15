@@ -18,6 +18,7 @@ public class ApplicationProperties {
     public static final String DIRECTORY_NAME = "data_save_directory";
     public static final String CHANEL = "chanel";
     public static final String DATA_FREQUENCY = "frequency";
+    public static final String REPAINT_DELAY = "repaintDelay";
     private PropertiesConfiguration config;
 
     public ApplicationProperties() {
@@ -27,6 +28,11 @@ public class ApplicationProperties {
             log.error(e);
             JOptionPane.showMessageDialog(null, "Error reading from properties file: " + APPLICATION_PROPERTIES);
         }        
+    }
+    
+    
+    public int getRepaintDelay(){
+        return config.getInt(REPAINT_DELAY);
     }
 
     public int getChanel(){

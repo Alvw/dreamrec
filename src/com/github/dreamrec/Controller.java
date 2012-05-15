@@ -14,7 +14,6 @@ public class Controller {
 
     public static final String DEBUG_PROVIDER = "Debug Provider";
     public static final String EEG_PROVIDER = "EEG Provider";
-    public static final int REPAINT_DELAY = 1000;//milliseconds
     private Timer repaintTimer;
     private Model model;
     private IDataProvider dataProvider;
@@ -32,7 +31,7 @@ public class Controller {
 
     public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
-        repaintTimer = new Timer(REPAINT_DELAY, new ActionListener() {
+        repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
                 mainWindow.repaint();

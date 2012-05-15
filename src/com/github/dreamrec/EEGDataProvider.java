@@ -15,7 +15,6 @@ import java.util.Date;
 public class EEGDataProvider implements IDataProvider, IRawSampleListener {
 
     private static final Log log = LogFactory.getLog(EEGDataProvider.class);
-    private ApplicationProperties applicationProperties;
     private double dataFrequency;
     private static final int FREQUENCY_DIVIDER = 25;
     private static final int INCOMING_DATA_MAX_VALUE = 1024;
@@ -25,10 +24,9 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
     private long startTime;
     private long stopTime;
 
-    public EEGDataProvider(ApplicationProperties applicationProperties) {
-        this.applicationProperties = applicationProperties;
-        chanel = applicationProperties.getChanel();
-        dataFrequency = applicationProperties.getIncomingDataFrequency();
+    public EEGDataProvider(int chanel, double dataFrequency) {
+        this.chanel = chanel;
+        this.dataFrequency = dataFrequency;
         EEGAcquisitionController.getInstance().getChannelSampleGenerator().addSampleListener(this, new int[]{chanel + 1});
     }
 
