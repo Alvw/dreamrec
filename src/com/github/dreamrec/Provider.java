@@ -7,13 +7,13 @@ public enum Provider {
     DEBUG("Debug Provider"),
     EEG("EEG Provider");
 
-    private String name;
+    private String label;
 
-    Provider(String name) {
-        this.name = name;
+    Provider(String label) {
+        this.label = label;
     }
 
-    public String getName() {
-        return name;
+    public String getLabel() {
+        return label;
     }
 }

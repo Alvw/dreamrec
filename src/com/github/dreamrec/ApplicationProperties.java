@@ -43,12 +43,12 @@ public class ApplicationProperties {
         return config.getDouble(DATA_FREQUENCY);
     }
 
-    public String getDataProvider() {
-        return config.getString(DATA_PROVIDER);
+    public Provider getDataProvider() {
+        return Provider.valueOf(config.getString(DATA_PROVIDER));
     }
 
-    public void setDataProvider(String dataProvider) {
-        config.setProperty(DATA_PROVIDER,dataProvider);
+    public void setDataProvider(Provider provider) {
+        config.setProperty(DATA_PROVIDER,provider.name());
     }
 
     public int getXSize() {

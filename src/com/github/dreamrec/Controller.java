@@ -126,7 +126,7 @@ public class Controller {
         applicationProperties.save();
     }
 
-    public void setDataProvider(String providerName) {
-        applicationProperties.setDataProvider(providerName);
+    public void setDataProvider(Provider provider) {
+        applicationProperties.setDataProvider(provider);
     }
 }

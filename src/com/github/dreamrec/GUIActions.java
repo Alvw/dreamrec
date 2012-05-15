@@ -88,7 +88,6 @@ public class GUIActions {
     }
 
     class SelectDataProviderAction extends AbstractAction{
-
         public void actionPerformed(ActionEvent e) {
            String providerName = ((JMenuItem)e.getSource()).getText();
            controller.setDataProvider(providerName);

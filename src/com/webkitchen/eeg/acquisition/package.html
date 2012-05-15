@@ -53,16 +53,16 @@ public class SampleApp
 
     class SampleListener implements IRawSampleListener
     {
-        String name;
+        String label;
 
-        SampleListener(String name)
+        SampleListener(String label)
         {
-            this.name = name;
+            this.label = label;
         }
 
         public void receiveSample(RawSample rawSample)
         {
-            System.out.println(name);
+            System.out.println(label);
             int packetNumber = rawSample.getPacketNumber();
             System.out.println(" Packet number:" + packetNumber);
             for (int i = 0, length = rawSample.getChannelNumbers().length; i < length; i++)

@@ -5,9 +5,11 @@ import javax.swing.*;
 public class MainMenu extends JMenuBar {
 
     private ActionMap actionMap;
+    private  ApplicationProperties applicationProperties;
 
-	public MainMenu(ActionMap actionMap) {
+	public MainMenu(ActionMap actionMap, ApplicationProperties applicationProperties) {
         this.actionMap = actionMap;
+        this.applicationProperties = applicationProperties;
 		createMainMenu();
 	}
 
@@ -29,9 +31,15 @@ public class MainMenu extends JMenuBar {
         add(optionsMenu);
 
         Action action = actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION);
+        ButtonGroup itemGroup = new ButtonGroup();
         for (Provider provider : Provider.values()) {
-            JMenuItem providerItem = new JMenuItem(action);
-            providerItem.setText(provider.getName());
+            action.putValue(provider.name(), provider);
+            JRadioButtonMenuItem providerItem = new JRadioButtonMenuItem(action);
+            if(provider == applicationProperties.getDataProvider()){
+                providerItem.setSelected(true);
+            }
+            itemGroup.add(providerItem);
+            providerItem.setText(provider.getLabel());
             providerMenu.add(providerItem);
         }
 	}

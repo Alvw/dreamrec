@@ -81,10 +81,10 @@ public class Factory {
         return model;
     }
 
-    public static IDataProvider getDataProvider(String dataProviderName,ApplicationProperties applicationProperties) throws ApplicationException {
-        if(dataProviderName.equals(Provider.DEBUG.getName())){
+    public static IDataProvider getDataProvider(Provider provider,ApplicationProperties applicationProperties) throws ApplicationException {
+        if(provider == Provider.DEBUG){
             return new DebugDataProvider();
-        } else if(dataProviderName.equals(Provider.EEG.getName())){
+        } else if(provider == Provider.EEG){
             return new EEGDataProvider(applicationProperties.getChanel(), applicationProperties.getIncomingDataFrequency());
         } else {
             throw new ApplicationException("Wrong data provider name");
