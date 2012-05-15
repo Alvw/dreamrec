@@ -82,9 +82,14 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
     private void checkLostPackets(int newPacketNumber) {
         if (packetNumber == -1) {
             packetNumber = newPacketNumber;
+            return;
         }
-        if (newPacketNumber - packetNumber != 1) {
-            log.warn("Lost packet!!! Packet number = " + packetNumber + "; " + (newPacketNumber - packetNumber) + "packets were lost");
+        int lostPacketsNormal = newPacketNumber - packetNumber -1;
+        int lostPacketsOnBound = (newPacketNumber + 256) - packetNumber - 1; // In the case when PacketNumber passes the bound 255 and return to 0
+        int lostPackets = Math.min(lostPacketsNormal, lostPacketsOnBound);
+        if (lostPackets != 0) {
+            log.warn("Lost packet!!! Packet number = " + packetNumber + "; " + lostPackets + "packets were lost");
         }
+        packetNumber = newPacketNumber;
     }
 }
