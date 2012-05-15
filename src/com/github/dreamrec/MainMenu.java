@@ -29,13 +29,10 @@ public class MainMenu extends JMenuBar {
         add(optionsMenu);
 
         Action action = actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION);
-        JMenuItem debugProviderItem = new JMenuItem(action);
-        JMenuItem eegProviderItem = new JMenuItem(action);
-
-        debugProviderItem.setText(Controller.DEBUG_PROVIDER);
-        eegProviderItem.setText(Controller.EEG_PROVIDER);
-
-        providerMenu.add(debugProviderItem);
-        providerMenu.add(eegProviderItem);
+        for (Provider provider : Provider.values()) {
+            JMenuItem providerItem = new JMenuItem(action);
+            providerItem.setText(provider.getName());
+            providerMenu.add(providerItem);
+        }
 	}
 }

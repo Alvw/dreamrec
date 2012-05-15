@@ -82,9 +82,9 @@ public class Factory {
     }
 
     public static IDataProvider getDataProvider(String dataProviderName,ApplicationProperties applicationProperties) throws ApplicationException {
-        if(dataProviderName.equals(Controller.DEBUG_PROVIDER)){
+        if(dataProviderName.equals(Provider.DEBUG.getName())){
             return new DebugDataProvider();
-        } else if(dataProviderName.equals(Controller.EEG_PROVIDER)){
+        } else if(dataProviderName.equals(Provider.EEG.getName())){
             return new EEGDataProvider(applicationProperties.getChanel(), applicationProperties.getIncomingDataFrequency());
         } else {
             throw new ApplicationException("Wrong data provider name");

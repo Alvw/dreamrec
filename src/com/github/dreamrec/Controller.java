@@ -12,8 +12,6 @@ import java.awt.event.ActionListener;
  */
 public class Controller {
 
-    public static final String DEBUG_PROVIDER = "Debug Provider";
-    public static final String EEG_PROVIDER = "EEG Provider";
     private Timer repaintTimer;
     private Model model;
     private IDataProvider dataProvider;
