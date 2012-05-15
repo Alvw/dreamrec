@@ -12,11 +12,12 @@ import javax.swing.*;
  */
 public class ApplicationProperties {
     private static final Log log = LogFactory.getLog(ApplicationProperties.class);
-     public static final String APPLICATION_PROPERTIES = "application.properties";
+     private static final String APPLICATION_PROPERTIES = "application.properties";
      private static final String X_SIZE = "xSize";
      private static final String DATA_PROVIDER = "dataProvider";
     public static final String DIRECTORY_NAME = "data_save_directory";
-    
+    public static final String CHANEL = "chanel";
+    public static final String DATA_FREQUENCY = "frequency";
     private PropertiesConfiguration config;
 
     public ApplicationProperties() {
@@ -26,6 +27,14 @@ public class ApplicationProperties {
             log.error(e);
             JOptionPane.showMessageDialog(null, "Error reading from properties file: " + APPLICATION_PROPERTIES);
         }        
+    }
+
+    public int getChanel(){
+        return config.getInt(CHANEL);
+    }
+
+    public double getIncomingDataFrequency(){
+        return config.getDouble(DATA_FREQUENCY);
     }
 
     public String getDataProvider() {
@@ -59,6 +68,5 @@ public class ApplicationProperties {
             log.error(e);
             JOptionPane.showMessageDialog(null, "Error saving to properties file: " + APPLICATION_PROPERTIES);
         }
-
     }
 }

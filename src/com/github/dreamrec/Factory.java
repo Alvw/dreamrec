@@ -81,11 +81,11 @@ public class Factory {
         return model;
     }
 
-    public static IDataProvider getDataProvider(String dataProviderName) throws ApplicationException {
+    public static IDataProvider getDataProvider(String dataProviderName,ApplicationProperties applicationProperties) throws ApplicationException {
         if(dataProviderName.equals(Controller.DEBUG_PROVIDER)){
             return new DebugDataProvider();
         } else if(dataProviderName.equals(Controller.EEG_PROVIDER)){
-            return new EEGDataProvider();
+            return new EEGDataProvider(applicationProperties);
         } else {
             throw new ApplicationException("Wrong data provider name");
         }
