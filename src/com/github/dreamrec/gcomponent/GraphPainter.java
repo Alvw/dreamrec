@@ -26,7 +26,7 @@ public class GraphPainter implements IPainter<IGraphPainterModel> {
     }
 
     private void drawVerticalLine(Graphics2D g, int x, int y, VerticalLine vLine) {
-        vLine.setBound(y);
+        vLine.setNewBounds(y);
         g.drawLine(x,vLine.min,x,vLine.max);
     }
 }
@@ -40,10 +40,9 @@ class VerticalLine {
         this.min = min;
     }
 
-    void setBound(int y) {
+    void setNewBounds(int y) {
         if (y >= min && y <= max) {
-            min = y;
-            max = y;
+            min = max = y;
         } else if (y > max) {
             min = max + 1;
             max = y;
