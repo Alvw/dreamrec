@@ -13,7 +13,6 @@ public class GUIActions {
     public static final String SCROLL_CURSOR_BACKWARD_ACTION = "scroll_backward";
     public static final String START_RECORDING_ACTION = "start";
     public static final String STOP_RECORDING_ACTION = "stop";
-    public static final String SELECT_DATA_PROVIDER_ACTION = "select_data_provider";
 
     private ActionMap actionMap = new ActionMap();
 
@@ -25,7 +24,8 @@ public class GUIActions {
         getActionMap().put(SCROLL_CURSOR_FORWARD_ACTION, new ScrollFastGraphForwardAction());
         getActionMap().put(START_RECORDING_ACTION, new StartRecordingAction());
         getActionMap().put(STOP_RECORDING_ACTION, new StopRecordingAction());
-        getActionMap().put(SELECT_DATA_PROVIDER_ACTION, new SelectDataProviderAction());
+        getActionMap().put(Provider.DEBUG.name(), new SelectDataProviderAction(Provider.DEBUG));
+        getActionMap().put(Provider.EEG.name(), new SelectDataProviderAction(Provider.EEG));
     }
 
     public ActionMap getActionMap() {
@@ -68,7 +68,7 @@ public class GUIActions {
         }
     }
 
-    class StartRecordingAction extends AbstractAction{
+    class StartRecordingAction extends AbstractAction {
         StartRecordingAction() {
             super("Start");
         }
@@ -78,19 +78,24 @@ public class GUIActions {
         }
     }
 
-    class StopRecordingAction extends AbstractAction{
+    class StopRecordingAction extends AbstractAction {
         StopRecordingAction() {
             super("Stop");
         }
+
         public void actionPerformed(ActionEvent e) {
             controller.stopRecording();
         }
     }
 
-    class SelectDataProviderAction extends AbstractAction{
+    class SelectDataProviderAction extends AbstractAction {
+        private Provider provider;
+        SelectDataProviderAction(Provider provider) {
+            super(provider.getLabel());
+            this.provider = provider;
+        }
         public void actionPerformed(ActionEvent e) {
-           String providerName = ((JMenuItem)e.getSource()).getText();
-           controller.setDataProvider(providerName);
+            controller.setDataProvider(provider);
         }
     }
 }

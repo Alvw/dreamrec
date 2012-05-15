@@ -30,10 +30,9 @@ public class MainMenu extends JMenuBar {
         optionsMenu.add(providerMenu);
         add(optionsMenu);
 
-        Action action = actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION);
         ButtonGroup itemGroup = new ButtonGroup();
         for (Provider provider : Provider.values()) {
-            action.putValue(provider.name(), provider);
+            Action action = actionMap.get(provider.name());
             JRadioButtonMenuItem providerItem = new JRadioButtonMenuItem(action);
             if(provider == applicationProperties.getDataProvider()){
                 providerItem.setSelected(true);

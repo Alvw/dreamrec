@@ -5,7 +5,7 @@ public class DreamRec {
         ApplicationProperties applicationProperties = new ApplicationProperties();
         Model model = Factory.getModel(applicationProperties);
         Controller controller = new Controller(model,applicationProperties);
-        MainWindow mainWindow = new MainWindow(controller,model);
+        MainWindow mainWindow = new MainWindow(controller, model, applicationProperties);
         controller.setMainWindow(mainWindow);
     }
 }

@@ -21,10 +21,12 @@ public class MainWindow extends JFrame {
     private Controller controller;
     private GraphScrollBar graphScrollBar;
     private ActionMap actionMap;
+    private ApplicationProperties applicationProperties;
 
-    public MainWindow(Controller controller, Model model) {
+    public MainWindow(Controller controller, Model model, ApplicationProperties applicationProperties) {
         this.controller = controller;
         this.model = model;
+        this.applicationProperties = applicationProperties;
         actionMap = new GUIActions(controller).getActionMap();
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -60,7 +62,7 @@ public class MainWindow extends JFrame {
         add(graphScrollBar, BorderLayout.SOUTH);
         setActionMap(actionMap);
         registerKeyActions();
-        setJMenuBar(new MainMenu(actionMap));
+        setJMenuBar(new MainMenu(actionMap, applicationProperties));
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);

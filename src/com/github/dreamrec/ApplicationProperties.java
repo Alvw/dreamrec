@@ -12,9 +12,9 @@ import javax.swing.*;
  */
 public class ApplicationProperties {
     private static final Log log = LogFactory.getLog(ApplicationProperties.class);
-     private static final String APPLICATION_PROPERTIES = "application.properties";
-     private static final String X_SIZE = "xSize";
-     private static final String DATA_PROVIDER = "dataProvider";
+    private static final String APPLICATION_PROPERTIES = "application.properties";
+    private static final String X_SIZE = "xSize";
+    private static final String DATA_PROVIDER = "dataProvider";
     public static final String DIRECTORY_NAME = "data_save_directory";
     public static final String CHANEL = "chanel";
     public static final String DATA_FREQUENCY = "frequency";
