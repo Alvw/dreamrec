@@ -15,6 +15,7 @@ public class ApplicationProperties {
      public static final String APPLICATION_PROPERTIES = "application.properties";
      private static final String X_SIZE = "xSize";
      private static final String DATA_PROVIDER = "dataProvider";
+    public static final String DIRECTORY_NAME = "data_save_directory";
     
     private PropertiesConfiguration config;
 
@@ -41,6 +42,14 @@ public class ApplicationProperties {
 
     public void setXSize(int xSize) {
         config.setProperty(X_SIZE, xSize);
+    }
+
+    public void setLastVisitedDirectory(String directory){
+        config.setProperty(DIRECTORY_NAME,directory);
+    }
+
+    public String getLastVisitedDirectory(){
+        return config.getString(DIRECTORY_NAME);
     }
     
     public void save(){

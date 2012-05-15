@@ -28,8 +28,9 @@ public class MainMenu extends JMenuBar {
         optionsMenu.add(providerMenu);
         add(optionsMenu);
 
-        JMenuItem debugProviderItem = new JMenuItem(actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION));
-        JMenuItem eegProviderItem = new JMenuItem(actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION));
+        Action action = actionMap.get(GUIActions.SELECT_DATA_PROVIDER_ACTION);
+        JMenuItem debugProviderItem = new JMenuItem(action);
+        JMenuItem eegProviderItem = new JMenuItem(action);
 
         debugProviderItem.setText(Controller.DEBUG_PROVIDER);
         eegProviderItem.setText(Controller.EEG_PROVIDER);

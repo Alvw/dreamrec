@@ -1,17 +1,9 @@
 package com.github.dreamrec;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static com.github.dreamrec.ApplicationProperties.APPLICATION_PROPERTIES;
 
 /**
  * Saves measurement data to file and reads from it
@@ -19,56 +11,22 @@ import static com.github.dreamrec.ApplicationProperties.APPLICATION_PROPERTIES;
 public class DataSaveManager {
 
 
-    public static final String DIRECTORY_NAME = "data_save_directory";
     private static final Log log = LogFactory.getLog(DataSaveManager.class);
 
-    public void saveToFile(MainWindow mainWindow, Model model) throws ApplicationException {
-        final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record file", "drm"));
-        SimpleDateFormat format = new SimpleDateFormat("dd_MM_yyyy_HH_mm");
-        String suggestedFileName = format.format(new Date(System.currentTimeMillis())) + ".drm";
-        fileChooser.setSelectedFile(new File(suggestedFileName));
-        setLastVisitedDirectory(fileChooser);
-        int fileChooserState = fileChooser.showSaveDialog(mainWindow);
-        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
-            saveDirectoryLocation(fileChooser);
-            File file = fileChooser.getSelectedFile();
-            DataOutputStream outStream = null;
+    public void saveToFile(File file, Model model) throws ApplicationException {
+        DataOutputStream outStream = null;
+        try {
+            outStream = new DataOutputStream(new FileOutputStream(file));
+            saveStateToStream(outStream, model);
+        } catch (Exception e) {
+            log.error(e);
+            throw new ApplicationException("Error while saving file " + file.getName());
+        } finally {
             try {
-                outStream = new DataOutputStream(new FileOutputStream(file));
-                saveStateToStream(outStream, model);
-            } catch (Exception e) {
+                outStream.close();
+            } catch (IOException e) {
                 log.error(e);
-                throw new ApplicationException("Error while saving file " + file.getName());
-            } finally {
-                try {
-                    outStream.close();
-                } catch (IOException e) {
-                    log.error(e);
-                }
             }
-        }
-    }
-
-    private void saveDirectoryLocation(JFileChooser fileChooser) {
-        try {
-            PropertiesConfiguration config = new PropertiesConfiguration(APPLICATION_PROPERTIES);
-            config.setProperty(DIRECTORY_NAME, fileChooser.getCurrentDirectory().getPath());
-            config.save(APPLICATION_PROPERTIES);
-        } catch (ConfigurationException e) {
-            log.error(e);
-        }
-    }
-
-    private void setLastVisitedDirectory(JFileChooser fileChooser) {
-        try {
-            PropertiesConfiguration config = new PropertiesConfiguration(APPLICATION_PROPERTIES);
-            String dirName =  config.getString(DIRECTORY_NAME);
-            if(dirName != null){
-                fileChooser.setCurrentDirectory(new File(dirName));
-            }
-        } catch (ConfigurationException e) {
-            log.error(e);
         }
     }
 
@@ -81,32 +39,21 @@ public class DataSaveManager {
     }
 
 
-    public void readFromFile (MainWindow mainWindow, Model model) throws ApplicationException {
-        final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Dream record", "drm"));
-        setLastVisitedDirectory(fileChooser);
-        int fileChooserState = fileChooser.showOpenDialog(mainWindow);
-        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
-            saveDirectoryLocation(fileChooser);
-            DataInputStream dataInputStream = null;
-            File file = null;
+    public void readFromFile(File file, Model model) throws ApplicationException {
+        DataInputStream dataInputStream = null;
+        try {
+            dataInputStream = new DataInputStream(new FileInputStream(file));
+            loadStateFromInStream(dataInputStream, model);
+        } catch (Exception e) {
+            log.error(e);
+            throw new ApplicationException("Error while reading from file " + file.getName());
+        } finally {
             try {
-                file = fileChooser.getSelectedFile();
-                dataInputStream = new DataInputStream(new FileInputStream(file));
-                loadStateFromInStream(dataInputStream, model);
-            } catch (Exception e) {
+                dataInputStream.close();
+            } catch (IOException e) {
                 log.error(e);
-                throw new ApplicationException("Error while reading from file " + file.getName());
-            } finally {
-                try {
-                    dataInputStream.close();
-                } catch (IOException e) {
-                    log.error(e);
-                }
             }
         }
-
-
     }
 
     private void loadStateFromInStream(DataInputStream inputStream, Model model) throws IOException {

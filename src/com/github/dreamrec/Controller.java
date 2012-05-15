@@ -23,7 +23,6 @@ public class Controller {
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
-    private String dataProviderName;
 
     public Controller(Model model, ApplicationProperties applicationProperties) {
         this.model = model;
@@ -52,7 +51,11 @@ public class Controller {
 
     public void saveToFile() {
         try {
-            new DataSaveManager().saveToFile(mainWindow, model);
+            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            int fileChooserState = fileChooser.showSaveDialog(mainWindow);
+            if (fileChooserState == JFileChooser.APPROVE_OPTION) {
+                new DataSaveManager().saveToFile(fileChooser.getSelectedFile(), model);
+            }
         } catch (ApplicationException e) {
             mainWindow.showMessage(e.getMessage());
         }
@@ -60,7 +63,11 @@ public class Controller {
 
     public void readFromFile() {
         try {
-            new DataSaveManager().readFromFile(mainWindow, model);
+            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            int fileChooserState = fileChooser.showOpenDialog(mainWindow);
+            if (fileChooserState == JFileChooser.APPROVE_OPTION) {
+                new DataSaveManager().readFromFile(fileChooser.getSelectedFile(), model);
+            }
         } catch (ApplicationException e) {
             mainWindow.showMessage(e.getMessage());
         }
@@ -118,7 +125,7 @@ public class Controller {
         mainWindow.repaint();
     }
 
-    public void closeApplication(){
+    public void closeApplication() {
         applicationProperties.save();
     }
 
