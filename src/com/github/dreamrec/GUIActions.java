@@ -24,8 +24,9 @@ public class GUIActions {
         getActionMap().put(SCROLL_CURSOR_FORWARD_ACTION, new ScrollFastGraphForwardAction());
         getActionMap().put(START_RECORDING_ACTION, new StartRecordingAction());
         getActionMap().put(STOP_RECORDING_ACTION, new StopRecordingAction());
-        getActionMap().put(Provider.DEBUG.name(), new SelectDataProviderAction(Provider.DEBUG));
-        getActionMap().put(Provider.EEG.name(), new SelectDataProviderAction(Provider.EEG));
+        for (Provider provider : Provider.values()) {
+            getActionMap().put(provider.name(), new SelectDataProviderAction(provider));
+        }
     }
 
     public ActionMap getActionMap() {
