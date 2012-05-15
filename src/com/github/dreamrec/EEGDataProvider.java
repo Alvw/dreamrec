@@ -75,7 +75,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
 
     private void checkIncomingValue(int incomingValue) {
         if (Math.abs(incomingValue) > INCOMING_DATA_MAX_VALUE) {
-            log.warn("Received value exceeds maximum. Value = " + incomingValue + "    Max value = " + INCOMING_DATA_MAX_VALUE);
+            log.debug("Received value exceeds maximum. Value = " + incomingValue + "    Max value = " + INCOMING_DATA_MAX_VALUE);
         }
     }
 
@@ -88,7 +88,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
         int lostPacketsOnBound = (newPacketNumber + 256) - packetNumber - 1; // In the case when PacketNumber passes the bound 255 and return to 0
         int lostPackets = Math.min(lostPacketsNormal, lostPacketsOnBound);
         if (lostPackets != 0) {
-            log.warn("Lost packet!!! Packet number = " + packetNumber + "; " + lostPackets + "packets were lost");
+            log.info("Lost packet!!! Packet number = " + packetNumber + "; " + lostPackets + "packets were lost");
         }
         packetNumber = newPacketNumber;
     }
