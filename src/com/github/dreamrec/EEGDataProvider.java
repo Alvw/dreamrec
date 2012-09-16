@@ -47,7 +47,7 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
         int numberOfIncomingPackets = averagingBuffer.getIncomingCounter();
         log.info("StopTime: " + new Date(stopTime));
         log.info("Predefined data frequency = " + dataFrequency);
-        log.info("Real incoming data frequency = " + numberOfIncomingPackets * 1000 / (stopTime - startTime));
+        log.info("Real incoming data frequency = " + numberOfIncomingPackets * 1000.0 / (stopTime - startTime));
     }
 
     public double getIncomingDataFrequency() {
@@ -67,9 +67,9 @@ public class EEGDataProvider implements IDataProvider, IRawSampleListener {
     }
 
     public void receiveSample(RawSample rawSample) {
-        checkLostPackets(rawSample.getPacketNumber());
+//        checkLostPackets(rawSample.getPacketNumber());
         int incomingValue = rawSample.getSamples()[0];
-        checkIncomingValue(incomingValue);
+//        checkIncomingValue(incomingValue);
         averagingBuffer.add(incomingValue);
     }
 

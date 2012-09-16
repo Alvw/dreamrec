@@ -18,6 +18,6 @@ public class AveragingFilter extends AbstractFilter<Integer> {
             sum += inputData.get(incomingDataIndex+i);
 
         }
-        return sum/divider;
+        return sum;
     }
 }
