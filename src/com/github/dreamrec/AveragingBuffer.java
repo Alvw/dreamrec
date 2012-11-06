@@ -24,6 +24,8 @@ public class AveragingBuffer  {
             averagedDataQueue.offer(sumValue / divider);
             sumValue = 0;
         }
+       // averagedDataQueue.offer(incomingValue);
+
     }
 
     public int poll() {

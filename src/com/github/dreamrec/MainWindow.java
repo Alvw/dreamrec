@@ -1,20 +1,18 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 import static com.github.dreamrec.GUIActions.*;
 
 /**
  *
  */
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements KeyListener{
 
     private JPanel mainPanel;
     private Model model;
@@ -46,16 +44,18 @@ public class MainWindow extends JFrame {
         });
 
         mainPanel = new JPanel(new GridLayout(0, 1));
+        mainPanel.addKeyListener(this);
 
-        Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
-        mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
+       // Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
+       // mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
 
-        GComponentView eyeDataView = Factory.getGComponentView(model.getEyeDataList(), model, controller);
+        GComponentView eyeDataView = Factory.getGComponentView(new FirstDerivativeAbsFilter(model.getEyeDataList(),applicationProperties.getAveragingBuffer()), model, controller);
+       // GComponentView eyeDataView = Factory.getGComponentView(model.getEyeDataList(), model, controller);
         mainPanel.add(eyeDataView);
         eyeDataView.getComponentModel().centreX();
 
-        Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
-        mainPanel.add(Factory.getGComponentView(slowDreamView, model, controller));
+       // Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
+        //mainPanel.add(Factory.getGComponentView(slowDreamView, model, controller));
 
         add(mainPanel, BorderLayout.CENTER);
         graphScrollBar = Factory.getSlowGraphScrollBar(model, controller);
@@ -87,5 +87,23 @@ public class MainWindow extends JFrame {
         mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), SCROLL_CURSOR_FORWARD_ACTION);
         mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK), START_RECORDING_ACTION);
         mainPanel.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK), STOP_RECORDING_ACTION);
+    }
+
+    public void keyTyped(KeyEvent e) {
+    }
+
+    public void keyPressed(KeyEvent e) {
+       switch (e.getKeyCode()) {
+            case KeyEvent.VK_T : ComPort.getInstance().writetoport("t".getBytes());   break;
+            case KeyEvent.VK_I: ComPort.getInstance().writetoport("i".getBytes()); break;
+            case KeyEvent.VK_S   : ComPort.getInstance().writetoport("s".getBytes());   break;
+            case KeyEvent.VK_Y   : ComPort.getInstance().writetoport("y".getBytes());   break;
+            case KeyEvent.VK_N   : ComPort.getInstance().writetoport("n".getBytes());   break;
+       }
+    }
+
+
+
+    public void keyReleased(KeyEvent e) {
     }
 }

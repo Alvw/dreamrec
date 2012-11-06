@@ -19,6 +19,9 @@ public class ApplicationProperties {
     public static final String CHANEL = "chanel";
     public static final String DATA_FREQUENCY = "frequency";
     public static final String REPAINT_DELAY = "repaintDelay";
+    public static final String COM_PORT_NAME = "comPort";
+    public static final String FREQUENCY_DIVIDER = "frequencyDivider";
+    public static final String AVERAGING_BUFFER = "averagingBuffer";
     private PropertiesConfiguration config;
 
     public ApplicationProperties() {
@@ -30,7 +33,18 @@ public class ApplicationProperties {
         }        
     }
     
-    
+    public String getComPortName(){
+        return config.getString(COM_PORT_NAME);
+    }
+
+    public int getFrequencyDivider(){
+        return config.getInt(FREQUENCY_DIVIDER);
+    }
+
+    public int getAveragingBuffer(){
+        return config.getInt(AVERAGING_BUFFER);
+    }
+
     public int getRepaintDelay(){
         return config.getInt(REPAINT_DELAY);
     }

@@ -26,7 +26,8 @@ public class Factory {
     }
 
     private static GComponentView createFastGComponent(Filter filter, Model model) {
-        GComponentView gComponentView;GComponentModel gModel = new GComponentFastModel(model, filter);
+        GComponentView gComponentView;
+        GComponentModel gModel = new GComponentFastModel(model, filter);
         gComponentView = new GComponentView(gModel);
         return gComponentView;
     }
@@ -82,13 +83,14 @@ public class Factory {
     }
 
     public static IDataProvider getDataProvider(Provider provider,ApplicationProperties applicationProperties) throws ApplicationException {
-        if(provider == Provider.DEBUG){
+        /*if(provider == Provider.DEBUG){
             return new DebugDataProvider();
         } else if(provider == Provider.EEG){
             return new EEGDataProvider(applicationProperties.getChanel(), applicationProperties.getIncomingDataFrequency());
         } else {
             throw new ApplicationException("Wrong data provider name");
-        }
+        }*/
+        return new Ads1292DataProvider(applicationProperties);
     }
 
     static class ScrollBarModelAdapter implements GraphScrollBarModel {

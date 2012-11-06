@@ -15,9 +15,9 @@ public class AveragingFilter extends AbstractFilter<Integer> {
         int sum = 0;
         int incomingDataIndex = index*divider;
         for (int i = 0; i < divider; i++) {
-            sum += inputData.get(incomingDataIndex+i);
+            sum += Math.abs(inputData.get(incomingDataIndex+i));
 
         }
-        return sum;
+        return sum/divider;
     }
 }
