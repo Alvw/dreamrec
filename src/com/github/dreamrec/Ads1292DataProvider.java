@@ -15,14 +15,10 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
 
     private LoPassPreFilter chanel_1;
     private LoPassPreFilter chanel_2;
-   /* private Queue<Integer> acc_1 = new ConcurrentLinkedQueue<Integer>();
-    private Queue<Integer> acc_2 = new ConcurrentLinkedQueue<Integer>();
-    private Queue<Integer> acc_3 = new ConcurrentLinkedQueue<Integer>();*/
-     private LoPassPreFilter acc_1;
-    private LoPassPreFilter acc_2 ;
-    private LoPassPreFilter acc_3;
+     private FrequencyDividingPreFilter acc_1;
+    private FrequencyDividingPreFilter acc_2 ;
+    private FrequencyDividingPreFilter acc_3;
     private int frameCounter250;
-    private int loffStatus;
 
     private int frequencyDivider;
     private ComPort comPort;
@@ -41,9 +37,9 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
         dataFrequency = 250.0 / frequencyDivider;
         chanel_1 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
         chanel_2 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
-        acc_1 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
-        acc_2 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
-        acc_3 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
+        acc_1 = new FrequencyDividingPreFilter(frequencyDivider);
+        acc_2 = new FrequencyDividingPreFilter(frequencyDivider);
+        acc_3 = new FrequencyDividingPreFilter(frequencyDivider);
     }
 
     public void startRecording() throws ApplicationException {
@@ -106,10 +102,6 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
 
     public void setAcc3Value(int value) {
         acc_3.add(value);
-    }
-
-    public void setLoffStatus(int value) {
-        loffStatus = value;
     }
 
     public short ch1Poll(){

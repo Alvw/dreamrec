@@ -16,7 +16,6 @@ public class LoPassPreFilter {
 
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
-//    private long bufferSum = 0;
     private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
     private int divider;
     private static final Log log = LogFactory.getLog(LoPassPreFilter.class);
@@ -32,7 +31,6 @@ public class LoPassPreFilter {
 
     public void add(int value) {
         rawData.add(value);
-//        bufferSum += value;
         if (rawData.size() == bufferSize+1) {
             rawData.remove(0);
         } else if (rawData.size()>bufferSize+1){

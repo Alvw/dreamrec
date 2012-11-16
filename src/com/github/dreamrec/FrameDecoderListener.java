@@ -10,5 +10,4 @@ public interface FrameDecoderListener {
     void setAcc1Value(int value);
     void setAcc2Value(int value);
     void setAcc3Value(int value);
-    void setLoffStatus(int value);
 }
