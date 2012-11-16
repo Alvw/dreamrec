@@ -18,7 +18,8 @@ public class MainMenu extends JMenuBar {
 		add(fileMenu);
 		fileMenu.add(actionMap.get(GUIActions.OPEN_ACTION));
 		fileMenu.add(actionMap.get(GUIActions.SAVE_ACTION));
-		
+		fileMenu.add(actionMap.get(GUIActions.SAVE_AS_EDF_ACTION));
+
 		JMenu recordMenu = new JMenu("Record");
 		add(recordMenu);
         recordMenu.add(actionMap.get(GUIActions.START_RECORDING_ACTION));

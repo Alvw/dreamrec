@@ -1,5 +1,6 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.edf.EdfHeaderData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,6 +65,18 @@ public class Controller {
             int fileChooserState = fileChooser.showSaveDialog(mainWindow);
             if (fileChooserState == JFileChooser.APPROVE_OPTION) {
                 new DataSaveManager().saveToFile(fileChooser.getSelectedFile(), model);
+            }
+        } catch (ApplicationException e) {
+            mainWindow.showMessage(e.getMessage());
+        }
+    }
+
+     public void saveAsEdf() {
+        try {
+            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            int fileChooserState = fileChooser.showSaveDialog(mainWindow);
+            if (fileChooserState == JFileChooser.APPROVE_OPTION) {
+                new DataSaveManager().saveAsEdf(fileChooser.getSelectedFile(), model);
             }
         } catch (ApplicationException e) {
             mainWindow.showMessage(e.getMessage());

@@ -8,6 +8,7 @@ public class GUIActions {
     private Controller controller;
 
     public static final String SAVE_ACTION = "save";
+    public static final String SAVE_AS_EDF_ACTION = "save_as_edf";
     public static final String OPEN_ACTION = "open";
     public static final String SCROLL_CURSOR_FORWARD_ACTION = "scroll_forward";
     public static final String SCROLL_CURSOR_BACKWARD_ACTION = "scroll_backward";
@@ -19,6 +20,7 @@ public class GUIActions {
     public GUIActions(Controller controller) {
         this.controller = controller;
         getActionMap().put(SAVE_ACTION, new SaveAction());
+        getActionMap().put(SAVE_AS_EDF_ACTION, new SaveAsEdfAction());
         getActionMap().put(OPEN_ACTION, new OpenAction());
         getActionMap().put(SCROLL_CURSOR_BACKWARD_ACTION, new ScrollFastGraphBackwardAction());
         getActionMap().put(SCROLL_CURSOR_FORWARD_ACTION, new ScrollFastGraphForwardAction());
@@ -31,10 +33,6 @@ public class GUIActions {
 
     public ActionMap getActionMap() {
         return actionMap;
-    }
-
-    public Action getActionByName(String name) {
-        return actionMap.get(name);
     }
 
     class ScrollFastGraphForwardAction extends AbstractAction {
@@ -56,6 +54,16 @@ public class GUIActions {
 
         public void actionPerformed(ActionEvent e) {
             controller.saveToFile();
+        }
+    }
+
+    class SaveAsEdfAction extends AbstractAction {
+        public SaveAsEdfAction() {
+            super("SaveAsEdf");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            controller.saveAsEdf();
         }
     }
 
