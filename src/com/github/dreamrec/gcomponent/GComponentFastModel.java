@@ -8,7 +8,7 @@ import com.github.dreamrec.Model;
  */
 public class GComponentFastModel extends GComponentModel{
 
-    public GComponentFastModel(Model model, Filter<Integer> dataView) {
+    public GComponentFastModel(Model model, Filter<Short> dataView) {
         super(model, dataView);
     }
 

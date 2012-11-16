@@ -10,7 +10,7 @@ import java.awt.*;
 public class GraphPainter implements IPainter<IGraphPainterModel> {
 
     public void paint(Graphics2D g, IGraphPainterModel paintModel) {
-        Filter<Integer> points = paintModel.getDataView();
+        Filter<Short> points = paintModel.getDataView();
         VerticalLine vLine = new VerticalLine(-1, 0);
         int size = points.size();
         int pointsPerScreen = paintModel.getXSize();
@@ -21,7 +21,7 @@ public class GraphPainter implements IPainter<IGraphPainterModel> {
         }
     }
 
-    private int valueToPixel(Integer value, IGraphPainterModel paintModel) {
+    private int valueToPixel(short value, IGraphPainterModel paintModel) {
         return (int) Math.round(value * paintModel.getYZoom());
     }
 

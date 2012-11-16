@@ -34,7 +34,9 @@ public class DataSaveManager {
         outStream.writeLong(model.getStartTime());
         outStream.writeDouble(model.getFrequency());
         for (int i = 0; i < model.getEyeDataList().size(); i++) {
-            outStream.writeInt(model.getEyeDataList().get(i).intValue());
+            outStream.writeShort(model.getEyeDataList().get(i).shortValue());
+            outStream.writeShort(model.getAcc1DataList().get(i).shortValue());
+            outStream.writeShort(model.getAcc2DataList().get(i).shortValue());
         }
     }
 
@@ -64,7 +66,9 @@ public class DataSaveManager {
             model.setFrequency(frequency);
             model.setStartTime(startTime);
             while (true) {
-                model.addEyeData(inputStream.readInt());
+                model.addEyeData(inputStream.readShort());
+                model.addAcc1Data(inputStream.readShort());
+                model.addAcc2Data(inputStream.readShort());
             }
         } catch (EOFException e) {
             log.info("End of file");

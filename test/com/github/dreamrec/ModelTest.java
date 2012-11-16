@@ -44,7 +44,7 @@ public class ModelTest {
     private Model getModel(int dataSize){
         Model model = new Model();
         for (int i = 0; i < dataSize; i++) {
-            model.addEyeData(i);
+            model.addEyeData((short)i);
         }
         return model;
     }

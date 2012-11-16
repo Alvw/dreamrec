@@ -38,8 +38,20 @@ public class Controller {
     }
 
     protected void updateModel() {
-        while (dataProvider.available() > 0) {
-            model.addEyeData(dataProvider.poll());
+        while (dataProvider.ch1Size() > 0) {
+            model.addEyeData(dataProvider.ch1Poll());
+        }
+        while (dataProvider.ch2Size() > 0) {
+            model.addCh2Data(dataProvider.ch2Poll());
+        }
+        while (dataProvider.acc1Size() > 0) {
+            model.addAcc1Data(dataProvider.acc1Poll());
+        }
+        while (dataProvider.acc2Size() > 0) {
+            model.addAcc2Data(dataProvider.acc2Poll());
+        }
+        while (dataProvider.acc3Size() > 0) {
+            model.addAcc3Data(dataProvider.acc3Poll());
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();

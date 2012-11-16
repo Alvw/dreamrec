@@ -9,18 +9,55 @@ import java.util.List;
 public class Model {
     private int xSize; //data points per screen.
     public static final int DIVIDER = 120; //frequency divider for slow graphics
-    private DataList<Integer> eyeDataList = new DataList<Integer>();   //list with raw incoming data of eye movements
+    private DataList<Short> eyeDataList = new DataList<Short>();   //list with prefiltered incoming data of eye movements
+    private DataList<Short> chanel2DataList = new DataList<Short>();   //list with prefiltered incoming chanel2 data
+    private DataList<Short> acc1DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
+    private DataList<Short> acc2DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
+    private DataList<Short> acc3DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
+
     private double frequency; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
 
-    public DataList<Integer> getEyeDataList() {
+    public DataList<Short> getEyeDataList() {
         return eyeDataList;
     }
 
-    public void addEyeData(int data) {
+    public DataList<Short> getAcc1DataList() {
+        return acc1DataList;
+    }
+
+    public DataList<Short> getAcc2DataList() {
+        return acc2DataList;
+    }
+
+    public DataList<Short> getAcc3DataList() {
+        return acc3DataList;
+    }
+
+     public DataList<Short> getCh2DataList() {
+        return chanel2DataList;
+    }
+
+    public void addEyeData(short data) {
         eyeDataList.add(data);
+    }
+
+    public void addCh2Data(short data) {
+        chanel2DataList.add(data);
+    }
+
+    public void addAcc1Data(short data) {
+        acc1DataList.add(data);
+    }
+
+    public void addAcc2Data(short data) {
+        acc2DataList.add(data);
+    }
+
+    public void addAcc3Data(short data) {
+        acc3DataList.add(data);
     }
 
     public double getFrequency() {
