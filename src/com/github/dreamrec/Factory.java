@@ -12,27 +12,27 @@ import java.awt.event.*;
  */
 public class Factory {
 
-    public static GComponentView getGComponentView(Filter filter, Model model, final Controller controller) {
+    public static GComponentView getGComponentView(Model model, final Controller controller, Filter... filter) {
         GComponentView gComponentView;
-        if (filter.divider() == Model.DIVIDER) {
-            gComponentView = createSlowGComponent(filter, model, controller);
-        } else if (filter.divider() == 1) {
-            gComponentView = createFastGComponent(filter, model);
+        if (filter[0].divider() == Model.DIVIDER) {
+            gComponentView = createSlowGComponent(model, controller, filter);
+        } else if (filter[0].divider() == 1) {
+            gComponentView = createFastGComponent(model, filter);
         } else {
-            throw new UnsupportedOperationException("divider = " + filter.divider() + " .Shoud be 1 or " + Model.DIVIDER);
+            throw new UnsupportedOperationException("divider = " + filter[0].divider() + " .Shoud be 1 or " + Model.DIVIDER);
         }
         addGComponentListeners(gComponentView, controller);
         return gComponentView;
     }
 
-    private static GComponentView createFastGComponent(Filter filter, Model model) {
+    private static GComponentView createFastGComponent(Model model, Filter... filter) {
         GComponentView gComponentView;
         GComponentModel gModel = new GComponentFastModel(model, filter);
         gComponentView = new GComponentView(gModel);
         return gComponentView;
     }
 
-    private static GComponentView createSlowGComponent(Filter filter, Model model, final Controller controller) {
+    private static GComponentView createSlowGComponent(Model model, final Controller controller,Filter... filter) {
         GComponentView gComponentView;
         final GComponentSlowModel gModel = new GComponentSlowModel(model, filter);
         gComponentView = new GComponentView(gModel);

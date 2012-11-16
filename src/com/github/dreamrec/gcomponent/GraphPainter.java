@@ -9,8 +9,17 @@ import java.awt.*;
  */
 public class GraphPainter implements IPainter<IGraphPainterModel> {
 
+    private Color[] graphColors = {Color.YELLOW, Color.RED, Color.BLUE};
+
     public void paint(Graphics2D g, IGraphPainterModel paintModel) {
-        Filter<Short> points = paintModel.getDataView();
+        Filter<Short>[] dataViewArray = paintModel.getDataView();
+        for (int i = 0; i < dataViewArray.length; i++) {
+            g.setColor(graphColors[i]);
+            paintSingleGraph(g, paintModel, dataViewArray[i]);
+        }
+    }
+
+    private void paintSingleGraph(Graphics2D g, IGraphPainterModel paintModel, Filter<Short> points) {
         VerticalLine vLine = new VerticalLine(-1, 0);
         int size = points.size();
         int pointsPerScreen = paintModel.getXSize();
@@ -27,7 +36,7 @@ public class GraphPainter implements IPainter<IGraphPainterModel> {
 
     private void drawVerticalLine(Graphics2D g, int x, int y, VerticalLine vLine) {
         vLine.setNewBounds(y);
-        g.drawLine(x,vLine.min,x,vLine.max);
+        g.drawLine(x, vLine.min, x, vLine.max);
     }
 }
 

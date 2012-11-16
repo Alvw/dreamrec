@@ -2,6 +2,7 @@ package com.github.dreamrec.gcomponent;
 
 import com.github.dreamrec.Filter;
 import com.github.dreamrec.Model;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -9,7 +10,7 @@ import com.github.dreamrec.Model;
 public abstract class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel {
 
     protected Model model;
-    protected Filter<Short> dataView;  // todo consider refactoring
+    protected Filter<Short>[] dataView;  // todo consider refactoring
     protected double maxValue = 200;
     protected int ySize = 200;
     protected double yZoom = 0.3;
@@ -19,7 +20,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected int bottomIndent = 20;
     protected boolean isXCentered = false;
 
-    public GComponentModel(Model model, Filter<Short> dataView) {
+    public GComponentModel(Model model, Filter<Short>... dataView) {
         this.model = model;
         this.dataView = dataView;
     }
@@ -31,10 +32,6 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         isXCentered = true;
         bottomIndent = bottomIndent/2;
         topIndent = bottomIndent;
-    }
-
-    public Model getModel() {
-        return model;
     }
 
     public int getLeftIndent() {
@@ -53,10 +50,6 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         return bottomIndent;
     }
 
-    public void setMaxValue(double maxValue) {
-        this.maxValue = maxValue;
-    }
-
     public void setYSize(int ySize) {
         this.ySize = ySize;
     }
@@ -65,7 +58,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         this.yZoom = yZoom;
     }
 
-    public Filter<Short> getDataView() {
+    public Filter<Short>[] getDataView() {
         return dataView;
     }
 
