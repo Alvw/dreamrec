@@ -2,6 +2,7 @@ package com.github.dreamrec;
 
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentView;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,16 +49,22 @@ public class MainWindow extends JFrame implements KeyListener{
 
        // Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
        // mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
-        GComponentView acc1DataView = Factory.getGComponentView(model, controller, model.getAcc1DataList(), model.getAcc2DataList(), model.getAcc3DataList());
+        /*GComponentView acc1DataView = Factory.getGComponentView(model, controller, model.getAcc1DataList(), model.getAcc2DataList(), model.getAcc3DataList());
         mainPanel.add(acc1DataView);
-        acc1DataView.getComponentModel().centreX();
+        acc1DataView.getComponentModel().centreX();*/
 
-        GComponentView eyeDataView = Factory.getGComponentView(model, controller, model.getEyeDataList());
+//        GComponentView eyeDataView = Factory.getGComponentView(model, controller, new FirstDerivativeAbsFilter(model.getEyeDataList()));
+        GComponentView eyeDataView = Factory.getGComponentView(model, controller, new LoPassFilter(applicationProperties.getLoPassBufferSize(),model.getEyeDataList()));
+//        GComponentView eyeDataView = Factory.getGComponentView(model, controller, model.getEyeDataList());
         mainPanel.add(eyeDataView);
         eyeDataView.getComponentModel().centreX();
 
-        //Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
-        //mainPanel.add(Factory.getGComponentView(slowDreamView, model, controller));
+        GComponentView ch2DataView = Factory.getGComponentView(model, controller, new LoPassFilter(applicationProperties.getLoPassBufferSize(),model.getCh2DataList()));
+        mainPanel.add(ch2DataView);
+        ch2DataView.getComponentModel().centreX();
+
+        /*Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
+        mainPanel.add(Factory.getGComponentView(model, controller,slowDreamView));*/
 
         add(mainPanel, BorderLayout.CENTER);
         graphScrollBar = Factory.getSlowGraphScrollBar(model, controller);
@@ -101,6 +108,9 @@ public class MainWindow extends JFrame implements KeyListener{
             case KeyEvent.VK_S   : ComPort.getInstance().writetoport("s".getBytes());   break;
             case KeyEvent.VK_Y   : ComPort.getInstance().writetoport("y".getBytes());   break;
             case KeyEvent.VK_N   : ComPort.getInstance().writetoport("n".getBytes());   break;
+            case KeyEvent.VK_5   : ComPort.getInstance().writetoport("5".getBytes());   break;
+            case KeyEvent.VK_2   : ComPort.getInstance().writetoport("2".getBytes());   break;
+            case KeyEvent.VK_1   : ComPort.getInstance().writetoport("1".getBytes());   break;
        }
     }
 

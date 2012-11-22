@@ -12,15 +12,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  *
  */
-public class LoPassPreFilter {
+public class HiPassPreFilter {
 
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
-    private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
+    private Queue<Integer> filteredData = new ConcurrentLinkedQueue<Integer>();
     private int divider;
-    private static final Log log = LogFactory.getLog(LoPassPreFilter.class);
+    private static final Log log = LogFactory.getLog(HiPassPreFilter.class);
 
-    public LoPassPreFilter(int bufferSize, int divider) {
+    public HiPassPreFilter(int bufferSize, int divider) {
         this.bufferSize = bufferSize;
         this.divider = divider;
     }
@@ -41,17 +41,18 @@ public class LoPassPreFilter {
             rawDataBufferSum+=val;
         }
         int filteredValue = value - (int) (rawDataBufferSum /rawData.size());
-        if (filteredValue > Short.MAX_VALUE) {
-            log.warn("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
+        if (filteredValue > Integer.MAX_VALUE) {
+            log.warn("Incoming value exceeds Integer.MAX_VALUE: " + filteredValue);
         }
-        filteredData.offer((short) filteredValue);
+        filteredData.offer(filteredValue);
+//        filteredData.offer(value);
     }
 
-    public short poll() {
+    public int poll() {
         int sum = 0;
         for (int i = 0; i < divider; i++) {
             sum += filteredData.poll();
         }
-        return (short) (sum / divider);
+        return (sum / divider);
     }
 }

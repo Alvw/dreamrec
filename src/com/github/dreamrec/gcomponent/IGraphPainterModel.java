@@ -7,7 +7,7 @@ import com.github.dreamrec.Filter;
  */
 public interface IGraphPainterModel {
 
-    public Filter<Short>[] getDataView();
+    public Filter<Integer>[] getDataView();
 
     public int getStartIndex();
 

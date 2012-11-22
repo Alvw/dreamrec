@@ -21,6 +21,7 @@ public class ApplicationProperties {
     public static final String REPAINT_DELAY = "repaintDelay";
     public static final String COM_PORT_NAME = "comPort";
     public static final String FREQUENCY_DIVIDER = "frequencyDivider";
+    public static final String HI_PASS_BUFFER_SIZE = "hiPassBufferSize";
     public static final String LO_PASS_BUFFER_SIZE = "loPassBufferSize";
     private PropertiesConfiguration config;
 
@@ -41,7 +42,11 @@ public class ApplicationProperties {
         return config.getInt(FREQUENCY_DIVIDER);
     }
 
-    public int getLoPassBufferSize(){
+    public int getHiPassBufferSize(){
+        return config.getInt(HI_PASS_BUFFER_SIZE);
+    }
+
+     public int getLoPassBufferSize(){
         return config.getInt(LO_PASS_BUFFER_SIZE);
     }
 

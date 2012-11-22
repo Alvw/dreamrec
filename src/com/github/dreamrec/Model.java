@@ -9,54 +9,54 @@ import java.util.List;
 public class Model {
     private int xSize; //data points per screen.
     public static final int DIVIDER = 120; //frequency divider for slow graphics
-    private DataList<Short> eyeDataList = new DataList<Short>();   //list with prefiltered incoming data of eye movements
-    private DataList<Short> chanel2DataList = new DataList<Short>();   //list with prefiltered incoming chanel2 data
-    private DataList<Short> acc1DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
-    private DataList<Short> acc2DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
-    private DataList<Short> acc3DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
+    private DataList<Integer> eyeDataList = new DataList<Integer>();   //list with prefiltered incoming data of eye movements
+    private DataList<Integer> chanel2DataList = new DataList<Integer>();   //list with prefiltered incoming chanel2 data
+    private DataList<Integer> acc1DataList = new DataList<Integer>();   //list with accelerometer 1 chanel data
+    private DataList<Integer> acc2DataList = new DataList<Integer>();   //list with accelerometer 1 chanel data
+    private DataList<Integer> acc3DataList = new DataList<Integer>();   //list with accelerometer 1 chanel data
 
     private double frequency; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
 
-    public DataList<Short> getEyeDataList() {
+    public DataList<Integer> getEyeDataList() {
         return eyeDataList;
     }
 
-    public DataList<Short> getAcc1DataList() {
+    public DataList<Integer> getAcc1DataList() {
         return acc1DataList;
     }
 
-    public DataList<Short> getAcc2DataList() {
+    public DataList<Integer> getAcc2DataList() {
         return acc2DataList;
     }
 
-    public DataList<Short> getAcc3DataList() {
+    public DataList<Integer> getAcc3DataList() {
         return acc3DataList;
     }
 
-     public DataList<Short> getCh2DataList() {
+     public DataList<Integer> getCh2DataList() {
         return chanel2DataList;
     }
 
-    public void addEyeData(short data) {
+    public void addEyeData(int data) {
         eyeDataList.add(data);
     }
 
-    public void addCh2Data(short data) {
+    public void addCh2Data(int data) {
         chanel2DataList.add(data);
     }
 
-    public void addAcc1Data(short data) {
+    public void addAcc1Data(int data) {
         acc1DataList.add(data);
     }
 
-    public void addAcc2Data(short data) {
+    public void addAcc2Data(int data) {
         acc2DataList.add(data);
     }
 
-    public void addAcc3Data(short data) {
+    public void addAcc3Data(int data) {
         acc3DataList.add(data);
     }
 

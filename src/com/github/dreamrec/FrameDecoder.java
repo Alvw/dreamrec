@@ -6,8 +6,9 @@ import org.apache.commons.logging.LogFactory;
 public class FrameDecoder {
 
     private int frameIndex;
-    private int[] frame = new int[16];
-    public static final int FRAME_SIZE = 11;   //frame size for chanel 1 only
+
+    public static final int FRAME_SIZE = 8;   //frame size for chanel 1 only
+     private int[] frame = new int[FRAME_SIZE];
     private FrameDecoderListener frameListener;
     private static final Log log = LogFactory.getLog(FrameDecoder.class);
 
@@ -30,11 +31,15 @@ public class FrameDecoder {
 
     private void notifyListeners() {
         frameListener.setFrameCounter250(frame[1]);
-        int val = ((frame[2] << 24) + ((frame[3]) << 16) + (frame[4] << 8)) / 256;
-        frameListener.setCh1Value(val);
-        frameListener.setAcc1Value((frame[6] * 256 + frame[5])-512);
+        int val_1 = ((frame[2] << 24) + ((frame[3]) << 16) + (frame[4] << 8)) / 256;
+        frameListener.setCh1Value(val_1);
+
+        int val_2 = ((frame[5] << 24) + ((frame[6]) << 16) + (frame[7] << 8)) / 256;
+        frameListener.setCh2Value(val_2);
+
+        /*frameListener.setAcc1Value((frame[6] * 256 + frame[5])-512);
         frameListener.setAcc2Value((frame[8] * 256 + frame[7])-512);
-        frameListener.setAcc3Value((frame[10] * 256 + frame[9])-512);
+        frameListener.setAcc3Value((frame[10] * 256 + frame[9])-512);*/
     }
 
     public void addListener(FrameDecoderListener listener) {

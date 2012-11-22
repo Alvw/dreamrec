@@ -13,8 +13,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
 
-    private LoPassPreFilter chanel_1;
-    private LoPassPreFilter chanel_2;
+    private HiPassPreFilter chanel_1;
+    private HiPassPreFilter chanel_2;
+   /*  private FrequencyDividingPreFilter chanel_1;
+    private FrequencyDividingPreFilter chanel_2;*/
      private FrequencyDividingPreFilter acc_1;
     private FrequencyDividingPreFilter acc_2 ;
     private FrequencyDividingPreFilter acc_3;
@@ -34,9 +36,11 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
         this.applicationProperties = applicationProperties;
         frameDecoder.addListener(this);
         frequencyDivider = applicationProperties.getFrequencyDivider();
-        dataFrequency = 250.0 / frequencyDivider;
-        chanel_1 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
-        chanel_2 = new LoPassPreFilter(applicationProperties.getLoPassBufferSize(),frequencyDivider);
+        dataFrequency = applicationProperties.getIncomingDataFrequency() / frequencyDivider;
+        chanel_1 = new HiPassPreFilter(applicationProperties.getHiPassBufferSize(),frequencyDivider);
+        chanel_2 = new HiPassPreFilter(applicationProperties.getHiPassBufferSize(),frequencyDivider);
+//        chanel_1 = new FrequencyDividingPreFilter(frequencyDivider);
+//        chanel_2 = new FrequencyDividingPreFilter(frequencyDivider);
         acc_1 = new FrequencyDividingPreFilter(frequencyDivider);
         acc_2 = new FrequencyDividingPreFilter(frequencyDivider);
         acc_3 = new FrequencyDividingPreFilter(frequencyDivider);
@@ -104,32 +108,32 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
         acc_3.add(value);
     }
 
-    public short ch1Poll(){
+    public int ch1Poll(){
         return chanel_1.poll();
     }
     public int ch1Size(){
         return chanel_1.size();
     }
-    public short ch2Poll(){
+    public int ch2Poll(){
         return chanel_2.poll();
     }
     public int ch2Size(){
          return chanel_2.size();
     }
-    public short acc1Poll(){
-        return (short)acc_1.poll();
+    public int acc1Poll(){
+        return acc_1.poll();
     }
     public int acc1Size(){
         return acc_1.size();
     }
-    public short acc2Poll(){
-        return (short)acc_2.poll();
+    public int acc2Poll(){
+        return acc_2.poll();
     }
     public int acc2Size(){
         return acc_2.size();
     }
-    public short acc3Poll(){
-        return (short)acc_3.poll();
+    public int acc3Poll(){
+        return acc_3.poll();
     }
     public int acc3Size(){
         return acc_3.size();
