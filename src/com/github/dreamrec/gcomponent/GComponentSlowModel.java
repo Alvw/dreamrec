@@ -10,7 +10,7 @@ import com.github.dreamrec.Model;
 public class GComponentSlowModel extends GComponentModel implements ICursorPainterModel{
 
 
-    public GComponentSlowModel(Model model, Filter<Integer>... dataView) {
+    public GComponentSlowModel(Model model, Filter<Short>... dataView) {
         super(model, dataView);
     }
 

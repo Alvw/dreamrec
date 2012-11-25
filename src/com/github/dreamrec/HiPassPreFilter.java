@@ -16,7 +16,7 @@ public class HiPassPreFilter {
 
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
-    private Queue<Integer> filteredData = new ConcurrentLinkedQueue<Integer>();
+    private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
     private int divider;
     private static final Log log = LogFactory.getLog(HiPassPreFilter.class);
 
@@ -41,18 +41,22 @@ public class HiPassPreFilter {
             rawDataBufferSum+=val;
         }
         int filteredValue = value - (int) (rawDataBufferSum /rawData.size());
-        if (filteredValue > Integer.MAX_VALUE) {
-            log.warn("Incoming value exceeds Integer.MAX_VALUE: " + filteredValue);
+        if (filteredValue > Short.MAX_VALUE) {
+            log.warn("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
+            filteredValue = Short.MAX_VALUE;
+        } if (filteredValue < Short.MIN_VALUE) {
+            log.warn("Incoming value less than Short.MIN_VALUE: " + filteredValue);
+            filteredValue = Short.MIN_VALUE;
         }
-        filteredData.offer(filteredValue);
+        filteredData.offer((short)filteredValue);
 //        filteredData.offer(value);
     }
 
-    public int poll() {
+    public short poll() {
         int sum = 0;
         for (int i = 0; i < divider; i++) {
             sum += filteredData.poll();
         }
-        return (sum / divider);
+        return (short)(sum / divider);
     }
 }

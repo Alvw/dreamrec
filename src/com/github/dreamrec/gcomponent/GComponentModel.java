@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 public abstract class GComponentModel implements ITimePainterModel, IGraphPainterModel, IYAxisPainterModel {
 
     protected Model model;
-    protected Filter<Integer>[] dataView;  // todo consider refactoring
+    protected Filter<Short>[] dataView;  // todo consider refactoring
     protected double maxValue = 200;
     protected int ySize = 200;
     protected double yZoom = 0.3;
@@ -20,7 +20,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
     protected int bottomIndent = 20;
     protected boolean isXCentered = false;
 
-    public GComponentModel(Model model, Filter<Integer>... dataView) {
+    public GComponentModel(Model model, Filter<Short>... dataView) {
         this.model = model;
         this.dataView = dataView;
     }
@@ -58,7 +58,7 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
         this.yZoom = yZoom;
     }
 
-    public Filter<Integer>[] getDataView() {
+    public Filter<Short>[] getDataView() {
         return dataView;
     }
 

@@ -3,21 +3,21 @@ package com.github.dreamrec;
 /**
  *
  */
-public class AveragingFilter extends AbstractFilter<Integer> {
+public class AveragingFilter extends AbstractFilter<Short> {
 
-    public AveragingFilter(Filter<Integer> inputData, int divider) {
+    public AveragingFilter(Filter<Short> inputData, int divider) {
         super(inputData);
         this.divider = divider;
     }
 
     @Override
-    protected Integer doFilter(int index) {
+    protected Short doFilter(int index) {
         int sum = 0;
         int incomingDataIndex = index*divider;
         for (int i = 0; i < divider; i++) {
             sum += Math.abs(inputData.get(incomingDataIndex+i));
 
         }
-        return sum/divider;
+        return (short)(sum/divider);
     }
 }

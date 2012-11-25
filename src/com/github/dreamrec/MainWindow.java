@@ -47,7 +47,7 @@ public class MainWindow extends JFrame implements KeyListener{
         mainPanel = new JPanel(new GridLayout(0, 1));
         mainPanel.addKeyListener(this);
 
-       // Filter<Integer> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
+       // Filter<Short> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
        // mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
         /*GComponentView acc1DataView = Factory.getGComponentView(model, controller, model.getAcc1DataList(), model.getAcc2DataList(), model.getAcc3DataList());
         mainPanel.add(acc1DataView);
@@ -63,7 +63,7 @@ public class MainWindow extends JFrame implements KeyListener{
         mainPanel.add(ch2DataView);
         ch2DataView.getComponentModel().centreX();
 
-        /*Filter<Integer> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
+        /*Filter<Short> slowDreamView = new AveragingFilter(new FirstDerivativeAbsFilter(model.getEyeDataList()), Model.DIVIDER);
         mainPanel.add(Factory.getGComponentView(model, controller,slowDreamView));*/
 
         add(mainPanel, BorderLayout.CENTER);

@@ -1,17 +1,17 @@
 package com.github.dreamrec;
 
 
-public class FirstDerivativeAbsFilter extends AbstractFilter<Integer> {
+public class FirstDerivativeAbsFilter extends AbstractFilter<Short> {
 
-    public FirstDerivativeAbsFilter(Filter<Integer> inputData) {
+    public FirstDerivativeAbsFilter(Filter<Short> inputData) {
         super(inputData);
     }
 
     @Override
-    protected Integer doFilter(int index) {
+    protected Short doFilter(int index) {
         if (index == 0) {
             return 0;
         }
-        return (Math.abs(inputData.get(index) - inputData.get(index - 1)));
+        return (short)(Math.abs(inputData.get(index) - inputData.get(index - 1)));
     }
 }

@@ -5,20 +5,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Date;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
  */
-public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
+public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener {
 
-    private HiPassPreFilter chanel_1;
+        private HiPassPreFilter chanel_1;
     private HiPassPreFilter chanel_2;
-   /*  private FrequencyDividingPreFilter chanel_1;
-    private FrequencyDividingPreFilter chanel_2;*/
-     private FrequencyDividingPreFilter acc_1;
-    private FrequencyDividingPreFilter acc_2 ;
+//    private FrequencyDividingPreFilter chanel_1;
+//    private FrequencyDividingPreFilter chanel_2;
+    private FrequencyDividingPreFilter acc_1;
+    private FrequencyDividingPreFilter acc_2;
     private FrequencyDividingPreFilter acc_3;
     private int frameCounter250;
 
@@ -27,7 +25,7 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
     private static final Log log = LogFactory.getLog(Ads1292DataProvider.class);
     private long startTime;
     private long stopTime;
-    private double dataFrequency ;
+    private double dataFrequency;
     private FrameDecoder frameDecoder = new FrameDecoder();
     private ApplicationProperties applicationProperties;
     private int totalFrames;
@@ -47,28 +45,28 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
     }
 
     public void startRecording() throws ApplicationException {
-           try {
-               comPort = ComPort.getInstance();
-               comPort.addDataProvider(this);
-               comPort.connect(applicationProperties.getComPortName());
-           } catch (Exception e) {
-               log.error(e);
-               throw new ApplicationException("EEG machine reading failure ", e);
-           }
-           startTime = System.currentTimeMillis();
-           log.info("StartTime: " + new Date(startTime));
-       }
+        try {
+            comPort = ComPort.getInstance();
+            comPort.addDataProvider(this);
+            comPort.connect(applicationProperties.getComPortName());
+        } catch (Exception e) {
+            log.error(e);
+            throw new ApplicationException("EEG machine reading failure ", e);
+        }
+        startTime = System.currentTimeMillis();
+        log.info("StartTime: " + new Date(startTime));
+    }
 
-       public void stopRecording() {
-           stopTime = System.currentTimeMillis();
-           comPort.writetoport("n".getBytes());
-           comPort.writetoport("s".getBytes());
-           comPort.writetoport("1".getBytes());
-           comPort.disconnect();
-           log.info("StopTime: " + new Date(stopTime));
-           log.info("Predefined data frequency = " + dataFrequency);
-           log.info("Real incoming data frequency = " + totalFrames * 1000.0 / (stopTime - startTime));
-       }
+    public void stopRecording() {
+        stopTime = System.currentTimeMillis();
+        comPort.writetoport("n".getBytes());
+        comPort.writetoport("s".getBytes());
+        comPort.writetoport("1".getBytes());
+        comPort.disconnect();
+        log.info("StopTime: " + new Date(stopTime));
+        log.info("Predefined data frequency = " + dataFrequency);
+        log.info("Real incoming data frequency = " + totalFrames * 1000.0 / (stopTime - startTime));
+    }
 
     public double getIncomingDataFrequency() {
         return dataFrequency;
@@ -93,49 +91,58 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener{
     }
 
     public void setCh2Value(int value) {
-         chanel_2.add(value);
+        chanel_2.add(value);
     }
 
-    public void setAcc1Value(int value) {
+    public void setAcc1Value(short value) {
         acc_1.add(value);
     }
 
-    public void setAcc2Value(int value) {
+    public void setAcc2Value(short value) {
         acc_2.add(value);
     }
 
-    public void setAcc3Value(int value) {
+    public void setAcc3Value(short value) {
         acc_3.add(value);
     }
 
-    public int ch1Poll(){
+    public short ch1Poll() {
         return chanel_1.poll();
     }
-    public int ch1Size(){
+
+    public int ch1Size() {
         return chanel_1.size();
     }
-    public int ch2Poll(){
+
+    public short ch2Poll() {
         return chanel_2.poll();
     }
-    public int ch2Size(){
-         return chanel_2.size();
+
+    public int ch2Size() {
+        return chanel_2.size();
     }
-    public int acc1Poll(){
+
+    public short acc1Poll() {
         return acc_1.poll();
     }
-    public int acc1Size(){
+
+    public int acc1Size() {
         return acc_1.size();
     }
-    public int acc2Poll(){
+
+    public short acc2Poll() {
         return acc_2.poll();
     }
-    public int acc2Size(){
+
+    public int acc2Size() {
         return acc_2.size();
     }
-    public int acc3Poll(){
+
+    public short acc3Poll() {
         return acc_3.poll();
     }
-    public int acc3Size(){
+
+    public int acc3Size() {
         return acc_3.size();
     }
 }

@@ -9,14 +9,14 @@ public interface IDataProvider {
     void stopRecording();
     double getIncomingDataFrequency();
     long getStartTime();
-    int ch1Poll();
+    short ch1Poll();
     int ch1Size();
-    int ch2Poll();
+    short ch2Poll();
     int ch2Size();
-    int acc1Poll();
+    short acc1Poll();
     int acc1Size();
-    int acc2Poll();
+    short acc2Poll();
     int acc2Size();
-    int acc3Poll();
+    short acc3Poll();
     int acc3Size();
 }

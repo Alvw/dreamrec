@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class FrequencyDividingPreFilter {
     private int bufferSize;
-    private Queue<Integer> filteredData = new ConcurrentLinkedQueue<Integer>();
+    private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
     private int divider;
 
     public FrequencyDividingPreFilter(int divider) {
@@ -25,15 +25,15 @@ public class FrequencyDividingPreFilter {
         return filteredData.size() / divider;
     }
 
-    public void add(int value) {
+    public void add(short value) {
         filteredData.offer(value);
     }
 
-    public int poll() {
+    public short poll() {
         int sum = 0;
         for (int i = 0; i < divider; i++) {
             sum += filteredData.poll();
         }
-        return  (sum / divider);
+        return  (short)(sum / divider);
     }
 }
