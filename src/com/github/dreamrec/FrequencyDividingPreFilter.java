@@ -17,7 +17,6 @@ public class FrequencyDividingPreFilter {
     private int divider;
 
     public FrequencyDividingPreFilter(int divider) {
-        this.bufferSize = bufferSize;
         this.divider = divider;
     }
 

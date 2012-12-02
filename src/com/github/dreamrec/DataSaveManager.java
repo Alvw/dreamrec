@@ -91,7 +91,7 @@ public class DataSaveManager {
             EdfHeaderData headerData = new EdfHeaderData();
             writeEdfHeader(headerData, model, outStream);
             for (int i = 0; i < model.getEyeDataList().size(); i++) {
-                Short bigEndianValue = (short)model.getEyeDataList().get(i).intValue();
+                Short bigEndianValue = model.getEyeDataList().get(i);
                 Short littleEndianValue =  ByteBuffer.allocate(2)
                 .order(ByteOrder.BIG_ENDIAN).putShort(bigEndianValue)
                 .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
@@ -143,7 +143,7 @@ public class DataSaveManager {
 
         String numberOfSignals = appendSpaces("1", 4);
         outStream.write(numberOfSignals.getBytes(characterSet));
-
+        //---------
         String chanelLabel = appendSpaces(headerData.getLabel(), 16);
         outStream.write(chanelLabel.getBytes(characterSet));
 
