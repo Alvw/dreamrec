@@ -76,7 +76,7 @@ public class DataSaveManager {
             while (true) {
                 model.addEyeData(inputStream.readShort());
                 model.addCh2Data(inputStream.readShort());
-               /* model.addAcc2Data(inputStream.readInt());
+                /* model.addAcc2Data(inputStream.readInt());
                 model.addAcc3Data(inputStream.readInt());*/
             }
         } catch (EOFException e) {
@@ -88,14 +88,17 @@ public class DataSaveManager {
         DataOutputStream outStream = null;
         try {
             outStream = new DataOutputStream(new FileOutputStream(file));
-            EdfHeaderData headerData = new EdfHeaderData();
-            writeEdfHeader(headerData, model, outStream);
-            for (int i = 0; i < model.getEyeDataList().size(); i++) {
-                Short bigEndianValue = model.getEyeDataList().get(i);
-                Short littleEndianValue =  ByteBuffer.allocate(2)
-                .order(ByteOrder.BIG_ENDIAN).putShort(bigEndianValue)
-                .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
-                outStream.writeShort(littleEndianValue);
+            EdfHeaderData headerData1 = new EdfHeaderData();
+            EdfHeaderData headerData2 = new EdfHeaderData();
+            headerData2.setLabel("EEG 2 chanel");
+            writeEdfHeader(model, outStream, headerData1, headerData2);
+            for (int j = 0; j < model.getEyeDataList().size() / 250; j++) {
+                for (int i = 0; i < 250; i++) {
+                    outStream.writeShort(toLittleEndian(model.getEyeDataList().get(i+j*250)));
+                }
+                for (int i = 0; i < 250; i++) {
+                    outStream.writeShort(toLittleEndian(model.getCh2DataList().get(i+j*250)));
+                }
             }
         } catch (Exception e) {
             log.error(e);
@@ -109,7 +112,13 @@ public class DataSaveManager {
         }
     }
 
-    private void writeEdfHeader(EdfHeaderData headerData, Model model, DataOutputStream outStream) throws IOException {
+    private Short toLittleEndian(Short value) {
+        return ByteBuffer.allocate(2)
+                .order(ByteOrder.BIG_ENDIAN).putShort(value)
+                .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
+    }
+
+    private void writeEdfHeader(Model model, DataOutputStream outStream, EdfHeaderData... headerData) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");
         Charset characterSet = Charset.forName("US-ASCII");
@@ -117,10 +126,10 @@ public class DataSaveManager {
         String version = appendSpaces("0", 8);
         outStream.write(version.getBytes(characterSet));
 
-        String localPatientIdentification = appendSpaces(headerData.getLocalPatientIdentification(), 80);
+        String localPatientIdentification = appendSpaces(headerData[0].getLocalPatientIdentification(), 80);
         outStream.write(localPatientIdentification.getBytes(characterSet));
 
-        String localRecordingIdentification = appendSpaces(headerData.getRecordingIdentification(), 80);
+        String localRecordingIdentification = appendSpaces(headerData[0].getRecordingIdentification(), 80);
         outStream.write(localRecordingIdentification.getBytes(characterSet));
 
         String startDateOfRecording = dateFormat.format(new Date(model.getStartTime()));
@@ -129,50 +138,70 @@ public class DataSaveManager {
         String startTimeOfRecording = timeFormat.format(new Date(model.getStartTime()));
         outStream.write(startTimeOfRecording.getBytes(characterSet));
 
-        String numberOfBytesInHeaderRecord = appendSpaces("512", 8);
+        String numberOfBytesInHeaderRecord = appendSpaces("768", 8);
         outStream.write(numberOfBytesInHeaderRecord.getBytes(characterSet));
 
         String reserved = appendSpaces("", 44);
         outStream.write(reserved.getBytes(characterSet));
 
-        String numberOfDataRecords = appendSpaces("-1", 8);
+        String numberOfDataRecords = appendSpaces(String.valueOf(model.getEyeDataList().size()/250), 8);
         outStream.write(numberOfDataRecords.getBytes(characterSet));
 
-        String durationOfADataRecord = appendSpaces(headerData.getDurationOfADataRecord(), 8);
+        String durationOfADataRecord = appendSpaces(headerData[0].getDurationOfADataRecord(), 8);
         outStream.write(durationOfADataRecord.getBytes(characterSet));
 
-        String numberOfSignals = appendSpaces("1", 4);
+        String numberOfSignals = appendSpaces(String.valueOf(headerData.length), 4);
         outStream.write(numberOfSignals.getBytes(characterSet));
         //---------
-        String chanelLabel = appendSpaces(headerData.getLabel(), 16);
-        outStream.write(chanelLabel.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String chanelLabel = appendSpaces(edfHeaderData.getLabel(), 16);
+            outStream.write(chanelLabel.getBytes(characterSet));
+        }
 
-        String transducerType = appendSpaces(headerData.getTransducerType(), 80);
-        outStream.write(transducerType.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String transducerType = appendSpaces(edfHeaderData.getTransducerType(), 80);
+            outStream.write(transducerType.getBytes(characterSet));
+        }
 
-        String physicalDimension = appendSpaces(headerData.getPhysicalDimension(), 8);
-        outStream.write(physicalDimension.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String physicalDimension = appendSpaces(edfHeaderData.getPhysicalDimension(), 8);
+            outStream.write(physicalDimension.getBytes(characterSet));
+        }
 
-        String physicalMinimum = appendSpaces(headerData.getPhysicalMinimum(), 8);
-        outStream.write(physicalMinimum.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String physicalMinimum = appendSpaces(edfHeaderData.getPhysicalMinimum(), 8);
+            outStream.write(physicalMinimum.getBytes(characterSet));
+        }
 
-        String physicalMaximum = appendSpaces(headerData.getPhysicalMaximum(), 8);
-        outStream.write(physicalMaximum.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String physicalMaximum = appendSpaces(edfHeaderData.getPhysicalMaximum(), 8);
+            outStream.write(physicalMaximum.getBytes(characterSet));
+        }
 
-        String digitalMinimum = appendSpaces(headerData.getDigitalMinimum(), 8);
-        outStream.write(digitalMinimum.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String digitalMinimum = appendSpaces(edfHeaderData.getDigitalMinimum(), 8);
+            outStream.write(digitalMinimum.getBytes(characterSet));
+        }
 
-        String digitalMaximum = appendSpaces(headerData.getDigitalMaximum(), 8);
-        outStream.write(digitalMaximum.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String digitalMaximum = appendSpaces(edfHeaderData.getDigitalMaximum(), 8);
+            outStream.write(digitalMaximum.getBytes(characterSet));
+        }
 
-        String prefiltering = appendSpaces(headerData.getPrefiltering(), 80);
-        outStream.write(prefiltering.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String prefiltering = appendSpaces(edfHeaderData.getPrefiltering(), 80);
+            outStream.write(prefiltering.getBytes(characterSet));
+        }
 
-        String nrOfSamplesInEachDataRecord = appendSpaces(headerData.getNrOfSamplesInEachDataRecord(), 8);
-        outStream.write(nrOfSamplesInEachDataRecord.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String nrOfSamplesInEachDataRecord = appendSpaces(edfHeaderData.getNrOfSamplesInEachDataRecord(), 8);
+            outStream.write(nrOfSamplesInEachDataRecord.getBytes(characterSet));
+        }
 
-        String reserved1 = appendSpaces("", 32);
-        outStream.write(reserved1.getBytes(characterSet));
+        for (EdfHeaderData edfHeaderData : headerData) {
+            String reserved1 = appendSpaces("", 32);
+            outStream.write(reserved1.getBytes(characterSet));
+        }
     }
 
     private String appendSpaces(String text, int fieldLength) {
