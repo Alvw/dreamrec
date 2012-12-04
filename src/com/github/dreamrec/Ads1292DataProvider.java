@@ -49,6 +49,7 @@ public class Ads1292DataProvider implements IDataProvider, FrameDecoderListener 
             comPort = ComPort.getInstance();
             comPort.addDataProvider(this);
             comPort.connect(applicationProperties.getComPortName());
+            comPort.writetoport("y".getBytes());
         } catch (Exception e) {
             log.error(e);
             throw new ApplicationException("EEG machine reading failure ", e);
