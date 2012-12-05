@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
 /**
  *
@@ -23,6 +24,8 @@ public class Controller {
     private boolean isAutoScroll = false;
      private HiPassPreFilter ch1PreFilter;
     private HiPassPreFilter ch2PreFilter;
+    private DataSaveManager dataSaveManager = new DataSaveManager();//todo delete
+    private DataOutputStream outputStream;
 
     public Controller(Model model, ApplicationProperties applicationProperties) {
         this.model = model;
@@ -31,6 +34,15 @@ public class Controller {
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
         ch1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
         ch2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
+        try {
+            outputStream = new DataOutputStream(new FileOutputStream("tralivali.edf"));    //todo refactor
+            EdfHeaderData headerData1 = new EdfHeaderData();
+            EdfHeaderData headerData2 = new EdfHeaderData();
+            headerData2.setLabel("EEG 2 chanel");
+            dataSaveManager.writeEdfHeader(model, outputStream, headerData1, headerData2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setMainWindow(MainWindow _mainWindow) {
@@ -50,6 +62,23 @@ public class Controller {
             ch2PreFilter.add(decodedFrame[2]);
             model.addEyeData(ch1PreFilter.poll());
             model.addCh2Data(ch2PreFilter.poll());
+            int size = model.getEyeDataList().size();
+            if(size%250 == 0){
+                for (int i = size - 250; i < size; i++) {
+                    try {
+                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getEyeDataList().get(i)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+                for (int i = size - 250; i < size; i++) {
+                    try {
+                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getCh2DataList().get(i)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+            }
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -111,6 +140,11 @@ public class Controller {
         dataProvider.stopRecording();
         repaintTimer.stop();
         isAutoScroll = false;
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace(); //todo refactor
+        }
     }
 
     public void changeXSize(int xSize) {
@@ -146,6 +180,11 @@ public class Controller {
 
     public void closeApplication() {
         applicationProperties.save();
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //todo refactor
+        }
     }
 
     public void setDataProvider(Provider provider) {

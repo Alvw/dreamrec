@@ -112,13 +112,13 @@ public class DataSaveManager {
         }
     }
 
-    private Short toLittleEndian(Short value) {
+    public Short toLittleEndian(Short value) {   //todo change to private
         return ByteBuffer.allocate(2)
                 .order(ByteOrder.BIG_ENDIAN).putShort(value)
                 .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
     }
 
-    private void writeEdfHeader(Model model, DataOutputStream outStream, EdfHeaderData... headerData) throws IOException {
+    public void writeEdfHeader(Model model, DataOutputStream outStream, EdfHeaderData... headerData) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");
         Charset characterSet = Charset.forName("US-ASCII");
