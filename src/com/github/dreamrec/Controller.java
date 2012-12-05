@@ -21,11 +21,16 @@ public class Controller {
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
+     private HiPassPreFilter ch1PreFilter;
+    private HiPassPreFilter ch2PreFilter;
 
     public Controller(Model model, ApplicationProperties applicationProperties) {
         this.model = model;
         this.applicationProperties = applicationProperties;
-
+        int frequencyDivider = applicationProperties.getFrequencyDivider();
+        int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
+        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
+        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
     }
 
     public void setMainWindow(MainWindow _mainWindow) {
@@ -39,20 +44,12 @@ public class Controller {
     }
 
     protected void updateModel() {
-        while (dataProvider.ch1Size() > 0) {
-            model.addEyeData(dataProvider.ch1Poll());
-        }
-        while (dataProvider.ch2Size() > 0) {
-            model.addCh2Data(dataProvider.ch2Poll());
-        }
-        while (dataProvider.acc1Size() > 0) {
-            model.addAcc1Data(dataProvider.acc1Poll());
-        }
-        while (dataProvider.acc2Size() > 0) {
-            model.addAcc2Data(dataProvider.acc2Poll());
-        }
-        while (dataProvider.acc3Size() > 0) {
-            model.addAcc3Data(dataProvider.acc3Poll());
+        while (dataProvider.size() >0){
+            int[] decodedFrame = dataProvider.poll();
+            ch1PreFilter.add(decodedFrame[1]);
+            ch2PreFilter.add(decodedFrame[2]);
+            model.addEyeData(ch1PreFilter.poll());
+            model.addCh2Data(ch2PreFilter.poll());
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();

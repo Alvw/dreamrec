@@ -5,9 +5,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -16,7 +16,7 @@ public class HiPassPreFilter {
 
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
-    private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
+    private Queue<Short> filteredData = new LinkedList<Short>();
     private int divider;
     private static final Log log = LogFactory.getLog(HiPassPreFilter.class);
 
@@ -42,10 +42,10 @@ public class HiPassPreFilter {
         }
         int filteredValue = value - (int) (rawDataBufferSum /rawData.size());
         if (filteredValue > Short.MAX_VALUE) {
-            log.warn("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
+            log.info("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
             filteredValue = Short.MAX_VALUE;
         } if (filteredValue < Short.MIN_VALUE) {
-            log.warn("Incoming value less than Short.MIN_VALUE: " + filteredValue);
+            log.info("Incoming value less than Short.MIN_VALUE: " + filteredValue);
             filteredValue = Short.MIN_VALUE;
         }
         filteredData.offer((short)filteredValue);

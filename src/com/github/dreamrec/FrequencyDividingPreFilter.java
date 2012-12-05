@@ -1,19 +1,14 @@
 package com.github.dreamrec;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
  */
 public class FrequencyDividingPreFilter {
     private int bufferSize;
-    private Queue<Short> filteredData = new ConcurrentLinkedQueue<Short>();
+    private Queue<Short> filteredData = new LinkedList<Short>();
     private int divider;
 
     public FrequencyDividingPreFilter(int divider) {
