@@ -109,6 +109,7 @@ public class MainWindow extends JFrame implements KeyListener{
             case KeyEvent.VK_Y   : ComPort.getInstance().writetoport("y".getBytes());   break;
             case KeyEvent.VK_N   : ComPort.getInstance().writetoport("n".getBytes());   break;
             case KeyEvent.VK_5   : ComPort.getInstance().writetoport("5".getBytes());   break;
+            case KeyEvent.VK_6   : ComPort.getInstance().writetoport("6".getBytes());   break;
             case KeyEvent.VK_2   : ComPort.getInstance().writetoport("2".getBytes());   break;
             case KeyEvent.VK_1   : ComPort.getInstance().writetoport("1".getBytes());   break;
        }
