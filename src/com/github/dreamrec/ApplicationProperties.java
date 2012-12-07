@@ -16,7 +16,6 @@ public class ApplicationProperties {
     private static final String X_SIZE = "xSize";
     private static final String DATA_PROVIDER = "dataProvider";
     public static final String DIRECTORY_NAME = "data_save_directory";
-    public static final String CHANEL = "chanel";
     public static final String DATA_FREQUENCY = "frequency";
     public static final String REPAINT_DELAY = "repaintDelay";
     public static final String COM_PORT_NAME = "comPort";
@@ -54,12 +53,8 @@ public class ApplicationProperties {
         return config.getInt(REPAINT_DELAY);
     }
 
-    public int getChanel(){
-        return config.getInt(CHANEL);
-    }
-
-    public double getIncomingDataFrequency(){
-        return config.getDouble(DATA_FREQUENCY);
+    public int getIncomingDataFrequency(){
+        return config.getInt(DATA_FREQUENCY);
     }
 
     public Provider getDataProvider() {

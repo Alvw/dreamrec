@@ -38,7 +38,7 @@ public class DataSaveManager {
 
     private void saveStateToStream(DataOutputStream outStream, Model model) throws IOException {
         outStream.writeLong(model.getStartTime());
-        outStream.writeDouble(model.getFrequency());
+        outStream.writeInt(model.getFrequency());
         for (int i = 0; i < model.getEyeDataList().size(); i++) {
             outStream.writeShort(model.getEyeDataList().get(i).intValue());
             outStream.writeShort(model.getCh2DataList().get(i).intValue());
@@ -69,7 +69,7 @@ public class DataSaveManager {
     private void loadStateFromInStream(DataInputStream inputStream, Model model) throws IOException {
         try {
             long startTime = inputStream.readLong();
-            double frequency = inputStream.readDouble();
+            int frequency = inputStream.readInt();
             model.clear();
             model.setFrequency(frequency);
             model.setStartTime(startTime);

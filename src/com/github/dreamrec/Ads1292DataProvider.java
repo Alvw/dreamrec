@@ -16,7 +16,7 @@ public class Ads1292DataProvider implements IDataProvider{
     private static final Log log = LogFactory.getLog(Ads1292DataProvider.class);
     private long startTime;
     private long stopTime;
-    private double dataFrequency;
+    private int dataFrequency;
     private FrameDecoder frameDecoder = new FrameDecoder();
     private ApplicationProperties applicationProperties;
 
@@ -52,7 +52,7 @@ public class Ads1292DataProvider implements IDataProvider{
 //        log.info("Real incoming data frequency = " + totalFrames * 1000.0 / (stopTime - startTime));
     }
 
-    public double getIncomingDataFrequency() {
+    public int getIncomingDataFrequency() {
         return dataFrequency;
     }
 

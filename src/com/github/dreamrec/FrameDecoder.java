@@ -35,8 +35,8 @@ public class FrameDecoder {
     private void onFrameReceived() {
         int[] decodedFrame = new int[3];
         decodedFrame[0] = rawFrame[1];
-        decodedFrame[1] = ((rawFrame[2] << 24) + ((rawFrame[3]) << 16) + (rawFrame[4] << 8)) / 256;
-        decodedFrame[2] = ((rawFrame[5] << 24) + ((rawFrame[6]) << 16) + (rawFrame[7] << 8)) / 256;
+        decodedFrame[1] = ((rawFrame[2] << 24) + ((rawFrame[3]) << 16) + (rawFrame[4] << 8)) / 1024;
+        decodedFrame[2] = ((rawFrame[5] << 24) + ((rawFrame[6]) << 16) + (rawFrame[7] << 8)) / 1024;
         decodedFramesQueue.offer(decodedFrame);
         /*decodedFrame[3] = (rawFrame[6] * 256 + rawFrame[5])-512;
         decodedFrame[4] = (rawFrame[8] * 256 + rawFrame[7])-512;

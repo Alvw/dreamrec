@@ -7,7 +7,7 @@ public interface IDataProvider {
 
     void startRecording() throws ApplicationException;
     void stopRecording();
-    double getIncomingDataFrequency();
+    int getIncomingDataFrequency();
     long getStartTime();
     int size();
     int[] poll();

@@ -31,24 +31,30 @@ public class HiPassPreFilter {
 
     public void add(int value) {
         rawData.add(value);
-        if (rawData.size() == bufferSize+1) {
+        if (rawData.size() == bufferSize + 1) {
             rawData.remove(0);
-        } else if (rawData.size()>bufferSize+1){
-            throw new IllegalStateException("bufferSize exceeds maximum value: "+ rawData.size());
+        } else if (rawData.size() > bufferSize + 1) {
+            throw new IllegalStateException("bufferSize exceeds maximum value: " + rawData.size());
         }
         long rawDataBufferSum = 0;
-        for (Integer val : rawData) {
-            rawDataBufferSum+=val;
+
+        for (int i = 0; i < rawData.size(); i++) {
+            rawDataBufferSum += rawData.get(i) * i;
         }
-        int filteredValue = value - (int) (rawDataBufferSum /rawData.size());
+        int filteredValue = value;
+        int rawDataSize = rawData.size();
+        if (rawDataSize > 1) {
+            filteredValue = value - (int) (rawDataBufferSum * 2 / (rawData.size() * (rawData.size() - 1)));
+        }
         if (filteredValue > Short.MAX_VALUE) {
             log.info("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
             filteredValue = Short.MAX_VALUE;
-        } if (filteredValue < Short.MIN_VALUE) {
+        }
+        if (filteredValue < Short.MIN_VALUE) {
             log.info("Incoming value less than Short.MIN_VALUE: " + filteredValue);
             filteredValue = Short.MIN_VALUE;
         }
-        filteredData.offer((short)filteredValue);
+        filteredData.offer((short) filteredValue);
 //        filteredData.offer(value);
     }
 
@@ -57,6 +63,6 @@ public class HiPassPreFilter {
         for (int i = 0; i < divider; i++) {
             sum += filteredData.poll();
         }
-        return (short)(sum / divider);
+        return (short) (sum / divider);
     }
 }

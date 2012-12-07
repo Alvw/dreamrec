@@ -84,6 +84,6 @@ public abstract class GComponentModel implements ITimePainterModel, IGraphPainte
 
     public abstract int getStartIndex();
 
-    public abstract double getFrequency();
+    public abstract int getFrequency();
 
 }

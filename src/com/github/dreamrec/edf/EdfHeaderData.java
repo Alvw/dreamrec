@@ -11,8 +11,8 @@ public class EdfHeaderData {
     private String label = "EEG 1 chanel";
     private String transducerType = "AgAgCl cup electrodes";
     private String physicalDimension = "uV";
-    private String physicalMinimum = "-1576";
-    private String physicalMaximum = "1576";
+    private String physicalMinimum = "-6304";
+    private String physicalMaximum = "6304";
     private String digitalMinimum = "-32767";
     private String digitalMaximum = "32767";
     private String prefiltering = "HP:0.05Hz LP:250Hz N:50Hz";

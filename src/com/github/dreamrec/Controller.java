@@ -36,8 +36,11 @@ public class Controller {
         ch2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
         try {
             outputStream = new DataOutputStream(new FileOutputStream("tralivali.edf"));    //todo refactor
+            int frequency = applicationProperties.getIncomingDataFrequency();
             EdfHeaderData headerData1 = new EdfHeaderData();
+            headerData1.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
             EdfHeaderData headerData2 = new EdfHeaderData();
+            headerData2.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
             headerData2.setLabel("EEG 2 chanel");
             dataSaveManager.writeEdfHeader(model, outputStream, headerData1, headerData2);
         } catch (Exception e) {
@@ -63,15 +66,16 @@ public class Controller {
             model.addEyeData(ch1PreFilter.poll());
             model.addCh2Data(ch2PreFilter.poll());
             int size = model.getEyeDataList().size();
-            if(size%250 == 0){
-                for (int i = size - 250; i < size; i++) {
+            int frequency = applicationProperties.getIncomingDataFrequency();
+            if(size%frequency == 0){
+                for (int i = size - frequency; i < size; i++) {
                     try {
                         outputStream.writeShort(dataSaveManager.toLittleEndian(model.getEyeDataList().get(i)));
                     } catch (IOException e) {
                         e.printStackTrace();  //todo refactor
                     }
                 }
-                for (int i = size - 250; i < size; i++) {
+                for (int i = size - frequency; i < size; i++) {
                     try {
                         outputStream.writeShort(dataSaveManager.toLittleEndian(model.getCh2DataList().get(i)));
                     } catch (IOException e) {

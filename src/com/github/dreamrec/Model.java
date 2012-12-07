@@ -15,7 +15,7 @@ public class Model {
     private DataList<Short> acc2DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
     private DataList<Short> acc3DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
 
-    private double frequency; //frequency Hz of the incoming data (for fast graphics)
+    private int frequency = 250; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
@@ -60,7 +60,7 @@ public class Model {
         acc3DataList.add(data);
     }
 
-    public double getFrequency() {
+    public int getFrequency() {
         return frequency;
     }
 
@@ -76,7 +76,7 @@ public class Model {
         return slowGraphIndex;
     }
 
-    public void setFrequency(double frequency) {
+    public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
 
