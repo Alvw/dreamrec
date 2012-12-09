@@ -42,7 +42,7 @@ public class ComPort implements SerialPortEventListener {
             inputStream = serialPort.getInputStream();
             serialPort.addEventListener(this);
             serialPort.notifyOnDataAvailable(true);
-            serialPort.setSerialPortParams(115200, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+            serialPort.setSerialPortParams(230400, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
             outputStream = serialPort.getOutputStream();
             serialPort.notifyOnOutputEmpty(true);
             isConnected = true;
@@ -78,6 +78,7 @@ public class ComPort implements SerialPortEventListener {
             log.error(e);
         }
         serialPort.close();
+        serialPort.removeEventListener();
         isConnected = false;
     }
 
