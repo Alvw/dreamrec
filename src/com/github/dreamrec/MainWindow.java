@@ -2,7 +2,6 @@ package com.github.dreamrec;
 
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentView;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,17 +102,18 @@ public class MainWindow extends JFrame implements KeyListener{
 
     public void keyPressed(KeyEvent e) {
        switch (e.getKeyCode()) {
-            case KeyEvent.VK_T : ComPort.getInstance().writetoport("t".getBytes());   break;
-            case KeyEvent.VK_I: ComPort.getInstance().writetoport("i".getBytes()); break;
-            case KeyEvent.VK_S   : ComPort.getInstance().writetoport("s".getBytes());   break;
-            case KeyEvent.VK_Y   : ComPort.getInstance().writetoport("y".getBytes());   break;
-            case KeyEvent.VK_N   : ComPort.getInstance().writetoport("n".getBytes());   break;
-            case KeyEvent.VK_4   : ComPort.getInstance().writetoport("4".getBytes());   break;
-            case KeyEvent.VK_5   : ComPort.getInstance().writetoport("5".getBytes());   break;
-            case KeyEvent.VK_6   : ComPort.getInstance().writetoport("6".getBytes());   break;
-            case KeyEvent.VK_7   : ComPort.getInstance().writetoport("7".getBytes());   break;
-            case KeyEvent.VK_2   : ComPort.getInstance().writetoport("2".getBytes());   break;
-            case KeyEvent.VK_1   : ComPort.getInstance().writetoport("1".getBytes());   break;
+            case KeyEvent.VK_T : ComPort.getInstance().writeToPort("t".getBytes());   break;
+            case KeyEvent.VK_I: ComPort.getInstance().writeToPort("i".getBytes()); break;
+            case KeyEvent.VK_S   : ComPort.getInstance().writeToPort("s".getBytes());   break;
+            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort("y".getBytes());   break;
+            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort("n".getBytes());   break;
+            case KeyEvent.VK_4   : ComPort.getInstance().writeToPort("4".getBytes());   break;
+            case KeyEvent.VK_5   : ComPort.getInstance().writeToPort("5".getBytes());   break;
+            case KeyEvent.VK_6   : ComPort.getInstance().writeToPort("6".getBytes());   break;
+            case KeyEvent.VK_7   : ComPort.getInstance().writeToPort("7".getBytes());   break;
+            case KeyEvent.VK_2   : ComPort.getInstance().writeToPort("2".getBytes());   break;
+            case KeyEvent.VK_1   : ComPort.getInstance().writeToPort("1".getBytes());   break;
+            case KeyEvent.VK_R   : ComPort.getInstance().writeToPort("r".getBytes());   break;
        }
     }
 

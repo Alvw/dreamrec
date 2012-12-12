@@ -1,5 +1,6 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfHeaderData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -185,6 +186,7 @@ public class Controller {
     public void closeApplication() {
         applicationProperties.save();
         try {
+            dataProvider.stopRecording();
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();  //todo refactor

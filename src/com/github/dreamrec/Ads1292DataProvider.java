@@ -32,7 +32,7 @@ public class Ads1292DataProvider implements IDataProvider{
             comPort = ComPort.getInstance();
             comPort.addDataProvider(this);
             comPort.connect(applicationProperties.getComPortName());
-            comPort.writetoport("y".getBytes());
+//            comPort.writeToPort("y".getBytes());
         } catch (Exception e) {
             log.error(e);
             throw new ApplicationException("EEG machine reading failure ", e);
@@ -43,9 +43,9 @@ public class Ads1292DataProvider implements IDataProvider{
 
     public void stopRecording() {
         stopTime = System.currentTimeMillis();
-        comPort.writetoport("n".getBytes());
-        comPort.writetoport("s".getBytes());
-        comPort.writetoport("1".getBytes());
+//        comPort.writeToPort("n".getBytes());
+//        comPort.writeToPort("s".getBytes());
+//        comPort.writeToPort("1".getBytes());
         comPort.disconnect();
         log.info("StopTime: " + new Date(stopTime));
         log.info("Predefined data frequency = " + dataFrequency);
