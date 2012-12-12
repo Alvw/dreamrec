@@ -138,7 +138,7 @@ public class DataSaveManager {
         String startTimeOfRecording = timeFormat.format(new Date(model.getStartTime()));
         outStream.write(startTimeOfRecording.getBytes(characterSet));
 
-        String numberOfBytesInHeaderRecord = appendSpaces("768", 8);
+        String numberOfBytesInHeaderRecord = appendSpaces("1536", 8);
         outStream.write(numberOfBytesInHeaderRecord.getBytes(characterSet));
 
         String reserved = appendSpaces("", 44);

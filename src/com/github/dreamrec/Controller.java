@@ -25,6 +25,9 @@ public class Controller {
     private boolean isAutoScroll = false;
      private HiPassPreFilter ch1PreFilter;
     private HiPassPreFilter ch2PreFilter;
+    private HiPassPreFilter acc1PreFilter;
+    private HiPassPreFilter acc2PreFilter;
+    private HiPassPreFilter acc3PreFilter;
     private DataSaveManager dataSaveManager = new DataSaveManager();//todo delete
     private DataOutputStream outputStream;
 
@@ -35,15 +38,33 @@ public class Controller {
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
         ch1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
         ch2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
+        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
+        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
         try {
             outputStream = new DataOutputStream(new FileOutputStream("tralivali.edf"));    //todo refactor
             int frequency = applicationProperties.getIncomingDataFrequency();
             EdfHeaderData headerData1 = new EdfHeaderData();
             headerData1.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
+
             EdfHeaderData headerData2 = new EdfHeaderData();
             headerData2.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
             headerData2.setLabel("EEG 2 chanel");
-            dataSaveManager.writeEdfHeader(model, outputStream, headerData1, headerData2);
+
+            EdfHeaderData headerData3 = new EdfHeaderData();
+            headerData3.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
+            headerData3.setLabel("Accel X ");
+
+            EdfHeaderData headerData4 = new EdfHeaderData();
+            headerData4.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
+            headerData4.setLabel("Accel Y");
+
+            EdfHeaderData headerData5 = new EdfHeaderData();
+            headerData5.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
+            headerData5.setLabel("Accel Z");
+
+
+            dataSaveManager.writeEdfHeader(model, outputStream, headerData1, headerData2, headerData3, headerData4, headerData5);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,11 +85,17 @@ public class Controller {
             int[] decodedFrame = dataProvider.poll();
             ch1PreFilter.add(decodedFrame[1]);
             ch2PreFilter.add(decodedFrame[2]);
+            acc1PreFilter.add(decodedFrame[3]);
+            acc2PreFilter.add(decodedFrame[4]);
+            acc3PreFilter.add(decodedFrame[5]);
             model.addEyeData(ch1PreFilter.poll());
             model.addCh2Data(ch2PreFilter.poll());
-            model.addAcc1Data((short)decodedFrame[3]);
+            model.addAcc1Data(acc1PreFilter.poll());
+            model.addAcc2Data(acc2PreFilter.poll());
+            model.addAcc3Data(acc3PreFilter.poll());
+           /* model.addAcc1Data((short)decodedFrame[3]);
             model.addAcc2Data((short)decodedFrame[4]);
-            model.addAcc3Data((short)decodedFrame[5]);
+            model.addAcc3Data((short)decodedFrame[5]);*/
             int size = model.getEyeDataList().size();
             int frequency = applicationProperties.getIncomingDataFrequency();
             if(size%frequency == 0){
@@ -82,6 +109,27 @@ public class Controller {
                 for (int i = size - frequency; i < size; i++) {
                     try {
                         outputStream.writeShort(dataSaveManager.toLittleEndian(model.getCh2DataList().get(i)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+                for (int i = size - frequency; i < size; i++) {
+                    try {
+                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc1DataList().get(i)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+                for (int i = size - frequency; i < size; i++) {
+                    try {
+                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc2DataList().get(i)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+                for (int i = size - frequency; i < size; i++) {
+                    try {
+                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc3DataList().get(i)));
                     } catch (IOException e) {
                         e.printStackTrace();  //todo refactor
                     }
