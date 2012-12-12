@@ -2,7 +2,8 @@ package com.github.dreamrec;
 
 import javax.swing.*;
 
-public class MainMenu extends JMenuBar {
+public class
+        MainMenu extends JMenuBar {
 
     private ActionMap actionMap;
     private  ApplicationProperties applicationProperties;

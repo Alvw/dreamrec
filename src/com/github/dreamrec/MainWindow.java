@@ -48,9 +48,9 @@ public class MainWindow extends JFrame implements KeyListener{
 
        // Filter<Short> fastDreamView = new FirstDerivativeAbsFilter(model.getEyeDataList());
        // mainPanel.add(Factory.getGComponentView(fastDreamView, model, controller));
-        /*GComponentView acc1DataView = Factory.getGComponentView(model, controller, model.getAcc1DataList(), model.getAcc2DataList(), model.getAcc3DataList());
+        GComponentView acc1DataView = Factory.getGComponentView(model, controller, model.getAcc1DataList(), model.getAcc2DataList(), model.getAcc3DataList());
         mainPanel.add(acc1DataView);
-        acc1DataView.getComponentModel().centreX();*/
+        acc1DataView.getComponentModel().centreX();
 
 //        GComponentView eyeDataView = Factory.getGComponentView(model, controller, new FirstDerivativeAbsFilter(model.getEyeDataList()));
         GComponentView eyeDataView = Factory.getGComponentView(model, controller, new LoPassFilter(applicationProperties.getLoPassBufferSize(),model.getEyeDataList()));

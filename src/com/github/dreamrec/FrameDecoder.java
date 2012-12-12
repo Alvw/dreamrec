@@ -10,10 +10,11 @@ public class FrameDecoder {
 
     private int frameIndex;
 
-    public static final int FRAME_SIZE = 8;   //Frame size for 2 chanels
+    public static final int FRAME_SIZE = 14;   //Frame size for 2 chanels and accelerometer
     private int[] rawFrame = new int[FRAME_SIZE];
     private Queue<int[]> decodedFramesQueue = new ConcurrentLinkedQueue<int[]>();
     private static final Log log = LogFactory.getLog(FrameDecoder.class);
+    private int frameCounter;
 
     public void addByte(int inByte) {
         if (frameIndex == 0 && inByte == 192) {
@@ -33,14 +34,19 @@ public class FrameDecoder {
     }
 
     private void onFrameReceived() {
-        int[] decodedFrame = new int[3];
+        int[] decodedFrame = new int[6];
+        if(Math.abs(rawFrame[1] - frameCounter) > 1){
+            System.out.println("lost frame. prev = " + frameCounter + "cur = " + rawFrame[1]);
+        }
+        frameCounter = rawFrame[1];
         decodedFrame[0] = rawFrame[1];
         decodedFrame[1] = ((rawFrame[2] << 24) + ((rawFrame[3]) << 16) + (rawFrame[4] << 8)) / 1024;
         decodedFrame[2] = ((rawFrame[5] << 24) + ((rawFrame[6]) << 16) + (rawFrame[7] << 8)) / 1024;
+
+        decodedFrame[3] = (rawFrame[9] * 256 + rawFrame[8])-512;
+        decodedFrame[4] = (rawFrame[11] * 256 + rawFrame[10])-512;
+        decodedFrame[5] = (rawFrame[13] * 256 + rawFrame[12])-512;
         decodedFramesQueue.offer(decodedFrame);
-        /*decodedFrame[3] = (rawFrame[6] * 256 + rawFrame[5])-512;
-        decodedFrame[4] = (rawFrame[8] * 256 + rawFrame[7])-512;
-        decodedFrame[5] = (rawFrame[10] * 256 + rawFrame[9])-512;*/
     }
 
     public int size(){
