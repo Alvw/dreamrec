@@ -38,13 +38,13 @@ public class DataSaveManager {
 
     private void saveStateToStream(DataOutputStream outStream, Model model) throws IOException {
         outStream.writeLong(model.getStartTime());
-        outStream.writeInt(model.getFrequency());
+        outStream.writeDouble(model.getFrequency());
         for (int i = 0; i < model.getEyeDataList().size(); i++) {
             outStream.writeShort(model.getEyeDataList().get(i).intValue());
             outStream.writeShort(model.getCh2DataList().get(i).intValue());
-            /*outStream.writeInt(model.getAcc1DataList().get(i).intValue());
-            outStream.writeInt(model.getAcc2DataList().get(i).intValue());
-            outStream.writeInt(model.getAcc3DataList().get(i).intValue());*/
+            outStream.writeShort(model.getAcc1DataList().get(i).intValue());
+            outStream.writeShort(model.getAcc2DataList().get(i).intValue());
+            outStream.writeShort(model.getAcc3DataList().get(i).intValue());
         }
     }
 
@@ -69,15 +69,16 @@ public class DataSaveManager {
     private void loadStateFromInStream(DataInputStream inputStream, Model model) throws IOException {
         try {
             long startTime = inputStream.readLong();
-            int frequency = inputStream.readInt();
+            double frequency = inputStream.readDouble();
             model.clear();
             model.setFrequency(frequency);
             model.setStartTime(startTime);
             while (true) {
                 model.addEyeData(inputStream.readShort());
                 model.addCh2Data(inputStream.readShort());
-                /* model.addAcc2Data(inputStream.readInt());
-                model.addAcc3Data(inputStream.readInt());*/
+                model.addAcc1Data(inputStream.readShort());
+                model.addAcc2Data(inputStream.readShort());
+                model.addAcc3Data(inputStream.readShort());
             }
         } catch (EOFException e) {
             log.info("End of file");
@@ -91,13 +92,47 @@ public class DataSaveManager {
             EdfHeaderData headerData1 = new EdfHeaderData();
             EdfHeaderData headerData2 = new EdfHeaderData();
             headerData2.setLabel("EEG 2 chanel");
-            writeEdfHeader(model, outStream, headerData1, headerData2);
+
+            EdfHeaderData headerData3 = new EdfHeaderData();
+            headerData3.setNrOfSamplesInEachDataRecord(String.valueOf((int)model.getFrequency()));
+            headerData3.setLabel("Accel X ");
+
+            EdfHeaderData headerData4 = new EdfHeaderData();
+            headerData4.setNrOfSamplesInEachDataRecord(String.valueOf((int)model.getFrequency()));
+            headerData4.setLabel("Accel Y");
+
+            EdfHeaderData headerData5 = new EdfHeaderData();
+            headerData5.setNrOfSamplesInEachDataRecord(String.valueOf((int)model.getFrequency()));
+            headerData5.setLabel("Accel Z");
+
+            writeEdfHeader(model, outStream, headerData1, headerData2, headerData3, headerData4, headerData5);
             for (int j = 0; j < model.getEyeDataList().size() / 250; j++) {
                 for (int i = 0; i < 250; i++) {
                     outStream.writeShort(toLittleEndian(model.getEyeDataList().get(i+j*250)));
                 }
                 for (int i = 0; i < 250; i++) {
                     outStream.writeShort(toLittleEndian(model.getCh2DataList().get(i+j*250)));
+                }
+                 for (int i = 0; i < 250; i++) {
+                    try {
+                        outStream.writeShort(toLittleEndian(model.getAcc1DataList().get(i+j*250)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+                for (int i = 0; i < 250; i++) {
+                    try {
+                        outStream.writeShort(toLittleEndian(model.getAcc2DataList().get(i+j*250)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
+                }
+               for (int i = 0; i < 250; i++) {
+                    try {
+                        outStream.writeShort(toLittleEndian(model.getAcc3DataList().get(i+j*250)));
+                    } catch (IOException e) {
+                        e.printStackTrace();  //todo refactor
+                    }
                 }
             }
         } catch (Exception e) {

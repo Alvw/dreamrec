@@ -7,7 +7,7 @@ public interface ITimePainterModel {
     /**
      * number of data points per SECOND
      */
-    public int getFrequency();
+    public double getFrequency();
     /**
      * in milliseconds
      */

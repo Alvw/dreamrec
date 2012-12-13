@@ -28,7 +28,7 @@ public class GComponentSlowModel extends GComponentModel implements ICursorPaint
     }
 
     @Override
-    public int getFrequency() {
+    public double getFrequency() {
         return model.getFrequency()/Model.DIVIDER;
     }
 

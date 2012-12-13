@@ -93,9 +93,6 @@ public class Controller {
             model.addAcc1Data(acc1PreFilter.poll());
             model.addAcc2Data(acc2PreFilter.poll());
             model.addAcc3Data(acc3PreFilter.poll());
-           /* model.addAcc1Data((short)decodedFrame[3]);
-            model.addAcc2Data((short)decodedFrame[4]);
-            model.addAcc3Data((short)decodedFrame[5]);*/
             int size = model.getEyeDataList().size();
             int frequency = applicationProperties.getIncomingDataFrequency();
             if(size%frequency == 0){

@@ -18,7 +18,7 @@ public class GComponentFastModel extends GComponentModel{
     }
 
     @Override
-    public int getFrequency() {
+    public double getFrequency() {
         return model.getFrequency();
     }
 

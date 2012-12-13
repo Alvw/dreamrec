@@ -8,14 +8,14 @@ import java.util.List;
  */
 public class Model {
     private int xSize; //data points per screen.
-    public static final int DIVIDER = 120; //frequency divider for slow graphics
+    public static final int DIVIDER = 3000; //frequency divider for slow graphics
     private DataList<Short> eyeDataList = new DataList<Short>();   //list with prefiltered incoming data of eye movements
     private DataList<Short> chanel2DataList = new DataList<Short>();   //list with prefiltered incoming chanel2 data
     private DataList<Short> acc1DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
     private DataList<Short> acc2DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
     private DataList<Short> acc3DataList = new DataList<Short>();   //list with accelerometer 1 chanel data
 
-    private int frequency = 250; //frequency Hz of the incoming data (for fast graphics)
+    private double frequency = 250; //frequency Hz of the incoming data (for fast graphics)
     private long startTime; //time when data recording was started
     private int fastGraphIndex; //index for the first point on a screen for fast graphics
     private int slowGraphIndex; //index for the first point on a screen for slow graphics
@@ -60,7 +60,7 @@ public class Model {
         acc3DataList.add(data);
     }
 
-    public int getFrequency() {
+    public double getFrequency() {
         return frequency;
     }
 
@@ -76,7 +76,7 @@ public class Model {
         return slowGraphIndex;
     }
 
-    public void setFrequency(int frequency) {
+    public void setFrequency(double frequency) {
         this.frequency = frequency;
     }
 
