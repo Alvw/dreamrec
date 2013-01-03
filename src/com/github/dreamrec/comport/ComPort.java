@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ComPort {
 
-//    private Timer checkConnectionTimer;
+    //    private Timer checkConnectionTimer;
     private static Log log = LogFactory.getLog(ComPort.class);
     private InputStream inputStream;
     private OutputStream outputStream;
@@ -25,6 +25,8 @@ public class ComPort {
     CommPort commPort;
     SerialReader serialReader;
     Thread serialReaderThread;
+    SerialWriter serialWriter;
+    Thread serialWriterThread;
 
     private ComPort() {
 
@@ -50,8 +52,11 @@ public class ComPort {
                 outputStream = serialPort.getOutputStream();
                 isConnected = true;
                 serialReader = new SerialReader(inputStream, dataProvider);
-                serialReaderThread =new Thread(serialReader);
+                serialReaderThread = new Thread(serialReader);
                 serialReaderThread.start();
+                serialWriter = new SerialWriter(outputStream);
+                serialWriterThread = new Thread(serialWriter);
+                serialWriterThread.start();
             } else {
                 System.out.println("Error: Only serial ports are handled by this example.");
             }
@@ -64,9 +69,11 @@ public class ComPort {
             return;
         try {
             isConnected = false;
-            serialReader.stopReading();
+            serialReader.disconnect();
+            serialWriter.disconnect();
             try {
                 serialReaderThread.join();
+                serialWriterThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -80,7 +87,11 @@ public class ComPort {
     }
 
     public void writeToPort(byte[] bytes) {
-        (new Thread(new SerialWriter(outputStream, bytes))).start();
+        List<Byte> dataList = new ArrayList<Byte>();
+        for (int i = 0; i < bytes.length; i++) {
+            dataList.add(bytes[i]);
+        }
+        serialWriter.write(dataList);
     }
 
     public void addDataProvider(Ads1292DataProvider dataProvider) {
@@ -88,7 +99,7 @@ public class ComPort {
     }
 
     public static class SerialReader implements Runnable {
-        private boolean isRecording = true;
+        private boolean isConnected = true;
         private InputStream in;
         Ads1292DataProvider dataProvider;
 
@@ -97,23 +108,23 @@ public class ComPort {
             this.dataProvider = dataProvider;
         }
 
-        public void stopReading() {
-            isRecording = false;
+        public void disconnect() {
+            isConnected = false;
         }
 
         public void run() {
             int len = -1;
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[8];
             try {
-                while (isRecording) {
+                while (isConnected) {
                     len = this.in.read(buf);
-                    if (len != -1) {
+                    while (isConnected && (len = this.in.read(buf)) > -1) {
+//                        System.out.print(new String(buf,0,len));
                         for (int i = 0; i < len; i++) {
                             dataProvider.receiveSample((buf[i] & 0xFF));
                         }
-                    } else {
-                        Thread.sleep(100);
                     }
+                    Thread.sleep(100);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -123,18 +134,56 @@ public class ComPort {
 
     public static class SerialWriter implements Runnable {
         private OutputStream out;
-        byte[] data;
+        List<Byte> data = new ArrayList<Byte>();
+        boolean isConnected = true;
+        boolean isDataReady = false;
 
-        public SerialWriter(OutputStream out, byte[] data) {
+        public SerialWriter(OutputStream out) {
             this.out = out;
-            this.data = data;
+        }
+
+        public void write(List<Byte> dataList) {
+            synchronized (data) {
+                data.clear();
+                for (Byte aByte : dataList) {
+                    data.add(aByte);
+                }
+                isDataReady = true;
+                data.notifyAll();
+            }
         }
 
         public void run() {
-            try {
-                out.write(data);
-            } catch (Exception e) {
-                e.printStackTrace();
+            synchronized (data) {
+                while (isConnected) {
+                    while (!isDataReady) {
+                        try {
+                            data.wait();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    byte[] outData = new byte[data.size()];
+                    for (int i = 0; i < outData.length; i++) {
+                        outData[i] = data.get(i);
+                    }
+                    try {
+                        if (isConnected) {
+                            out.write(outData);
+                            isDataReady = false;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        public void disconnect() {
+            isConnected = false;
+            isDataReady = true;
+            synchronized (data) {
+                data.notifyAll();
             }
         }
     }

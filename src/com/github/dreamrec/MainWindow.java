@@ -104,19 +104,56 @@ public class MainWindow extends JFrame implements KeyListener{
 
     public void keyPressed(KeyEvent e) {
        switch (e.getKeyCode()) {
-            case KeyEvent.VK_T : ComPort.getInstance().writeToPort("t".getBytes());   break;
+            case KeyEvent.VK_T :
+                byte[] command = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
+                0x04,0x12,0x2A,0x33,(byte)0xF3,  //test signal
+                0x04,0x14,0x20,0x35,(byte)0xF3, //ch1 for test signal
+                0x01,0x10,(byte)0xF2};  //start continious
+                sendByteSequenceToCom(command);
+                break;
             case KeyEvent.VK_I: ComPort.getInstance().writeToPort("i".getBytes()); break;
             case KeyEvent.VK_S   : ComPort.getInstance().writeToPort("s".getBytes());   break;
-            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort("y".getBytes());   break;
-            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort("n".getBytes());   break;
-            case KeyEvent.VK_4   : ComPort.getInstance().writeToPort("4".getBytes());   break;
-            case KeyEvent.VK_5   : ComPort.getInstance().writeToPort("5".getBytes());   break;
-            case KeyEvent.VK_6   : ComPort.getInstance().writeToPort("6".getBytes());   break;
+            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort(new byte[]{(byte)0xF0});   break;
+            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort(new byte[]{(byte)0xF1});   break;
+            case KeyEvent.VK_4   :
+                byte[] command0 = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
+                        0x04,0x11,0x20,0x31,(byte)0xF3,  //sps 500
+                        0x01,0x10,(byte)0xF2};  //start continious
+                sendByteSequenceToCom(command0);
+                break;
+            case KeyEvent.VK_5   :
+                byte[] command1 = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
+                        0x04,0x11,0x20,0x32,(byte)0xF3,  //sps 500
+                        0x01,0x10,(byte)0xF2};  //start continious
+                sendByteSequenceToCom(command1);
+                break;
+            case KeyEvent.VK_6   :
+                byte[] command2 = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
+                        0x04,0x11,0x20,0x33,(byte)0xF3,  //sps 1000
+                        0x01,0x10,(byte)0xF2};  //start continious
+                sendByteSequenceToCom(command2);
+                break;
             case KeyEvent.VK_7   : ComPort.getInstance().writeToPort("7".getBytes());   break;
             case KeyEvent.VK_2   : ComPort.getInstance().writeToPort("2".getBytes());   break;
             case KeyEvent.VK_1   : ComPort.getInstance().writeToPort("1".getBytes());   break;
             case KeyEvent.VK_R   : ComPort.getInstance().writeToPort("r".getBytes());   break;
-       }
+           case KeyEvent.VK_X    :
+               /*byte[] command3 = new byte[]{(byte)0xF7};  //start continious
+               sendByteSequenceToCom(command3);*/
+               ComPort.getInstance().writeToPort("abcdefgh".getBytes());
+               break;
+    }
+    }
+    private void sendByteSequenceToCom(byte[] seq){
+       /* for (int i = 0; i < seq.length; i++) {
+            byte b = seq[i];*/
+            ComPort.getInstance().writeToPort(seq);
+           /* try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }*/
+//        }
     }
 
 
