@@ -187,4 +187,8 @@ public class ComPort {
             }
         }
     }
+
+    public void sendCommand(byte code, byte... params){
+
+    }
 }
