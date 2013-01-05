@@ -1,5 +1,8 @@
 package com.github.dreamrec.comport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  */
@@ -17,50 +20,51 @@ public class AdsManager {
 
     private ComPort comPort = ComPort.getInstance();
 
-    private void write(int code){
-        comPort.writeToPort(new byte[]{(byte)code});
+    private List<Byte> write(int code){
+        List<Byte> result = new ArrayList<Byte>();
+        result.add((byte)code);
+        return result;
     }
 
-    private void write(int param, int code){
-        byte[] commandFrame = new byte[3];
-        commandFrame[0] = (byte) (BYTE_0_MARKER | (param >> 4));
-        commandFrame[1] = (byte) (BYTE_1_MARKER | (param & 0x0F));
-        commandFrame[2] = (byte)code;
-        comPort.writeToPort(commandFrame);
+    private List<Byte> write(int param, int code){
+        List<Byte> result = new ArrayList<Byte>();
+        result.add((byte) (BYTE_0_MARKER | (param >> 4)));
+        result.add((byte) (BYTE_1_MARKER | (param & 0x0F)));
+        result.add((byte)code);
+        return result;
     }
 
-    private void write(int param1, int param2, int code){
-        byte[] commandFrame = new byte[5];
-        commandFrame[0] = (byte) (BYTE_0_MARKER | (param1 >> 4));
-        commandFrame[1] = (byte) (BYTE_1_MARKER | (param1 & 0x0F));
-        commandFrame[2] = (byte) (BYTE_2_MARKER | (param2 >> 4));
-        commandFrame[3] = (byte) (BYTE_3_MARKER | (param2 & 0x0F));
-        commandFrame[4] = (byte) code;
-
-        comPort.writeToPort(commandFrame);
+    private List<Byte> write(int param1, int param2, int code){
+        List<Byte> result = new ArrayList<Byte>();
+        result.add((byte) (BYTE_0_MARKER | (param1 >> 4)));
+        result.add((byte) (BYTE_1_MARKER | (param1 & 0x0F)));
+        result.add((byte) (BYTE_2_MARKER | (param2 >> 4)));
+        result.add((byte) (BYTE_3_MARKER | (param2 & 0x0F)));
+        result.add((byte) code);
+        return result;
     }
 
-    public void startPinHi(){
-        write(START_PIN_HI_CODE);
+    public List<Byte> startPinHi(){
+        return write(START_PIN_HI_CODE);
     }
     
-    public void startPinLo() {
-        write(START_PIN_LO_CODE);
+    public List<Byte> startPinLo() {
+        return write(START_PIN_LO_CODE);
     }
     
-    public void writeCommand(int command){
-        write(command, WRITE_COMMAND_CODE);
+    public List<Byte> writeCommand(int command){
+        return write(command, WRITE_COMMAND_CODE);
     }
     
-    public void writeRegister(int address, int value){
-        write(address, value, WRITE_REGISTER_CODE);
+    public List<Byte> writeRegister(int address, int value){
+        return write(address, value, WRITE_REGISTER_CODE);
     }
     
-    public void writeDividerForChannel(int chanelNumber, int divider){
-        write(chanelNumber, divider, SET_CHANEL_DIVIDER_CODE);
+    public List<Byte> writeDividerForChannel(int chanelNumber, int divider){
+        return write(chanelNumber, divider, SET_CHANEL_DIVIDER_CODE);
     }
 
-    public void writeSps(short sps){
-        write((byte) ((sps) >> 8), (byte) (sps & 0xFF), WRITE_SPS_CODE);
+    public List<Byte> writeSps(short sps){
+        return write((byte) ((sps) >> 8), (byte) (sps & 0xFF), WRITE_SPS_CODE);
     }
 }

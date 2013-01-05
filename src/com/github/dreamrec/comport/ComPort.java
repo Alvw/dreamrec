@@ -86,12 +86,8 @@ public class ComPort {
 
     }
 
-    public void writeToPort(byte[] bytes) {
-        List<Byte> dataList = new ArrayList<Byte>();
-        for (int i = 0; i < bytes.length; i++) {
-            dataList.add(bytes[i]);
-        }
-        serialWriter.write(dataList);
+    public void writeToPort(List<Byte> bytes) {
+        serialWriter.write(bytes);
     }
 
     public void addDataProvider(Ads1292DataProvider dataProvider) {
