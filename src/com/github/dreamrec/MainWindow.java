@@ -1,5 +1,6 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.comport.AdsManager;
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentView;
 
@@ -20,6 +21,7 @@ public class MainWindow extends JFrame implements KeyListener{
     private GraphScrollBar graphScrollBar;
     private ActionMap actionMap;
     private ApplicationProperties applicationProperties;
+    private AdsManager adsManager = new AdsManager();
 
     public MainWindow(Controller controller, Model model, ApplicationProperties applicationProperties) {
         this.controller = controller;
@@ -105,16 +107,21 @@ public class MainWindow extends JFrame implements KeyListener{
     public void keyPressed(KeyEvent e) {
        switch (e.getKeyCode()) {
             case KeyEvent.VK_T :
-                byte[] command = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
+                adsManager.writeCommand(0x11);  //stop continious
+                adsManager.writeRegister(0x42,0xA3);  //test signal
+                adsManager.writeRegister(0x44,0x05);  //ch1 for test signal
+                adsManager.writeCommand(0x10);   //start continious
+                /*byte[] command = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
                 0x04,0x12,0x2A,0x33,(byte)0xF3,  //test signal
                 0x04,0x14,0x20,0x35,(byte)0xF3, //ch1 for test signal
                 0x01,0x10,(byte)0xF2};  //start continious
-                sendByteSequenceToCom(command);
+                sendByteSequenceToCom(command);*/
+
                 break;
             case KeyEvent.VK_I: ComPort.getInstance().writeToPort("i".getBytes()); break;
             case KeyEvent.VK_S   : ComPort.getInstance().writeToPort("s".getBytes());   break;
-            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort(new byte[]{(byte)0xF0});   break;
-            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort(new byte[]{(byte)0xF1});   break;
+            case KeyEvent.VK_Y   : adsManager.startPinHi();   break;
+            case KeyEvent.VK_N   : adsManager.startPinLo();   break;
             case KeyEvent.VK_4   :
                 byte[] command0 = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
                         0x04,0x11,0x20,0x31,(byte)0xF3,  //sps 500
