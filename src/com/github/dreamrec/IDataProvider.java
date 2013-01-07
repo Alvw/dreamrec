@@ -10,5 +10,5 @@ public interface IDataProvider {
     int getIncomingDataFrequency();
     long getStartTime();
     int size();
-    int[] poll();
+    int poll();
 }

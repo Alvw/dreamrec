@@ -82,12 +82,12 @@ public class Controller {
 
     protected void updateModel() {
         while (dataProvider.size() >0){
-            int[] decodedFrame = dataProvider.poll();
-            ch1PreFilter.add(decodedFrame[1]);
-            ch2PreFilter.add(decodedFrame[2]);
-            acc1PreFilter.add(decodedFrame[3]);
-            acc2PreFilter.add(decodedFrame[4]);
-            acc3PreFilter.add(decodedFrame[5]);
+            int ch1Val = dataProvider.poll();
+            ch1PreFilter.add(ch1Val);
+            ch2PreFilter.add(0);
+            acc1PreFilter.add(0);
+            acc2PreFilter.add(0);
+            acc3PreFilter.add(0);
             model.addEyeData(ch1PreFilter.poll());
             model.addCh2Data(ch2PreFilter.poll());
             model.addAcc1Data(acc1PreFilter.poll());

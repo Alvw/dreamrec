@@ -115,7 +115,6 @@ public class ComPort {
                 while (isConnected) {
                     len = this.in.read(buf);
                     while (isConnected && (len = this.in.read(buf)) > -1) {
-//                        System.out.print(new String(buf,0,len));
                         for (int i = 0; i < len; i++) {
                             dataProvider.receiveSample((buf[i] & 0xFF));
                         }

@@ -44,7 +44,7 @@ public class HiPassPreFilter {
         int filteredValue = value;
         int rawDataSize = rawData.size();
         if (rawDataSize > 1) {
-            filteredValue = value - (int) (rawDataBufferSum * 2 / (rawData.size() * (rawData.size() - 1)));
+            filteredValue = value - (int) (rawDataBufferSum * 2 / (rawDataSize * (rawDataSize - 1)));
         }
         if (filteredValue > Short.MAX_VALUE) {
             log.info("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);

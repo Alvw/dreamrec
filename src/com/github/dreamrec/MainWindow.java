@@ -115,14 +115,21 @@ public class MainWindow extends JFrame implements KeyListener{
                 byteList.addAll(adsManager.writeRegister(0x44, 0x05));  //ch1 for test signal
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
                 ComPort.getInstance().writeToPort(byteList);
-                /*byte[] command = new byte[]{0x01,0x11,(byte)0xF2,  //stop continious
-                0x04,0x12,0x2A,0x33,(byte)0xF3,  //test signal
-                0x04,0x14,0x20,0x35,(byte)0xF3, //ch1 for test signal
-                0x01,0x10,(byte)0xF2};  //start continious
-                sendByteSequenceToCom(command);*/
                 break;
-//            case KeyEvent.VK_I: ComPort.getInstance().writeToPort("i".getBytes()); break;
-//            case KeyEvent.VK_S   : ComPort.getInstance().writeToPort("s".getBytes());   break;
+            case KeyEvent.VK_I:
+                byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
+                byteList.addAll(adsManager.writeRegister(0x42, 0xA0));  //test signal
+                byteList.addAll(adsManager.writeRegister(0x44, 0x00));  //ch1 for test signal
+                byteList.addAll(adsManager.writeCommand(0x10));   //start continious
+                ComPort.getInstance().writeToPort(byteList);
+                break;
+            case KeyEvent.VK_S   :
+                byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
+                byteList.addAll(adsManager.writeRegister(0x42, 0xA0));  //test signal
+                byteList.addAll(adsManager.writeRegister(0x44, 0x01));  //ch1 for test signal
+                byteList.addAll(adsManager.writeCommand(0x10));   //start continious
+                ComPort.getInstance().writeToPort(byteList);
+                break;
             case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort(adsManager.startPinHi());   break;
             case KeyEvent.VK_N   : ComPort.getInstance().writeToPort(adsManager.startPinLo());    break;
             case KeyEvent.VK_4   :

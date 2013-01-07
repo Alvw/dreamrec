@@ -17,7 +17,7 @@ public class Ads1292DataProvider implements IDataProvider{
     private long startTime;
     private long stopTime;
     private int dataFrequency;
-    private FrameDecoder frameDecoder = new FrameDecoder();
+    private EdfFrameDecoder frameDecoder = new EdfFrameDecoder();
     private ApplicationProperties applicationProperties;
 
 
@@ -65,7 +65,7 @@ public class Ads1292DataProvider implements IDataProvider{
         return frameDecoder.size();
     }
 
-    public int[] poll() {
+    public int poll() {
         return frameDecoder.poll();
     }
 
