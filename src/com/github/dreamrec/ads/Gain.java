@@ -3,15 +3,18 @@ package com.github.dreamrec.ads;
 /**
  *
  */
-public enum CommutatorState {
-    INPUT(0),
-    INPUT_SHORT(1),
-//    RLD_MEASURE(2),
-    TEST_SIGNAL(5);
+public enum Gain {
+    G1(1),
+    G2(2),
+    G3(3),
+    G4(4),
+    G6(0),
+    G8(5),
+    G12(6);
 
     private int registerBits;
 
-    private CommutatorState(int registerBits) {
+    private Gain(int registerBits) {
         this.registerBits = registerBits;
     }
 

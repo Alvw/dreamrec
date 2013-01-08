@@ -1,11 +1,14 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.ads.*;
 import com.github.dreamrec.gcomponent.GComponentFastModel;
 import com.github.dreamrec.gcomponent.GComponentModel;
 import com.github.dreamrec.gcomponent.GComponentSlowModel;
 import com.github.dreamrec.gcomponent.GComponentView;
 
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -84,6 +87,28 @@ public class Factory {
 
     public static IDataProvider getDataProvider(ApplicationProperties applicationProperties) throws ApplicationException {
         return new Ads1292DataProvider(applicationProperties);
+    }
+    
+    public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
+        ChannelModel ch1Model = new Channel_1Model();
+        ch1Model.setNumber(0);
+        ch1Model.setDivider(1);
+        ch1Model.setHiPassBufferSize(2500);
+        ch1Model.setLabel("Channel 1");
+
+        ChannelModel ch2Model = new Channel_2Model();
+        ch1Model.setNumber(1);
+        ch1Model.setDivider(1);
+        ch1Model.setHiPassBufferSize(2500);
+        ch1Model.setLabel("Channel 2");
+
+        AdsModel adsModel = new AdsModel();
+        adsModel.setChannel_1(ch1Model);
+        adsModel.setChannel_2(ch2Model);
+
+        adsModel.setSps(Sps.S500);
+        adsModel.setAccelerometerEnabled(true);
+        return adsModel;
     }
 
     static class ScrollBarModelAdapter implements GraphScrollBarModel {

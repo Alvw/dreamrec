@@ -6,20 +6,62 @@ import java.util.List;
  *
  */
 public class AdsModel {
-    public static final int SPS_10    = 10;
-    public static final int SPS_50    = 50;
-    public static final int SPS_100   = 100;
-    public static final int SPS_250   = 250;
-    public static final int SPS_500   = 500;
-    public static final int SPS_1000  = 1000;
-    public static final int SPS_2000  = 2000;
-    public static final int SPS_4000  = 4000;
-    public static final int SPS_8000  = 8000;
-    
-    private int sps;     // samples per second (sample rate)
-    List<ChannelModel>  activeChannels;
+
+    private Sps sps;     // samples per second (sample rate)
+    private boolean isAccelerometerEnabled;
+
+    ChannelModel channel_1;
+    ChannelModel channel_2;
+
+    public ChannelModel getChannel_1() {
+        return channel_1;
+    }
+
+    public void setChannel_1(ChannelModel channel_1) {
+        this.channel_1 = channel_1;
+    }
+
+    public ChannelModel getChannel_2() {
+        return channel_2;
+    }
+
+    public void setChannel_2(ChannelModel channel_2) {
+        this.channel_2 = channel_2;
+    }
 
     public int getAccumulationBufferSize(){
         throw new UnsupportedOperationException("todo");
+    }
+
+    public Sps getSps() {
+        return sps;
+    }
+
+    public void setSps(Sps sps) {
+        this.sps = sps;
+    }
+
+    public boolean isAccelerometerEnabled() {
+        return isAccelerometerEnabled;
+    }
+
+    public void setAccelerometerEnabled(boolean accelerometerEnabled) {
+        isAccelerometerEnabled = accelerometerEnabled;
+    }
+
+    public int loffComparatorEnabledBit(){
+        throw new UnsupportedOperationException();
+    }
+    
+    public int intTestEnabledBits(){
+        throw new UnsupportedOperationException();
+    }
+    
+    public int rldEnabledBit(){
+        throw new UnsupportedOperationException();
+    }
+
+    public int rldLoffSenseBit() {
+        throw new UnsupportedOperationException();
     }
 }
