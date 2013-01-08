@@ -4,7 +4,6 @@ package com.github.dreamrec.ads;
  * 
  */
 public abstract class ChannelModel {
-    private int number;
     private int divider;
     private Gain gain = Gain.G6;
     private CommutatorState commutatorState = CommutatorState.INPUT_SHORT;
@@ -29,13 +28,7 @@ public abstract class ChannelModel {
         this.label = label;
     }
 
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
+    public abstract int getNumber();
 
     public int getDivider() {
         return divider;

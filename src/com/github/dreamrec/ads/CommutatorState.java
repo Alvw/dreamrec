@@ -6,7 +6,6 @@ package com.github.dreamrec.ads;
 public enum CommutatorState {
     INPUT(0),
     INPUT_SHORT(1),
-//    RLD_MEASURE(2),
     TEST_SIGNAL(5);
 
     private int registerBits;

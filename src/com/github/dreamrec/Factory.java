@@ -91,23 +91,29 @@ public class Factory {
     
     public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
         ChannelModel ch1Model = new Channel_1Model();
-        ch1Model.setNumber(0);
-        ch1Model.setDivider(1);
-        ch1Model.setHiPassBufferSize(2500);
-        ch1Model.setLabel("Channel 1");
+        ch1Model.setDivider(applicationProperties.ch1Divider());
+        ch1Model.setHiPassBufferSize(applicationProperties.ch1HiPassBufferSize());
+        ch1Model.setLabel(applicationProperties.ch1Label());
+        ch1Model.setGain(applicationProperties.ch1Gain());
+        ch1Model.setCommutatorState(applicationProperties.ch1CommutatorState());
+        ch1Model.setLoffEnable(applicationProperties.ch1LoffEnabled());
+        ch1Model.setRldSenseEnabled(applicationProperties.ch1RldSenseEnabled());
 
         ChannelModel ch2Model = new Channel_2Model();
-        ch1Model.setNumber(1);
-        ch1Model.setDivider(1);
-        ch1Model.setHiPassBufferSize(2500);
-        ch1Model.setLabel("Channel 2");
+        ch2Model.setDivider(applicationProperties.ch2Divider());
+        ch2Model.setHiPassBufferSize(applicationProperties.ch2HiPassBufferSize());
+        ch2Model.setLabel(applicationProperties.ch2Label());
+        ch2Model.setGain(applicationProperties.ch2Gain());
+        ch2Model.setCommutatorState(applicationProperties.ch2CommutatorState());
+        ch2Model.setLoffEnable(applicationProperties.ch2LoffEnabled());
+        ch2Model.setRldSenseEnabled(applicationProperties.ch2RldSenseEnabled());
 
         AdsModel adsModel = new AdsModel();
         adsModel.setChannel_1(ch1Model);
         adsModel.setChannel_2(ch2Model);
 
-        adsModel.setSps(Sps.S500);
-        adsModel.setAccelerometerEnabled(true);
+        adsModel.setSps(applicationProperties.getSps());
+        adsModel.setAccelerometerEnabled(applicationProperties.isAccelerometerEnabled());
         return adsModel;
     }
 
