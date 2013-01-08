@@ -28,20 +28,8 @@ public class
 
 
         JMenu optionsMenu = new JMenu("Options");
-        JMenu providerMenu = new JMenu("Data Provider");
-        optionsMenu.add(providerMenu);
         add(optionsMenu);
 
-        ButtonGroup itemGroup = new ButtonGroup();
-        for (Provider provider : Provider.values()) {
-            Action action = actionMap.get(provider.name());
-            JRadioButtonMenuItem providerItem = new JRadioButtonMenuItem(action);
-            if(provider == applicationProperties.getDataProvider()){
-                providerItem.setSelected(true);
-            }
-            itemGroup.add(providerItem);
-            providerItem.setText(provider.getLabel());
-            providerMenu.add(providerItem);
-        }
+
 	}
 }

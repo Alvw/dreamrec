@@ -1,6 +1,6 @@
 package com.github.dreamrec;
 
-import com.github.dreamrec.comport.AdsManager;
+import com.github.dreamrec.ads.AdsManager;
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentView;
 
@@ -151,7 +151,13 @@ public class MainWindow extends JFrame implements KeyListener{
                 ComPort.getInstance().writeToPort(byteList);
                 break;
 //            case KeyEvent.VK_7   : ComPort.getInstance().writeToPort("7".getBytes());   break;
-//            case KeyEvent.VK_2   : ComPort.getInstance().writeToPort("2".getBytes());   break;
+            case KeyEvent.VK_2   :
+                byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
+                byteList.addAll(adsManager.writeRegister(0x42, 0xA3));  //test signal
+                byteList.addAll(adsManager.writeRegister(0x45, 0x05));  //ch2 for test signal
+                byteList.addAll(adsManager.writeCommand(0x10));   //start continious
+                ComPort.getInstance().writeToPort(byteList);
+                break;
 //            case KeyEvent.VK_1   : ComPort.getInstance().writeToPort("1".getBytes());   break;
 //            case KeyEvent.VK_R   : ComPort.getInstance().writeToPort("r".getBytes());   break;
     }

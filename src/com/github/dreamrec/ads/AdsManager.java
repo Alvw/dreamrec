@@ -1,4 +1,6 @@
-package com.github.dreamrec.comport;
+package com.github.dreamrec.ads;
+
+import com.github.dreamrec.comport.ComPort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,6 @@ public class AdsManager {
     private static final int WRITE_COMMAND_CODE = 0xF2;
     private static final int WRITE_REGISTER_CODE = 0xF3;
     private static final int SET_CHANEL_DIVIDER_CODE = 0xF4;
-    private static final int WRITE_SPS_CODE = 0xF5;
 
     private ComPort comPort = ComPort.getInstance();
 
@@ -64,7 +65,4 @@ public class AdsManager {
         return write(chanelNumber, divider, SET_CHANEL_DIVIDER_CODE);
     }
 
-    public List<Byte> writeSps(short sps){
-        return write((byte) ((sps) >> 8), (byte) (sps & 0xFF), WRITE_SPS_CODE);
-    }
 }

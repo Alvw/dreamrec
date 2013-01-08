@@ -82,14 +82,7 @@ public class Factory {
         return model;
     }
 
-    public static IDataProvider getDataProvider(Provider provider,ApplicationProperties applicationProperties) throws ApplicationException {
-        /*if(provider == Provider.DEBUG){
-            return new DebugDataProvider();
-        } else if(provider == Provider.EEG){
-            return new EEGDataProvider(applicationProperties.getChanel(), applicationProperties.getIncomingDataFrequency());
-        } else {
-            throw new ApplicationException("Wrong data provider name");
-        }*/
+    public static IDataProvider getDataProvider(ApplicationProperties applicationProperties) throws ApplicationException {
         return new Ads1292DataProvider(applicationProperties);
     }
 

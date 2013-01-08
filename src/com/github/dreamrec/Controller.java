@@ -1,6 +1,5 @@
 package com.github.dreamrec;
 
-import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfHeaderData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -177,7 +176,7 @@ public class Controller {
 
     public void startRecording() {
         try {
-            dataProvider = Factory.getDataProvider(applicationProperties.getDataProvider(),applicationProperties);
+            dataProvider = Factory.getDataProvider(applicationProperties);
             dataProvider.startRecording();
             model.clear();
             model.setFrequency(dataProvider.getIncomingDataFrequency());
@@ -239,9 +238,5 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();  //todo refactor
         }
-    }
-
-    public void setDataProvider(Provider provider) {
-        applicationProperties.setDataProvider(provider);
     }
 }

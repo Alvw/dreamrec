@@ -14,7 +14,6 @@ public class ApplicationProperties {
     private static final Log log = LogFactory.getLog(ApplicationProperties.class);
     private static final String APPLICATION_PROPERTIES = "application.properties";
     private static final String X_SIZE = "xSize";
-    private static final String DATA_PROVIDER = "dataProvider";
     public static final String DIRECTORY_NAME = "data_save_directory";
     public static final String DATA_FREQUENCY = "frequency";
     public static final String REPAINT_DELAY = "repaintDelay";
@@ -55,14 +54,6 @@ public class ApplicationProperties {
 
     public int getIncomingDataFrequency(){
         return config.getInt(DATA_FREQUENCY);
-    }
-
-    public Provider getDataProvider() {
-        return Provider.valueOf(config.getString(DATA_PROVIDER));
-    }
-
-    public void setDataProvider(Provider provider) {
-        config.setProperty(DATA_PROVIDER,provider.name());
     }
 
     public int getXSize() {

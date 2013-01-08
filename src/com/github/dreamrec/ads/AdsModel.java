@@ -1,7 +1,5 @@
 package com.github.dreamrec.ads;
 
-import com.github.dreamrec.comport.ChannelModel;
-
 import java.util.List;
 
 /**
@@ -21,4 +19,7 @@ public class AdsModel {
     private int sps;     // samples per second (sample rate)
     List<ChannelModel>  activeChannels;
 
+    public int getAccumulationBufferSize(){
+        throw new UnsupportedOperationException("todo");
+    }
 }
