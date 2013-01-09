@@ -28,9 +28,18 @@ public class AdsModel {
     public void setChannel_2(ChannelModel channel_2) {
         this.channel_2 = channel_2;
     }
+    
+    public int getMaxDivider(){
+        return Math.max(channel_1.getDivider(),channel_2.getDivider());
+    }
 
-    public int getAccumulationBufferSize(){
-        throw new UnsupportedOperationException("todo");
+    /*
+     * frame size == 1 marker byte + 1 counter byte + 1 loff byte + accelerometer 9 bytes +
+     *  + maxDiv/div for each chanel;
+     */
+    public int getFrameSize(){
+        int accelerometerSize = isAccelerometerEnabled ? 9 : 0;
+        return 3 + getMaxDivider()/channel_1.getDivider() + getMaxDivider()/channel_2.getDivider() + accelerometerSize;
     }
 
     public Sps getSps() {
@@ -50,18 +59,18 @@ public class AdsModel {
     }
 
     public int loffComparatorEnabledBit(){
-        throw new UnsupportedOperationException();
+        return 0x40;
     }
     
     public int intTestEnabledBits(){
-        throw new UnsupportedOperationException();
+        return 0x03;
     }
     
     public int rldEnabledBit(){
-        throw new UnsupportedOperationException();
+        return 0x20;
     }
 
     public int rldLoffSenseBit() {
-        throw new UnsupportedOperationException();
+        return 0x10;
     }
 }

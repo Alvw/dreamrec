@@ -18,6 +18,7 @@ public class AdsManager {
     private static final int WRITE_COMMAND_CODE = 0xF2;
     private static final int WRITE_REGISTER_CODE = 0xF3;
     private static final int SET_CHANEL_DIVIDER_CODE = 0xF4;
+    private static final int SET_ACCELEROMETER_ENABLED_CODE = 0xF5;
 
     private ComPort comPort = ComPort.getInstance();
 
@@ -64,9 +65,26 @@ public class AdsManager {
     public List<Byte> writeDividerForChannel(int chanelNumber, int divider){
         return write(chanelNumber, divider, SET_CHANEL_DIVIDER_CODE);
     }
+
+    public List<Byte> writeAccelerometerEnabled(boolean isAccelerometerEnabled){
+        int isEnabled = isAccelerometerEnabled ? 1 : 0;
+        return write(isEnabled, SET_ACCELEROMETER_ENABLED_CODE);
+    }
     
-    public List<Byte> writeAllRegisters(AdsModel adsModel){
+    public List<Byte> writeModelState(AdsModel adsModel){
         List<Byte> result = new ArrayList<Byte>();
+
+        result.addAll(writeDividerForChannel(0, adsModel.getChannel_1().getDivider()));
+        result.addAll(writeDividerForChannel(1, adsModel.getChannel_2().getDivider()));
+
+        int accelerometerDivider = adsModel.isAccelerometerEnabled() ? adsModel.getMaxDivider() : 0;
+        for (int i = 0; i < 3; i++) {
+            result.addAll(writeDividerForChannel(i+2, adsModel.getChannel_2().getDivider()));
+        }
+        result.addAll(writeDividerForChannel(2, accelerometerDivider));
+        result.addAll(writeAccelerometerEnabled(adsModel.isAccelerometerEnabled()));
+        
+        
         int config1RegisterValue = adsModel.getSps().getRegisterBits();
         result.addAll(writeRegister(0x41,config1RegisterValue));  //set SPS
         int config2RegisterValue = 0xA + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();

@@ -20,10 +20,6 @@ public abstract class ChannelModel {
         isRldSenseEnabled = rldSenseEnabled;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
     public void setLabel(String label) {
         this.label = label;
     }
@@ -36,6 +32,11 @@ public abstract class ChannelModel {
 
     public void setDivider(int divider) {
         this.divider = divider;
+        if(divider == 0){
+            commutatorState = CommutatorState.INPUT_SHORT;
+            isLoffEnable = false;
+            isRldSenseEnabled = false;
+        }
     }
 
     public int getHiPassBufferSize() {
