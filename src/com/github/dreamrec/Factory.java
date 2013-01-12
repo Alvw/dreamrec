@@ -1,6 +1,7 @@
 package com.github.dreamrec;
 
 import com.github.dreamrec.ads.*;
+import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.gcomponent.GComponentFastModel;
 import com.github.dreamrec.gcomponent.GComponentModel;
 import com.github.dreamrec.gcomponent.GComponentSlowModel;
@@ -85,8 +86,13 @@ public class Factory {
         return model;
     }
 
-    public static IDataProvider getDataProvider(ApplicationProperties applicationProperties) throws ApplicationException {
+   /* public static IDataProvider getDataProvider(ApplicationProperties applicationProperties) throws ApplicationException {
         return new Ads1292DataProvider(applicationProperties);
+    }*/
+
+    public static ComPort getComPort(ApplicationProperties appProperties){
+        FrameDecoder frameDecoder = new FrameDecoder();
+        return new ComPort(frameDecoder, appProperties.getComPortName());
     }
     
     public static AdsModel getAdsModel(ApplicationProperties applicationProperties){

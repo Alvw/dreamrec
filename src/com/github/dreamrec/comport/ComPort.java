@@ -1,6 +1,6 @@
 package com.github.dreamrec.comport;
 
-import com.github.dreamrec.Ads1292DataProvider;
+import com.github.dreamrec.FrameDecoder;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -15,28 +15,24 @@ import java.util.List;
 
 public class ComPort {
 
-    //    private Timer checkConnectionTimer;
     private static Log log = LogFactory.getLog(ComPort.class);
     private InputStream inputStream;
     private OutputStream outputStream;
     private boolean isConnected;
-    Ads1292DataProvider dataProvider;
-    private static ComPort instance = new ComPort();
+    private FrameDecoder frameDecoder;
     CommPort commPort;
     SerialReader serialReader;
     Thread serialReaderThread;
     SerialWriter serialWriter;
     Thread serialWriterThread;
+    private String comPortName;
 
-    private ComPort() {
-
+    public ComPort(FrameDecoder frameDecoder, String comPortName) {
+        this.frameDecoder = frameDecoder;
+        this.comPortName = comPortName;
     }
 
-    public static ComPort getInstance() {
-        return instance;
-    }
-
-    public void connect(String comPortName) throws Exception {
+    public void connect() throws Exception {
         if (isConnected) {
             return;
         }
@@ -51,14 +47,14 @@ public class ComPort {
                 inputStream = serialPort.getInputStream();
                 outputStream = serialPort.getOutputStream();
                 isConnected = true;
-                serialReader = new SerialReader(inputStream, dataProvider);
+                serialReader = new SerialReader(inputStream, frameDecoder);
                 serialReaderThread = new Thread(serialReader);
                 serialReaderThread.start();
                 serialWriter = new SerialWriter(outputStream);
                 serialWriterThread = new Thread(serialWriter);
                 serialWriterThread.start();
             } else {
-                System.out.println("Error: Only serial ports are handled by this example.");
+                System.out.println("Error: Not a serial ports.");
             }
         }
     }
@@ -86,22 +82,33 @@ public class ComPort {
 
     }
 
-    public void writeToPort(List<Byte> bytes) {
+    public void writeToPort(List<Byte> bytes) throws Exception {
+        if(!isConnected){
+            connect();
+        }
         serialWriter.write(bytes);
     }
 
-    public void addDataProvider(Ads1292DataProvider dataProvider) {
-        this.dataProvider = dataProvider;
+    public int available() {
+        return frameDecoder.size();
+    }
+
+    public int[] poll() {
+        return frameDecoder.poll();
+    }
+    
+    public void initFrameDecoder(int newDecodedFrameSize){
+        frameDecoder.init(newDecodedFrameSize);
     }
 
     public static class SerialReader implements Runnable {
         private boolean isConnected = true;
         private InputStream in;
-        Ads1292DataProvider dataProvider;
+        FrameDecoder frameDecoder;
 
-        public SerialReader(InputStream in, Ads1292DataProvider dataProvider) {
+        public SerialReader(InputStream in, FrameDecoder frameDecoder) {
             this.in = in;
-            this.dataProvider = dataProvider;
+            this.frameDecoder = frameDecoder;
         }
 
         public void disconnect() {
@@ -116,7 +123,7 @@ public class ComPort {
                     len = this.in.read(buf);
                     while (isConnected && (len = this.in.read(buf)) > -1) {
                         for (int i = 0; i < len; i++) {
-                            dataProvider.receiveSample((buf[i] & 0xFF));
+                            frameDecoder.addByte((buf[i] & 0xFF));
                         }
                     }
                     Thread.sleep(100);
@@ -181,9 +188,5 @@ public class ComPort {
                 data.notifyAll();
             }
         }
-    }
-
-    public void sendCommand(byte code, byte... params){
-
     }
 }

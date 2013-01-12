@@ -20,8 +20,6 @@ public class AdsManager {
     private static final int SET_CHANEL_DIVIDER_CODE = 0xF4;
     private static final int SET_ACCELEROMETER_ENABLED_CODE = 0xF5;
 
-    private ComPort comPort = ComPort.getInstance();
-
     private List<Byte> write(int code){
         List<Byte> result = new ArrayList<Byte>();
         result.add((byte)code);

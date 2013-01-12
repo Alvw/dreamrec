@@ -114,41 +114,41 @@ public class MainWindow extends JFrame implements KeyListener{
                 byteList.addAll(adsManager.writeRegister(0x42, 0xA3));  //test signal
                 byteList.addAll(adsManager.writeRegister(0x44, 0x05));  //ch1 for test signal
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
             case KeyEvent.VK_I:
                 byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
                 byteList.addAll(adsManager.writeRegister(0x42, 0xA0));  //test signal
                 byteList.addAll(adsManager.writeRegister(0x44, 0x00));  //ch1 for test signal
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
             case KeyEvent.VK_S   :
                 byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
                 byteList.addAll(adsManager.writeRegister(0x42, 0xA0));  //test signal
                 byteList.addAll(adsManager.writeRegister(0x44, 0x01));  //ch1 for test signal
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
-            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort(adsManager.startPinHi());   break;
-            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort(adsManager.startPinLo());    break;
+//            case KeyEvent.VK_Y   : ComPort.getInstance().writeToPort(adsManager.startPinHi());   break;
+//            case KeyEvent.VK_N   : ComPort.getInstance().writeToPort(adsManager.startPinLo());    break;
             case KeyEvent.VK_4   :
                 byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
                 byteList.addAll(adsManager.writeRegister(0x41, 0x01));  //sps 250
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
             case KeyEvent.VK_5   :
                 byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
                 byteList.addAll(adsManager.writeRegister(0x41, 0x02));  //sps 500
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
             case KeyEvent.VK_6   :
                 byteList.addAll(adsManager.writeCommand(0x11));  //stop continious
                 byteList.addAll(adsManager.writeRegister(0x41, 0x03));  //sps 1000
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
 //            case KeyEvent.VK_7   : ComPort.getInstance().writeToPort("7".getBytes());   break;
             case KeyEvent.VK_2   :
@@ -156,7 +156,7 @@ public class MainWindow extends JFrame implements KeyListener{
                 byteList.addAll(adsManager.writeRegister(0x42, 0xA3));  //test signal
                 byteList.addAll(adsManager.writeRegister(0x45, 0x05));  //ch2 for test signal
                 byteList.addAll(adsManager.writeCommand(0x10));   //start continious
-                ComPort.getInstance().writeToPort(byteList);
+//                ComPort.getInstance().writeToPort(byteList);
                 break;
 //            case KeyEvent.VK_1   : ComPort.getInstance().writeToPort("1".getBytes());   break;
 //            case KeyEvent.VK_R   : ComPort.getInstance().writeToPort("r".getBytes());   break;

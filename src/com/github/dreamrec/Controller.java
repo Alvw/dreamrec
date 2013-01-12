@@ -176,7 +176,7 @@ public class Controller {
 
     public void startRecording() {
         try {
-            dataProvider = Factory.getDataProvider(applicationProperties);
+//            dataProvider = Factory.getDataProvider(applicationProperties);
             dataProvider.startRecording();
             model.clear();
             model.setFrequency(dataProvider.getIncomingDataFrequency());

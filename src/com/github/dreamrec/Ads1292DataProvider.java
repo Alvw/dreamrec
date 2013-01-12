@@ -17,7 +17,6 @@ public class Ads1292DataProvider implements IDataProvider{
     private long startTime;
     private long stopTime;
     private int dataFrequency;
-    private EdfFrameDecoder frameDecoder = new EdfFrameDecoder();
     private ApplicationProperties applicationProperties;
 
 
@@ -29,9 +28,9 @@ public class Ads1292DataProvider implements IDataProvider{
 
     public void startRecording() throws ApplicationException {
         try {
-            comPort = ComPort.getInstance();
+           /* comPort = ComPort.getInstance();
             comPort.addDataProvider(this);
-            comPort.connect(applicationProperties.getComPortName());
+            comPort.connect(applicationProperties.getComPortName());*/
 //            comPort.writeToPort("y".getBytes());
         } catch (Exception e) {
             log.error(e);
@@ -43,9 +42,6 @@ public class Ads1292DataProvider implements IDataProvider{
 
     public void stopRecording() {
         stopTime = System.currentTimeMillis();
-//        comPort.writeToPort("n".getBytes());
-//        comPort.writeToPort("s".getBytes());
-//        comPort.writeToPort("1".getBytes());
         comPort.disconnect();
         log.info("StopTime: " + new Date(stopTime));
         log.info("Predefined data frequency = " + dataFrequency);
@@ -62,15 +58,18 @@ public class Ads1292DataProvider implements IDataProvider{
     }
 
     public int size() {
-        return frameDecoder.size();
+//        return frameDecoder.size();
+        throw new UnsupportedOperationException();
     }
 
     public int poll() {
-        return frameDecoder.poll();
+//        return frameDecoder.poll();
+        throw new UnsupportedOperationException();
     }
 
     public void receiveSample(int data) {
-        frameDecoder.addByte(data);
+//        frameDecoder.addByte(data);
+        throw new UnsupportedOperationException();
     }
 
 }
