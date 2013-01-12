@@ -41,6 +41,8 @@ public class ApplicationProperties {
     public static final String CH_2_LOFF_ENABLED = "ch2LoffEnabled";
     public static final String CH_2_LABEL = "ch2Label";
     public static final String CH_2_RLD_SENSE_ENABLED = "ch2RldSenseEnabled";
+    
+    public static final String NUMBER_OF_CHANNELS = "numberOfChannels";
 
     private PropertiesConfiguration config;
 
@@ -51,6 +53,10 @@ public class ApplicationProperties {
             log.error(e);
             JOptionPane.showMessageDialog(null, "Error reading from properties file: " + APPLICATION_PROPERTIES);
         }
+    }
+
+    public int getNumberOfChannels () {
+        return config.getInt(NUMBER_OF_CHANNELS);
     }
 
     public String getComPortName() {

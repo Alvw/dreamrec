@@ -1,5 +1,6 @@
 package com.github.dreamrec.ads;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,8 +11,29 @@ public class AdsModel {
     private Sps sps;     // samples per second (sample rate)
     private boolean isAccelerometerEnabled;
 
+    private ArrayList<ChannelModel> channels = new ArrayList<ChannelModel>();
+
     ChannelModel channel_1;
     ChannelModel channel_2;
+    
+    public ChannelModel getChannel (int chanelNumber) {
+        if ( chanelNumber < channels.size() ) {
+            return channels.get(chanelNumber);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public int getNumberOfChannels()  {
+        return channels.size();
+    }
+
+
+    public void addChannel(ChannelModel channel) {
+         channels.add(channel);
+    }
+
 
     public ChannelModel getChannel_1() {
         return channel_1;
@@ -19,6 +41,7 @@ public class AdsModel {
 
     public void setChannel_1(ChannelModel channel_1) {
         this.channel_1 = channel_1;
+        channels.add(0,channel_1);
     }
 
     public ChannelModel getChannel_2() {
@@ -27,6 +50,7 @@ public class AdsModel {
 
     public void setChannel_2(ChannelModel channel_2) {
         this.channel_2 = channel_2;
+        channels.add(1,channel_2);
     }
     
     public int getMaxDivider(){

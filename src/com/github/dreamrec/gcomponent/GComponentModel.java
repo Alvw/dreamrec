@@ -2,7 +2,7 @@ package com.github.dreamrec.gcomponent;
 
 import com.github.dreamrec.Filter;
 import com.github.dreamrec.Model;
-import javafx.scene.paint.Color;
+
 
 /**
  *

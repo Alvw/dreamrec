@@ -8,8 +8,6 @@ import com.github.dreamrec.gcomponent.GComponentSlowModel;
 import com.github.dreamrec.gcomponent.GComponentView;
 
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -99,7 +97,7 @@ public class Factory {
         ChannelModel ch1Model = new Channel_1Model();
         ch1Model.setDivider(applicationProperties.ch1Divider());
         ch1Model.setHiPassBufferSize(applicationProperties.ch1HiPassBufferSize());
-        ch1Model.setLabel(applicationProperties.ch1Label());
+        ch1Model.setName(applicationProperties.ch1Label());
         ch1Model.setGain(applicationProperties.ch1Gain());
         ch1Model.setCommutatorState(applicationProperties.ch1CommutatorState());
         ch1Model.setLoffEnable(applicationProperties.ch1LoffEnabled());
@@ -108,7 +106,7 @@ public class Factory {
         ChannelModel ch2Model = new Channel_2Model();
         ch2Model.setDivider(applicationProperties.ch2Divider());
         ch2Model.setHiPassBufferSize(applicationProperties.ch2HiPassBufferSize());
-        ch2Model.setLabel(applicationProperties.ch2Label());
+        ch2Model.setName(applicationProperties.ch2Label());
         ch2Model.setGain(applicationProperties.ch2Gain());
         ch2Model.setCommutatorState(applicationProperties.ch2CommutatorState());
         ch2Model.setLoffEnable(applicationProperties.ch2LoffEnabled());

@@ -9,8 +9,8 @@ public abstract class ChannelModel {
     private CommutatorState commutatorState = CommutatorState.INPUT_SHORT;
     protected boolean isLoffEnable;
     private int hiPassBufferSize;
-    private String label;
-    protected boolean isRldSenseEnabled;
+    private String name;
+    protected boolean isRldSenseEnabled;   // DRL
 
     public boolean isRldSenseEnabled() {
         return isRldSenseEnabled;
@@ -20,8 +20,12 @@ public abstract class ChannelModel {
         isRldSenseEnabled = rldSenseEnabled;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public abstract int getNumber();
