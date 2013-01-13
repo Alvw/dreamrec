@@ -3,14 +3,16 @@ package com.github.dreamrec.ads;
 /**
  * 
  */
-public abstract class ChannelModel {
+public class ChannelModel {
     private int divider;
     private Gain gain = Gain.G6;
     private CommutatorState commutatorState = CommutatorState.INPUT_SHORT;
     protected boolean isLoffEnable;
     private int hiPassBufferSize;
     private String name;
-    protected boolean isRldSenseEnabled;   // DRL
+    private boolean isRldSenseEnabled;   // DRL
+    private int rldSenseEnabledBits;
+    private int loffSenseEnabledBits;
 
     public boolean isRldSenseEnabled() {
         return isRldSenseEnabled;
@@ -27,8 +29,6 @@ public abstract class ChannelModel {
     public String getName() {
         return name;
     }
-
-    public abstract int getNumber();
 
     public int getDivider() {
         return divider;
@@ -78,8 +78,20 @@ public abstract class ChannelModel {
     public int enabledBit(){
         return divider == 0 ? 0x80 : 0;
     }
-    
-    public abstract int rldSenseEnabledBits();
-    
-    public abstract int loffSenseEnabledBits();
+
+    public int getRldSenseEnabledBits() {
+        return isRldSenseEnabled ? rldSenseEnabledBits : 0;
+    }
+
+    public void setRldSenseEnabledBits(int rldSenseEnabledBits) {
+        this.rldSenseEnabledBits = rldSenseEnabledBits;
+    }
+
+    public int getLoffSenseEnabledBits() {
+        return isLoffEnable ? loffSenseEnabledBits : 0;
+    }
+
+    public void setLoffSenseEnabledBits(int loffSenseEnabledBits) {
+        this.loffSenseEnabledBits = loffSenseEnabledBits;
+    }
 }

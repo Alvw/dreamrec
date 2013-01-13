@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.UIManager.*;
+
 
 /**
  *
@@ -27,12 +29,13 @@ public class SettingsWindow extends JFrame {
     private JCheckBox[]  drl;
     private JTextField[] name;
     private JButton startButton = new JButton( "Start" );
+    
+    private Color okColor = Color.GREEN;
+    private Color problemColor = Color.RED;
 
     private String title = "Simple EDF Server";
-    private String[] header = {"Number", "Enable", "Name", "Frequency", "<html><center>High Pass <br> Filter Frequency</center></html>", "DRL", "Loff Status"};
-    private int textFieldLength = 10;
-    int hgap = 20;
-    int vgap = 5;
+    private String[] header = {"Number", "Enable", "Name", "Frequency", "Hi Pass Filter", "DRL", "Loff Status"};
+    
 
 
 
@@ -51,7 +54,9 @@ public class SettingsWindow extends JFrame {
         isLoffEnable = new JCheckBox[nChannels];
         drl = new JCheckBox[nChannels];
         name = new JTextField[nChannels];
-        
+
+        int textFieldLength = 10;
+
         for (int i = 0; i < nChannels; i++) {
             frequency[i] = new JComboBox();
             highPassFrequency[i] = new JComboBox(HighPassFrequency.values());
@@ -69,20 +74,30 @@ public class SettingsWindow extends JFrame {
         });
 
         arrangeForm();
- 
     }
 
 
     
     private void arrangeForm(){
         setTitle( title );
-        
+
+        int top = 10;
+        int left = 10;
+        int bottom = 10;
+        int right = 10;
         JPanel adsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        adsPanel.setBorder(BorderFactory.createEtchedBorder());
+        adsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
         adsPanel.add(new JLabel(spsLabel));
         adsPanel.add(sps);
         
+        JLabel colorLabel = new JLabel("trali");
+        colorLabel.setOpaque(true);
+        colorLabel.setBackground(Color.RED);
+        colorLabel. setPreferredSize(new Dimension(10,10));
+        adsPanel.add(colorLabel);
 
+        int hgap = 20;
+        int vgap = 5;
         JPanel channelPanel = new JPanel(new TableLayout(header.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE) , hgap, vgap));
 
         for (int i = 0; i < header.length; i++) {
@@ -99,15 +114,27 @@ public class SettingsWindow extends JFrame {
             channelPanel.add(drl[i]);
             channelPanel.add(isLoffEnable[i]);
         }
+        channelPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add( startButton );
-        buttonPanel.setBorder(BorderFactory.createEtchedBorder());
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+
+        // add separating borders
+        JPanel adsBorderPanel = new JPanel();
+        adsBorderPanel.add(adsPanel);
+        adsBorderPanel.setBorder(BorderFactory.createEtchedBorder());
+
+        JPanel buttonBorderPanel = new JPanel();
+        buttonBorderPanel.add(buttonPanel);
+        buttonBorderPanel.setBorder(BorderFactory.createEtchedBorder());
+
 
         // Root Panel of the SettingsWindow
-        add( adsPanel , BorderLayout.NORTH);
+        add( adsBorderPanel , BorderLayout.NORTH);
         add( channelPanel , BorderLayout.CENTER);
-        add( buttonPanel, BorderLayout.SOUTH );
+        add( buttonBorderPanel, BorderLayout.SOUTH );
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);

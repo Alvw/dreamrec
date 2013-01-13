@@ -79,8 +79,8 @@ public class AdsManager {
 
         result.addAll(startPinLo());
         result.addAll(writeCommand(0x11));  //stop continious
-        result.addAll(writeDividerForChannel(0, adsModel.getChannel_1().getDivider()));
-        result.addAll(writeDividerForChannel(1, adsModel.getChannel_2().getDivider()));
+        result.addAll(writeDividerForChannel(0, adsModel.getChannel(0).getDivider()));
+        result.addAll(writeDividerForChannel(1, adsModel.getChannel(1).getDivider()));
         for (int i = 0; i < 3; i++) {
             result.addAll(writeDividerForChannel(i+2,50));
         }
@@ -90,18 +90,18 @@ public class AdsManager {
         int config2RegisterValue = 0xA0 + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();
         result.addAll(writeRegister(0x42,config2RegisterValue));
 
-        ChannelModel ch1Model = adsModel.getChannel_1();
+        ChannelModel ch1Model = adsModel.getChannel(0);
         int ch1SetRegisterValue = ch1Model.enabledBit() + ch1Model.getGain().getRegisterBits() +
                 ch1Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x44,ch1SetRegisterValue));
 
-        ChannelModel ch2Model = adsModel.getChannel_2();
+        ChannelModel ch2Model = adsModel.getChannel(1);
         int ch2SetRegisterValue = ch2Model.enabledBit() + ch2Model.getGain().getRegisterBits() +
                 ch2Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x45, ch2SetRegisterValue));
 
         int rldSensRegisterValue = adsModel.rldEnabledBit() + adsModel.rldLoffSenseBit()+
-                ch1Model.rldSenseEnabledBits() + ch2Model.rldSenseEnabledBits();
+                ch1Model.getRldSenseEnabledBits() + ch2Model.getRldSenseEnabledBits();
         result.addAll(writeRegister(0x46, rldSensRegisterValue));
 
         /* int loffSensRegisterValue = ch1Model.loffSenseEnabledBits() + ch2Model.loffSenseEnabledBits();
