@@ -176,10 +176,12 @@ public class Controller {
     public void closeApplication() {
         applicationProperties.save();
         try {
-            dataProvider.stopRecording();
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();  //todo refactor
+            comport.writeToPort(new AdsManager().startPinLo());
+            Thread.sleep(200);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        comport.disconnect();
     }
 }

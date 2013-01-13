@@ -1,6 +1,5 @@
 package com.github.dreamrec.comport;
 
-import com.github.dreamrec.FrameDecoder;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -86,13 +85,13 @@ public class ComPort {
     }
 
     public void writeToPort(List<Byte> bytes) throws Exception {
-        if(!isConnected){
+        if (!isConnected) {
             connect();
         }
         serialWriter.write(bytes);
     }
 
-    public void setComPortListener(ComPortListener listener){
+    public void setComPortListener(ComPortListener listener) {
         serialReader.setListener(listener);
     }
 
@@ -109,8 +108,8 @@ public class ComPort {
             isConnected = false;
         }
 
-        
-        public void setListener(ComPortListener listener){
+
+        public void setListener(ComPortListener listener) {
             comPortListener = listener;
         }
 
@@ -122,7 +121,9 @@ public class ComPort {
                     len = this.in.read(buf);
                     while (isConnected && (len = this.in.read(buf)) > -1) {
                         for (int i = 0; i < len; i++) {
-                            comPortListener.onByteReceived((buf[i] & 0xFF));
+                            if (comPortListener != null) {
+                                comPortListener.onByteReceived((buf[i] & 0xFF));
+                            }
                         }
                     }
                     Thread.sleep(100);
@@ -132,8 +133,7 @@ public class ComPort {
             }
         }
     }
-    
-    
+
 
     public static class SerialWriter implements Runnable {
         private OutputStream out;

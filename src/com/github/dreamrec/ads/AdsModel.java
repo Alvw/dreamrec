@@ -58,8 +58,14 @@ public class AdsModel {
      *
      */
     public int getFrameSize(){
-        int accelerometerSize = isAccelerometerEnabled ? 3 : 0;
-        return MAX_DIV/channel_1.getDivider() + MAX_DIV/channel_2.getDivider() + accelerometerSize;
+        int frameSize = isAccelerometerEnabled ? 3 : 0;
+        if(channel_1.getDivider() != 0){
+            frameSize += MAX_DIV/channel_1.getDivider();
+        }
+        if(channel_2.getDivider() != 0){
+            frameSize += MAX_DIV/channel_2.getDivider();
+        }
+        return frameSize;
     }
 
     public Sps getSps() {
@@ -84,8 +90,9 @@ public class AdsModel {
     }
     
     public int intTestEnabledBits(){
-//        return 0x03;
-        return 0x00;
+        boolean isCh1Test = channel_1.getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
+        boolean isCh2Test = channel_2.getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
+        return (isCh1Test | isCh2Test) ? 0x03 : 0;
     }
     
     public int rldEnabledBit(){

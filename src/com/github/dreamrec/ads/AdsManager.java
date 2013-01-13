@@ -77,18 +77,14 @@ public class AdsManager {
     public List<Byte> writeModelState(AdsModel adsModel){
         List<Byte> result = new ArrayList<Byte>();
 
+        result.addAll(startPinLo());
         result.addAll(writeCommand(0x11));  //stop continious
         result.addAll(writeDividerForChannel(0, adsModel.getChannel_1().getDivider()));
         result.addAll(writeDividerForChannel(1, adsModel.getChannel_2().getDivider()));
-
-//        int accelerometerDivider = adsModel.isAccelerometerEnabled() ? adsModel.getMaxDivider() : 0;
         for (int i = 0; i < 3; i++) {
             result.addAll(writeDividerForChannel(i+2,50));
         }
-//        result.addAll(writeDividerForChannel(2, accelerometerDivider));
         result.addAll(writeAccelerometerEnabled(adsModel.isAccelerometerEnabled()));
-        
-        
         int config1RegisterValue = adsModel.getSps().getRegisterBits();
         result.addAll(writeRegister(0x41,config1RegisterValue));  //set SPS
         int config2RegisterValue = 0xA0 + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();
@@ -98,10 +94,8 @@ public class AdsManager {
         int ch1SetRegisterValue = ch1Model.enabledBit() + ch1Model.getGain().getRegisterBits() +
                 ch1Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x44,ch1SetRegisterValue));
-//        result.addAll(writeRegister(0x42,0xA3));
-//        result.addAll(writeRegister(0x44,5));
 
-        /*ChannelModel ch2Model = adsModel.getChannel_2();
+        ChannelModel ch2Model = adsModel.getChannel_2();
         int ch2SetRegisterValue = ch2Model.enabledBit() + ch2Model.getGain().getRegisterBits() +
                 ch2Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x45, ch2SetRegisterValue));
@@ -110,8 +104,8 @@ public class AdsManager {
                 ch1Model.rldSenseEnabledBits() + ch2Model.rldSenseEnabledBits();
         result.addAll(writeRegister(0x46, rldSensRegisterValue));
 
-        int loffSensRegisterValue = ch1Model.loffSenseEnabledBits() + ch2Model.loffSenseEnabledBits();
-        result.addAll(writeRegister(0x47, loffSensRegisterValue));*/
+        /* int loffSensRegisterValue = ch1Model.loffSenseEnabledBits() + ch2Model.loffSenseEnabledBits();
+       result.addAll(writeRegister(0x47, loffSensRegisterValue));*/
 
         result.addAll(writeConfigDataReceivedCode());
 
