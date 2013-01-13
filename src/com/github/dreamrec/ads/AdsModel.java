@@ -10,6 +10,7 @@ public class AdsModel {
 
     private Sps sps;     // samples per second (sample rate)
     private boolean isAccelerometerEnabled;
+    public static final int MAX_DIV = 50;
 
     private ArrayList<ChannelModel> channels = new ArrayList<ChannelModel>();
 
@@ -53,17 +54,12 @@ public class AdsModel {
         channels.add(1,channel_2);
     }
     
-    public int getMaxDivider(){
-        return Math.max(channel_1.getDivider(),channel_2.getDivider());
-    }
-
     /*
-     * frame size == 1 marker byte + 1 counter byte + 1 loff byte + accelerometer 9 bytes +
-     *  + maxDiv/div for each chanel;
+     *
      */
     public int getFrameSize(){
-        int accelerometerSize = isAccelerometerEnabled ? 9 : 0;
-        return 3 + getMaxDivider()/channel_1.getDivider() + getMaxDivider()/channel_2.getDivider() + accelerometerSize;
+        int accelerometerSize = isAccelerometerEnabled ? 3 : 0;
+        return MAX_DIV/channel_1.getDivider() + MAX_DIV/channel_2.getDivider() + accelerometerSize;
     }
 
     public Sps getSps() {
@@ -83,11 +79,13 @@ public class AdsModel {
     }
 
     public int loffComparatorEnabledBit(){
-        return 0x40;
+//        return 0x40;
+        return 0x00;
     }
     
     public int intTestEnabledBits(){
-        return 0x03;
+//        return 0x03;
+        return 0x00;
     }
     
     public int rldEnabledBit(){

@@ -1,12 +1,13 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.comport.ComPortListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class FrameDecoder {
+public class FrameDecoder implements ComPortListener {
 
     private int frameIndex;
     private long counter;
@@ -16,14 +17,14 @@ public class FrameDecoder {
     private Queue<int[]> decodedFrameQueue;
     private static final Log log = LogFactory.getLog(FrameDecoder.class);
 
-    public void init(int decodedFrameSize) {
+    public FrameDecoder(int decodedFrameSize) {
         this.decodedFrameSize = decodedFrameSize;
         rawFrameSize = (decodedFrameSize * 3) + 3; //3 bytes for each value + marker + counter + loff
         rawFrame = new int[rawFrameSize];
         decodedFrameQueue = new ConcurrentLinkedQueue<int[]>();
     }
 
-    public void addByte(int inByte) {
+    public void onByteReceived(int inByte) {
         if (frameIndex == 0 && inByte == 254) {
             rawFrame[frameIndex] = inByte;
             frameIndex++;
@@ -42,14 +43,15 @@ public class FrameDecoder {
 
     private void onFrameReceived() {
         int[] decodedFrame = new int[decodedFrameSize];
-        for (int i = 0; i < decodedFrameSize; i++) {
-            decodedFrame[i] = (((rawFrame[i * 3 + 3] << 24) + ((rawFrame[i * 3 + 2]) << 16) + (rawFrame[i * 3 + 1] << 8)) >> 8);
+        for (int i = 0; i < 50; i++) {
+            decodedFrame[i] = (((rawFrame[i * 3 + 3] << 24) + ((rawFrame[i * 3 + 2]) << 16) + (rawFrame[i * 3 + 1] << 8)) /256);
         }
+        decodedFrameQueue.offer(decodedFrame);
         //todo check lost frames and loff status;
     }
 
-    public int size() {
-        return decodedFrameQueue.size();
+    public boolean available() {
+        return decodedFrameQueue.size()>0;
     }
 
     public int[] poll() {

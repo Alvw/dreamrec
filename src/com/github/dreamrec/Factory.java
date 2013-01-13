@@ -89,8 +89,7 @@ public class Factory {
     }*/
 
     public static ComPort getComPort(ApplicationProperties appProperties){
-        FrameDecoder frameDecoder = new FrameDecoder();
-        return new ComPort(frameDecoder, appProperties.getComPortName());
+        return new ComPort(appProperties.getComPortName());
     }
     
     public static AdsModel getAdsModel(ApplicationProperties applicationProperties){

@@ -19,7 +19,6 @@ public class ComPort {
     private InputStream inputStream;
     private OutputStream outputStream;
     private boolean isConnected;
-    private FrameDecoder frameDecoder;
     CommPort commPort;
     SerialReader serialReader;
     Thread serialReaderThread;
@@ -27,9 +26,13 @@ public class ComPort {
     Thread serialWriterThread;
     private String comPortName;
 
-    public ComPort(FrameDecoder frameDecoder, String comPortName) {
-        this.frameDecoder = frameDecoder;
+    public ComPort(String comPortName) {
         this.comPortName = comPortName;
+        try {
+            connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void connect() throws Exception {
@@ -47,7 +50,7 @@ public class ComPort {
                 inputStream = serialPort.getInputStream();
                 outputStream = serialPort.getOutputStream();
                 isConnected = true;
-                serialReader = new SerialReader(inputStream, frameDecoder);
+                serialReader = new SerialReader(inputStream);
                 serialReaderThread = new Thread(serialReader);
                 serialReaderThread.start();
                 serialWriter = new SerialWriter(outputStream);
@@ -89,30 +92,26 @@ public class ComPort {
         serialWriter.write(bytes);
     }
 
-    public int available() {
-        return frameDecoder.size();
-    }
-
-    public int[] poll() {
-        return frameDecoder.poll();
-    }
-    
-    public void initFrameDecoder(int newDecodedFrameSize){
-        frameDecoder.init(newDecodedFrameSize);
+    public void setComPortListener(ComPortListener listener){
+        serialReader.setListener(listener);
     }
 
     public static class SerialReader implements Runnable {
         private boolean isConnected = true;
         private InputStream in;
-        FrameDecoder frameDecoder;
+        private ComPortListener comPortListener;
 
-        public SerialReader(InputStream in, FrameDecoder frameDecoder) {
+        public SerialReader(InputStream in) {
             this.in = in;
-            this.frameDecoder = frameDecoder;
         }
 
         public void disconnect() {
             isConnected = false;
+        }
+
+        
+        public void setListener(ComPortListener listener){
+            comPortListener = listener;
         }
 
         public void run() {
@@ -123,7 +122,7 @@ public class ComPort {
                     len = this.in.read(buf);
                     while (isConnected && (len = this.in.read(buf)) > -1) {
                         for (int i = 0; i < len; i++) {
-                            frameDecoder.addByte((buf[i] & 0xFF));
+                            comPortListener.onByteReceived((buf[i] & 0xFF));
                         }
                     }
                     Thread.sleep(100);
@@ -133,6 +132,8 @@ public class ComPort {
             }
         }
     }
+    
+    
 
     public static class SerialWriter implements Runnable {
         private OutputStream out;

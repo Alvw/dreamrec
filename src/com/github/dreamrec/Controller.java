@@ -1,5 +1,8 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.ads.AdsManager;
+import com.github.dreamrec.ads.AdsModel;
+import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfHeaderData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -7,7 +10,10 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -22,51 +28,30 @@ public class Controller {
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
-     private HiPassPreFilter ch1PreFilter;
+    private HiPassPreFilter ch1PreFilter;
     private HiPassPreFilter ch2PreFilter;
     private HiPassPreFilter acc1PreFilter;
     private HiPassPreFilter acc2PreFilter;
     private HiPassPreFilter acc3PreFilter;
     private DataSaveManager dataSaveManager = new DataSaveManager();//todo delete
     private DataOutputStream outputStream;
+    private FrameDecoder frameDecoder;
+    private AdsModel adsModel;
+    private ComPort comport;
 
-    public Controller(Model model, ApplicationProperties applicationProperties) {
+    public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
         this.model = model;
+        this.adsModel = adsModel;
+        this.comport = comport;
         this.applicationProperties = applicationProperties;
         int frequencyDivider = applicationProperties.getFrequencyDivider();
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
-        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
-        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
-        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize,frequencyDivider);
-        try {
-            outputStream = new DataOutputStream(new FileOutputStream("tralivali.edf"));    //todo refactor
-            int frequency = applicationProperties.getIncomingDataFrequency();
-            EdfHeaderData headerData1 = new EdfHeaderData();
-            headerData1.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
+        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        /*ch2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);*/
 
-            EdfHeaderData headerData2 = new EdfHeaderData();
-            headerData2.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
-            headerData2.setLabel("EEG 2 chanel");
-
-            EdfHeaderData headerData3 = new EdfHeaderData();
-            headerData3.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
-            headerData3.setLabel("Accel X ");
-
-            EdfHeaderData headerData4 = new EdfHeaderData();
-            headerData4.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
-            headerData4.setLabel("Accel Y");
-
-            EdfHeaderData headerData5 = new EdfHeaderData();
-            headerData5.setNrOfSamplesInEachDataRecord(String.valueOf(frequency));
-            headerData5.setLabel("Accel Z");
-
-
-            dataSaveManager.writeEdfHeader(model, outputStream, headerData1, headerData2, headerData3, headerData4, headerData5);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void setMainWindow(MainWindow _mainWindow) {
@@ -80,56 +65,11 @@ public class Controller {
     }
 
     protected void updateModel() {
-        while (dataProvider.size() >0){
-            int ch1Val = dataProvider.poll();
-            ch1PreFilter.add(ch1Val);
-            ch2PreFilter.add(0);
-            acc1PreFilter.add(0);
-            acc2PreFilter.add(0);
-            acc3PreFilter.add(0);
-            model.addEyeData(ch1PreFilter.poll());
-            model.addCh2Data(ch2PreFilter.poll());
-            model.addAcc1Data(acc1PreFilter.poll());
-            model.addAcc2Data(acc2PreFilter.poll());
-            model.addAcc3Data(acc3PreFilter.poll());
-            int size = model.getEyeDataList().size();
-            int frequency = applicationProperties.getIncomingDataFrequency();
-            if(size%frequency == 0){
-                for (int i = size - frequency; i < size; i++) {
-                    try {
-                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getEyeDataList().get(i)));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //todo refactor
-                    }
-                }
-                for (int i = size - frequency; i < size; i++) {
-                    try {
-                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getCh2DataList().get(i)));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //todo refactor
-                    }
-                }
-                for (int i = size - frequency; i < size; i++) {
-                    try {
-                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc1DataList().get(i)));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //todo refactor
-                    }
-                }
-                for (int i = size - frequency; i < size; i++) {
-                    try {
-                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc2DataList().get(i)));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //todo refactor
-                    }
-                }
-                for (int i = size - frequency; i < size; i++) {
-                    try {
-                        outputStream.writeShort(dataSaveManager.toLittleEndian(model.getAcc3DataList().get(i)));
-                    } catch (IOException e) {
-                        e.printStackTrace();  //todo refactor
-                    }
-                }
+        while (frameDecoder.available()) {
+            int[] frame = frameDecoder.poll();
+            for (int i = 0; i < 50; i++) {
+                ch1PreFilter.add(frame[i]);
+                model.addEyeData(ch1PreFilter.poll());
             }
         }
         if (isAutoScroll) {
@@ -149,7 +89,7 @@ public class Controller {
         }
     }
 
-     public void saveAsEdf() {
+    public void saveAsEdf() {
         try {
             JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
             int fileChooserState = fileChooser.showSaveDialog(mainWindow);
@@ -175,17 +115,20 @@ public class Controller {
     }
 
     public void startRecording() {
+        model.clear();
+        model.setFrequency(250);
+        model.setStartTime(System.currentTimeMillis());
+        frameDecoder = new FrameDecoder(adsModel.getFrameSize());
+        comport.setComPortListener(frameDecoder);
+        AdsManager adsManager = new AdsManager();
         try {
-//            dataProvider = Factory.getDataProvider(applicationProperties);
-            dataProvider.startRecording();
-            model.clear();
-            model.setFrequency(dataProvider.getIncomingDataFrequency());
-            model.setStartTime(dataProvider.getStartTime());
-            repaintTimer.start();
-            isAutoScroll = true;
-        } catch (ApplicationException e) {
-            mainWindow.showMessage(e.getMessage());
+            comport.writeToPort(adsManager.writeModelState(adsModel));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        repaintTimer.start();
+        isAutoScroll = true;
+
     }
 
     public void stopRecording() {

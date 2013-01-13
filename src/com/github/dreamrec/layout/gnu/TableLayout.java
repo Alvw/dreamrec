@@ -214,7 +214,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
             prefHeight[i] = 0;
         }
 
-        // measure the minimum and preferred size of each row and column
+        // measure the minimum and preferred available of each row and column
 
         for (int row=0; row<nrows; ++row)
         {
@@ -235,7 +235,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
                     if (prefSize.height < minSize.height)
                         prefSize.height = minSize.height;
 
-                    // divide size across all the rows or columns being spanned
+                    // divide available across all the rows or columns being spanned
                     minSize.width /= option.colSpan;
                     minSize.height /= option.rowSpan;
                     prefSize.width = (prefSize.width - hgap*(option.colSpan-1)) / option.colSpan;
@@ -260,7 +260,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
             }
         }
 
-        // add rows and columns to give total min and preferred size of whole grid
+        // add rows and columns to give total min and preferred available of whole grid
 
         MinWidth = 0;
         MinHeight = 0;
@@ -332,7 +332,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
         else
             heightWeighting = (double)(height-MinHeight)/(double)(PrefHeight-MinHeight);
 
-        // calculate scale factors to scale components to size of container, based
+        // calculate scale factors to scale components to available of container, based
         // on weighted combination of minimum and preferred sizes
 
         double minWidthScale = (1.0 - widthWeighting) * width/MinWidth;
@@ -340,7 +340,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
         double minHeightScale = (1.0 - heightWeighting) * height/MinHeight;
         double prefHeightScale = heightWeighting * (height-vgap*(nrows+1))/(PrefHeight-vgap*(nrows+1));
 
-        // only get the full amount of gap if we're working to preferred size
+        // only get the full amount of gap if we're working to preferred available
         int vGap = (int) (vgap * heightWeighting);
         int hGap = (int) (hgap * widthWeighting);
 
@@ -376,7 +376,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
                 totalWeight += weight[c];
             int horizSurplus = width - hgap*(ncols+1) - PrefWidth;
 
-            // Then work out column sizes, essentially preferred size + share of padding
+            // Then work out column sizes, essentially preferred available + share of padding
             for (int c=0; c<ncols; ++c)
             {
                 columnWidth[c] = (int) (minWidthScale * minWidth[c] + widthWeighting * prefWidth[c]);
@@ -393,7 +393,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
                     TableOption option = (TableOption) options.get(comp);
                     if (option==null) option = defaultOption;
 
-                    // cell size may be bigger than row/column size due to spanning
+                    // cell available may be bigger than row/column available due to spanning
                     int cellHeight = rowHeight;
                     int cellWidth = columnWidth[c];
                     for (int i=1; i<option.colSpan; ++i)
@@ -420,7 +420,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
                     else if (option.horizontal == TableOption.CENTRE)
                         xoff = (cellWidth - d.width) / 2;
 
-                    // System.out.println(" "+comp.getClass().getName()+" at ("+x+"+"+xoff+","+y+"+"+yoff+"), size "+d.width+","+d.height);
+                    // System.out.println(" "+comp.getClass().getName()+" at ("+x+"+"+xoff+","+y+"+"+yoff+"), available "+d.width+","+d.height);
                     comp.setBounds(x+xoff,y+yoff,d.width,d.height);
                 }
                 x += columnWidth[c] + hGap;

@@ -58,7 +58,7 @@ public class Ads1292DataProvider implements IDataProvider{
     }
 
     public int size() {
-//        return frameDecoder.size();
+//        return frameDecoder.available();
         throw new UnsupportedOperationException();
     }
 

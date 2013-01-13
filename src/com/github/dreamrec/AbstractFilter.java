@@ -27,7 +27,7 @@ public abstract class AbstractFilter<T> implements Filter {
     
     private void checkIndexBounds(int index){
         if(index > size() || index < 0 ){
-            throw  new IndexOutOfBoundsException("index:  "+index+",size:  "+size());
+            throw  new IndexOutOfBoundsException("index:  "+index+",available:  "+size());
         }
     }
     

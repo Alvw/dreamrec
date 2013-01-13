@@ -14,15 +14,15 @@ public class AveragingListViewTest {
     @Test
     public void testSize(){
         /*AbstractFilter<Integer> avgView = new AveragingFilter(getTestData(9),10);
-        assertTrue(avgView.size() == 0);
+        assertTrue(avgView.available() == 0);
 
 
         avgView = new AveragingFilter(getTestData(10),10);
-        assertTrue(avgView.size()== 1);
+        assertTrue(avgView.available()== 1);
         assertTrue(avgView.get(0) == 4);
 
         avgView = new AveragingFilter(getTestData(25),10);
-        assertTrue(avgView.size()== 2);
+        assertTrue(avgView.available()== 2);
         assertTrue(avgView.get(1) == 14);*/
     }
 
