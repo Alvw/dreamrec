@@ -119,6 +119,10 @@ public class Factory {
         adsModel.addChannel(ch1Model);
         adsModel.addChannel(ch2Model);
 
+        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel1"));
+        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel2"));
+        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel3"));
+
         adsModel.setSps(applicationProperties.getSps());
         adsModel.setAccelerometerEnabled(applicationProperties.isAccelerometerEnabled());
         return adsModel;
