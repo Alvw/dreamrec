@@ -89,7 +89,7 @@ public class Factory {
     }*/
 
     public static ComPort getComPort(ApplicationProperties appProperties){
-        return new ComPort(appProperties.getComPortName());
+        return new ComPort();
     }
     
     public static AdsModel getAdsModel(ApplicationProperties applicationProperties){

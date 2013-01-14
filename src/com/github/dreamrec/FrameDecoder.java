@@ -43,7 +43,7 @@ public class FrameDecoder implements ComPortListener {
 
     private void onFrameReceived() {
         int[] decodedFrame = new int[decodedFrameSize];
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < decodedFrameSize; i++) {
             decodedFrame[i] = (((rawFrame[i * 3 + 3] << 24) + ((rawFrame[i * 3 + 2]) << 16) + (rawFrame[i * 3 + 1] << 8)) /256);
         }
         decodedFrameQueue.offer(decodedFrame);

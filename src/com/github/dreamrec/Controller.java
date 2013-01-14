@@ -3,7 +3,7 @@ package com.github.dreamrec;
 import com.github.dreamrec.ads.AdsManager;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.comport.ComPort;
-import com.github.dreamrec.edf.EdfHeaderData;
+import gnu.io.NoSuchPortException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -11,9 +11,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 /**
  *
@@ -47,10 +45,10 @@ public class Controller {
         int frequencyDivider = applicationProperties.getFrequencyDivider();
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
         ch1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        /*ch2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
         acc1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
         acc2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);*/
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
 
     }
 
@@ -67,10 +65,16 @@ public class Controller {
     protected void updateModel() {
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
-            for (int i = 0; i < 50; i++) {
-                ch1PreFilter.add(frame[i]);
-                model.addEyeData(ch1PreFilter.poll());
-            }
+            ch1PreFilter.add(frame[0]);
+            model.addEyeData(ch1PreFilter.poll());
+            ch2PreFilter.add(frame[1]);
+            model.addCh2Data(ch2PreFilter.poll());
+            acc1PreFilter.add(frame[2]);
+            model.addAcc1Data(acc1PreFilter.poll());
+            acc2PreFilter.add(frame[3]);
+            model.addAcc2Data(acc2PreFilter.poll());
+            acc3PreFilter.add(frame[4]);
+            model.addAcc3Data(acc3PreFilter.poll());
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -118,11 +122,18 @@ public class Controller {
         model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());
-        frameDecoder = new FrameDecoder(adsModel.getFrameSize());
-        comport.setComPortListener(frameDecoder);
-        AdsManager adsManager = new AdsManager();
         try {
+            comport.connect(applicationProperties.getComPortName());
+            frameDecoder = new FrameDecoder(adsModel.getFrameSize());
+            comport.setComPortListener(frameDecoder);
+            AdsManager adsManager = new AdsManager();
             comport.writeToPort(adsManager.writeModelState(adsModel));
+        } catch (NoSuchPortException e) {
+            String msg = "No port with the name " + applicationProperties.getComPortName() +
+                    ".\nCheck Com Port settings and power connection.\nRestart application.";
+             log.error(msg, e);
+            JOptionPane.showMessageDialog(null, msg);
+            System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -181,7 +192,6 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         comport.disconnect();
     }
 }

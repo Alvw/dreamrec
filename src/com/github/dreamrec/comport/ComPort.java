@@ -25,16 +25,8 @@ public class ComPort {
     Thread serialWriterThread;
     private String comPortName;
 
-    public ComPort(String comPortName) {
-        this.comPortName = comPortName;
-        try {
-            connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void connect() throws Exception {
+    public void connect(String comPortName) throws Exception {
         if (isConnected) {
             return;
         }
@@ -84,11 +76,12 @@ public class ComPort {
 
     }
 
-    public void writeToPort(List<Byte> bytes) throws Exception {
-        if (!isConnected) {
-            connect();
+    public void writeToPort(List<Byte> bytes) {
+        if(isConnected){
+            serialWriter.write(bytes);
+        } else {
+            log.warn("Com port disconnected. Can't write to port.");
         }
-        serialWriter.write(bytes);
     }
 
     public void setComPortListener(ComPortListener listener) {
@@ -129,7 +122,7 @@ public class ComPort {
                     Thread.sleep(100);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error(e);
             }
         }
     }
@@ -148,9 +141,7 @@ public class ComPort {
         public void write(List<Byte> dataList) {
             synchronized (data) {
                 data.clear();
-                for (Byte aByte : dataList) {
-                    data.add(aByte);
-                }
+                data.addAll(dataList);
                 isDataReady = true;
                 data.notifyAll();
             }
@@ -161,7 +152,7 @@ public class ComPort {
                 while (isConnected) {
                     while (!isDataReady) {
                         try {
-                            data.wait();
+                            data.wait(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -176,7 +167,7 @@ public class ComPort {
                             isDataReady = false;
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error(e);
                     }
                 }
             }
