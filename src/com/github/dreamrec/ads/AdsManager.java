@@ -19,6 +19,10 @@ public class AdsManager {
     private static final int SET_ACCELEROMETER_ENABLED_CODE = 0xF5;
     private static final int CONFIG_DATA_RECEIVED_CODE = 0xF6;
 
+    public static final int RLD_ENABLED_BIT = 0x20;
+    public static final int RLD_LOFF_SENS_BIT = 0x01;
+    public static final int RLD_SENS_REGISTER = 0x46;
+
     private List<Byte> write(int code){
         List<Byte> result = new ArrayList<Byte>();
         result.add((byte)code);
@@ -98,9 +102,9 @@ public class AdsManager {
                 ch2Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x45, ch2SetRegisterValue));
 
-        int rldSensRegisterValue = adsModel.rldEnabledBit() + adsModel.rldLoffSenseBit()+
+        int rldSensRegisterValue = RLD_ENABLED_BIT + RLD_LOFF_SENS_BIT +
                 ch1Model.getRldSenseEnabledBits() + ch2Model.getRldSenseEnabledBits();
-        result.addAll(writeRegister(0x46, rldSensRegisterValue));
+        result.addAll(writeRegister(RLD_SENS_REGISTER, rldSensRegisterValue));
 
         /* int loffSensRegisterValue = ch1Model.loffSenseEnabledBits() + ch2Model.loffSenseEnabledBits();
        result.addAll(writeRegister(0x47, loffSensRegisterValue));*/

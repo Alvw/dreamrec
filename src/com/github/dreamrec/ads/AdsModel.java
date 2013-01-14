@@ -126,10 +126,6 @@ public class AdsModel {
         return (isCh1Test | isCh2Test) ? 0x03 : 0;
     }
     
-    public int rldEnabledBit(){
-        return 0x20;
-    }
-
     public int rldLoffSenseBit() {
         return 0x10;
     }
