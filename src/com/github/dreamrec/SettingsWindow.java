@@ -10,7 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.UIManager.*;
 
 
 /**
@@ -44,7 +43,7 @@ public class SettingsWindow extends JFrame {
         this.adsModel = adsModel;
         setDefaultCloseOperation( EXIT_ON_CLOSE );
         
-        int nChannels = adsModel.getNumberOfChannels();
+        int nChannels = adsModel.getNumberOfAdsChannels();
         
         sps = new JComboBox(Sps.values());
 
@@ -105,7 +104,7 @@ public class SettingsWindow extends JFrame {
 
         }
 
-        for (int i = 0; i < adsModel.getNumberOfChannels(); i++) {
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
             channelPanel.add(new JLabel(" "+i+" "));
             channelPanel.add(isEnable[i]);
             channelPanel.add(name[i]);

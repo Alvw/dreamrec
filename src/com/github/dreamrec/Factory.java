@@ -92,39 +92,41 @@ public class Factory {
         return new ComPort();
     }
     
-    public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
-        ChannelModel ch1Model = new ChannelModel();
-        ch1Model.setDivider(applicationProperties.ch1Divider());
-        ch1Model.setHiPassBufferSize(applicationProperties.ch1HiPassBufferSize());
-        ch1Model.setName(applicationProperties.ch1Label());
-        ch1Model.setGain(applicationProperties.ch1Gain());
-        ch1Model.setCommutatorState(applicationProperties.ch1CommutatorState());
-        ch1Model.setLoffEnable(applicationProperties.ch1LoffEnabled());
-        ch1Model.setRldSenseEnabled(applicationProperties.ch1RldSenseEnabled());
-        ch1Model.setRldSenseEnabledBits(0x03);
-        ch1Model.setLoffSenseEnabledBits(0x03);
 
-        ChannelModel ch2Model = new ChannelModel();
-        ch2Model.setDivider(applicationProperties.ch2Divider());
-        ch2Model.setHiPassBufferSize(applicationProperties.ch2HiPassBufferSize());
-        ch2Model.setName(applicationProperties.ch2Label());
-        ch2Model.setGain(applicationProperties.ch2Gain());
-        ch2Model.setCommutatorState(applicationProperties.ch2CommutatorState());
-        ch2Model.setLoffEnable(applicationProperties.ch2LoffEnabled());
-        ch2Model.setRldSenseEnabled(applicationProperties.ch2RldSenseEnabled());
-        ch2Model.setRldSenseEnabledBits(0x0C);
-        ch2Model.setLoffSenseEnabledBits(0x0C);
+    
+    public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
+        // array_size = Number of Channels
+        int[] rldSenseEnabledBits = {0x03, 0x0C};
+        int[] loffSenseEnabledBits = {0x03, 0x0C};
 
         AdsModel adsModel = new AdsModel();
-        adsModel.addChannel(ch1Model);
-        adsModel.addChannel(ch2Model);
 
-        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel1"));
-        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel2"));
-        adsModel.addAccelerometerChannel( new AccelerometerChannelModel(AdsModel.MAX_DIV, "AccelerometerChannel3"));
+        for (int chNum = 0; chNum < 2; chNum++) {
+            AdsChannelModel adsChannelModel = new AdsChannelModel();
+            adsChannelModel.setDivider(applicationProperties.getChannelDivider(chNum));
+            adsChannelModel.setHiPassBufferSize(applicationProperties.getChannelHiPassBufferSize(chNum));
+            adsChannelModel.setName(applicationProperties.getChannelName(chNum));
+            adsChannelModel.setGain(applicationProperties.getChannelGain(chNum));
+            adsChannelModel.setCommutatorState(applicationProperties.getChannelCommutatorState(chNum));
+            adsChannelModel.setLoffEnable(applicationProperties.isChannelLoffEnable(chNum));
+            adsChannelModel.setRldSenseEnabled(applicationProperties.isChannelRldSenseEnable(chNum));
+            adsChannelModel.setRldSenseEnabledBits(rldSenseEnabledBits[chNum]);
+            adsChannelModel.setLoffSenseEnabledBits(loffSenseEnabledBits[chNum]);
+            
+            adsModel.addAdsChannel(adsChannelModel);
+        }
+
+        for (int chNum = 0; chNum < 2; chNum++) {
+            ChannelModel accelerometerChannelModel = new AdsChannelModel();
+            accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
+            accelerometerChannelModel.setHiPassBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
+            accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));
+
+            adsModel.addAccelerometerChannel(accelerometerChannelModel);
+        }
 
         adsModel.setSps(applicationProperties.getSps());
-        adsModel.setAccelerometerEnabled(applicationProperties.isAccelerometerEnabled());
+        adsModel.setAccelerometerEnabled(applicationProperties.isAccelerometerEnable());
         return adsModel;
     }
 

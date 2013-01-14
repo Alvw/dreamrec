@@ -153,6 +153,8 @@ public class DataSaveManager {
                 .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
     }
 
+
+
     public void writeEdfHeader(Model model, DataOutputStream outStream, EdfHeaderData... headerData) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");

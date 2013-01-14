@@ -27,20 +27,18 @@ public class ApplicationProperties {
 
     public static final String SPS = "sps";
     public static final String ACCELEROMETER_ENABLED = "accelerometerEnabled";
-    public static final String CH_1_HI_PASS_BUFFER_SIZE = "ch1HiPassBufferSize";
-    public static final String CH_1_DIVIDER = "ch1Divider";
-    public static final String CH_1_GAIN = "ch1Gain";
-    public static final String CH_1_COMMUTATOR_STATE = "ch1CommutatorState";
-    public static final String CH_1_LOFF_ENABLED = "ch1LoffEnabled";
-    public static final String CH_1_LABEL = "ch1Label";
-    public static final String CH_1_RLD_SENSE_ENABLED = "ch1RldSenseEnabled";
-    public static final String CH_2_HI_PASS_BUFFER_SIZE = "ch2HiPassBufferSize";
-    public static final String CH_2_DIVIDER = "ch2Divider";
-    public static final String CH_2_GAIN = "ch2Gain";
-    public static final String CH_2_COMMUTATOR_STATE = "ch2CommutatorState";
-    public static final String CH_2_LOFF_ENABLED = "ch2LoffEnabled";
-    public static final String CH_2_LABEL = "ch2Label";
-    public static final String CH_2_RLD_SENSE_ENABLED = "ch2RldSenseEnabled";
+
+    public static final String CHANNEL_HI_PASS_BUFFER_SIZE = "hiPassBufferSize_channel";
+    public static final String CHANNEL_DIVIDER = "divider_channel";
+    public static final String CHANNEL_GAIN = "gain_channel";
+    public static final String CHANNEL_COMMUTATOR_STATE = "commutatorState_channel";
+    public static final String CHANNEL_LOFF_ENABLED = "loffEnabled_channel";
+    public static final String CHANNEL_NAME = "name_channel";
+    public static final String CHANNEL_RLD_SENSE_ENABLED = "rldSenseEnabled_channel";
+
+    public static final String ACCELEROMETER_HI_PASS_BUFFER_SIZE = "hiPassBufferSize_accelerometer";
+    public static final String ACCELEROMETER_DIVIDER = "divider_accelerometer";
+    public static final String ACCELEROMETER_NAME = "name_accelerometer";
     
     public static final String NUMBER_OF_CHANNELS = "numberOfChannels";
 
@@ -111,22 +109,41 @@ public class ApplicationProperties {
         throw new IllegalArgumentException(msg);
     }
 
-    public boolean isAccelerometerEnabled() {
+    public boolean isAccelerometerEnable() {
         return config.getBoolean(ACCELEROMETER_ENABLED);
     }
 
-    public int ch1HiPassBufferSize() {
-        return config.getInt(CH_1_HI_PASS_BUFFER_SIZE);
+
+    public int getAccelerometerDivider() {
+
+        return config.getInt(ACCELEROMETER_DIVIDER);
     }
 
-    public int ch1Divider() {
-
-        return config.getInt(CH_1_DIVIDER);
+    public int getAccelerometerHiPassBufferSize() {
+        return config.getInt(ACCELEROMETER_HI_PASS_BUFFER_SIZE);
     }
 
-    public Gain ch1Gain() {
+    public String getAccelerometerName(int accelerometerChannelNumber) {
+        return config.getString(ACCELEROMETER_NAME +accelerometerChannelNumber);
+    }
+
+    public String getChannelName(int channelNumber) {
+        return config.getString(CHANNEL_NAME+channelNumber);
+    }
+
+
+    public int getChannelHiPassBufferSize(int channelNumber) {
+        return config.getInt(CHANNEL_HI_PASS_BUFFER_SIZE+channelNumber);
+    }
+
+    public int getChannelDivider(int channelNumber) {
+
+        return config.getInt(CHANNEL_DIVIDER+channelNumber);
+    }
+
+    public Gain getChannelGain(int channelNumber) {
         for (Gain gain : Gain.values()) {
-            if (gain.getValue() == config.getInt(CH_1_GAIN)) {
+            if (gain.getValue() == config.getInt(CHANNEL_GAIN+channelNumber)) {
                 return gain;
             }
         }
@@ -136,58 +153,17 @@ public class ApplicationProperties {
         throw new IllegalArgumentException(msg);
     }
 
-    public CommutatorState ch1CommutatorState() {
-        return CommutatorState.valueOf(config.getString(CH_1_COMMUTATOR_STATE));
+    public CommutatorState getChannelCommutatorState(int channelNumber) {
+        return CommutatorState.valueOf(config.getString(CHANNEL_COMMUTATOR_STATE+channelNumber));
     }
 
-    public boolean ch1LoffEnabled() {
-        return config.getBoolean(CH_1_LOFF_ENABLED);
+    public boolean isChannelLoffEnable(int channelNumber) {
+        return config.getBoolean(CHANNEL_LOFF_ENABLED+channelNumber);
     }
 
-    public String ch1Label() {
-        return config.getString(CH_1_LABEL);
-    }
 
-    public boolean ch1RldSenseEnabled() {
-        return config.getBoolean(CH_1_RLD_SENSE_ENABLED);
-    }
-
-    //    ---------------
-    public int ch2HiPassBufferSize() {
-        return config.getInt(CH_2_HI_PASS_BUFFER_SIZE);
-    }
-
-    public int ch2Divider() {
-
-        return config.getInt(CH_2_DIVIDER);
-    }
-
-    public Gain ch2Gain() {
-        for (Gain gain : Gain.values()) {
-            if (gain.getValue() == config.getInt(CH_2_GAIN)) {
-                return gain;
-            }
-        }
-        String msg = "Invalid ch2Gain value in application.properties file";
-        log.error(msg);
-        JOptionPane.showMessageDialog(null, msg);
-        throw new IllegalArgumentException(msg);
-    }
-
-    public CommutatorState ch2CommutatorState() {
-        return CommutatorState.valueOf(config.getString(CH_2_COMMUTATOR_STATE));
-    }
-
-    public boolean ch2LoffEnabled() {
-        return config.getBoolean(CH_2_LOFF_ENABLED);
-    }
-
-    public String ch2Label() {
-        return config.getString(CH_2_LABEL);
-    }
-
-    public boolean ch2RldSenseEnabled() {
-        return config.getBoolean(CH_2_RLD_SENSE_ENABLED);
+    public boolean isChannelRldSenseEnable(int channelNumber) {
+        return config.getBoolean(CHANNEL_RLD_SENSE_ENABLED+channelNumber);
     }
 
 

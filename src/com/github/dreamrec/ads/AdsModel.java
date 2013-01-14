@@ -1,7 +1,6 @@
 package com.github.dreamrec.ads;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -12,14 +11,14 @@ public class AdsModel {
     private boolean isAccelerometerEnabled;
     public static final int MAX_DIV = 50;
 
-    private ArrayList<ChannelModel> channels = new ArrayList<ChannelModel>();
-    private ArrayList<AccelerometerChannelModel>  accelerometerChannels = new ArrayList<AccelerometerChannelModel>();
+    private ArrayList<AdsChannelModel> adsChannels = new ArrayList<AdsChannelModel>();
+    private ArrayList<ChannelModel>  accelerometerChannels = new ArrayList<ChannelModel>();
 
     
     public int[]  getAllDividers(){
-        int[] dividers = new int[getNumberOfChannels() + getNumberOfAccelerometerChannels()];
-        for (int i = 0; i < channels.size(); i++) {
-            dividers[i] = channels.get(i).getDivider();           
+        int[] dividers = new int[getNumberOfAdsChannels() + getNumberOfAccelerometerChannels()];
+        for (int i = 0; i < adsChannels.size(); i++) {
+            dividers[i] = adsChannels.get(i).getDivider();
         }
         for (int i = 0; i < accelerometerChannels.size(); i++) {
             dividers[i] = accelerometerChannels.get(i).getDivider();
@@ -27,18 +26,37 @@ public class AdsModel {
         return dividers;
     }
     
-    public int getNumberOfChannels()  {
-        return channels.size();
+    public int getNumberOfAllChannels(){
+        return adsChannels.size()+accelerometerChannels.size();
     }
 
-
-    public void addChannel(ChannelModel channel) {
-         channels.add(channel);
-    }
-
+    /*
+     *  this method threat  adsChannels and  accelerometerChannels as single array
+     */
     public ChannelModel getChannel (int chanelNumber) {
-        if ( chanelNumber < channels.size() ) {
-            return channels.get(chanelNumber);
+        if ( chanelNumber < adsChannels.size() ) {
+            return adsChannels.get(chanelNumber);
+        }
+        else if ( (chanelNumber - adsChannels.size()) < accelerometerChannels.size() ) {
+            return accelerometerChannels.get(chanelNumber - adsChannels.size());
+        }
+        else {
+            return null;
+        }
+    }
+    
+    public int getNumberOfAdsChannels()  {
+        return adsChannels.size();
+    }
+
+
+    public void addAdsChannel(AdsChannelModel channel) {
+         adsChannels.add(channel);
+    }
+
+    public AdsChannelModel getAdsChannel(int chanelNumber) {
+        if ( chanelNumber < adsChannels.size() ) {
+            return adsChannels.get(chanelNumber);
         }
         else {
             return null;
@@ -49,13 +67,13 @@ public class AdsModel {
         return accelerometerChannels.size();
     }
 
-    public void addAccelerometerChannel(AccelerometerChannelModel accelerometerChannel) {
-        accelerometerChannels.add(accelerometerChannel);
+    public void addAccelerometerChannel(ChannelModel channel) {
+        accelerometerChannels.add(channel);
     }
 
-    public ChannelModel getAccelerometerChannel (int accelerometerChanelNumber) {
-        if ( accelerometerChanelNumber < channels.size() ) {
-            return channels.get(accelerometerChanelNumber);
+    public ChannelModel getAccelerometerChannel (int chanelNumber) {
+        if ( chanelNumber < accelerometerChannels.size() ) {
+            return accelerometerChannels.get(chanelNumber);
         }
         else {
             return null;
@@ -72,9 +90,9 @@ public class AdsModel {
                 frameSize += MAX_DIV/accelerometerChannels.get(i).getDivider();
             }
         }
-        for (int i = 0; i < channels.size(); i++) {
-            if(channels.get(i).getDivider() != 0){
-                frameSize += MAX_DIV/channels.get(i).getDivider();
+        for (int i = 0; i < adsChannels.size(); i++) {
+            if(adsChannels.get(i).getDivider() != 0){
+                frameSize += MAX_DIV/ adsChannels.get(i).getDivider();
             }
 
         }
@@ -103,8 +121,8 @@ public class AdsModel {
     }
     
     public int intTestEnabledBits(){
-        boolean isCh1Test = channels.get(0).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
-        boolean isCh2Test = channels.get(1).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
+        boolean isCh1Test = adsChannels.get(0).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
+        boolean isCh2Test = adsChannels.get(1).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
         return (isCh1Test | isCh2Test) ? 0x03 : 0;
     }
     

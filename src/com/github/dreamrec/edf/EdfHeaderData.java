@@ -8,6 +8,7 @@ public class EdfHeaderData {
     private String localPatientIdentification = "Rabbit";
     private String recordingIdentification = "Tralivali";
     private String durationOfADataRecord = "1";
+
     private String label = "EEG 1 chanel";
     private String transducerType = "AgAgCl cup electrodes";
     private String physicalDimension = "uV";

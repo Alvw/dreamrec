@@ -1,7 +1,5 @@
 package com.github.dreamrec.ads;
 
-import com.github.dreamrec.comport.ComPort;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +77,8 @@ public class AdsManager {
 
         result.addAll(startPinLo());
         result.addAll(writeCommand(0x11));  //stop continious
-        result.addAll(writeDividerForChannel(0, adsModel.getChannel(0).getDivider()));
-        result.addAll(writeDividerForChannel(1, adsModel.getChannel(1).getDivider()));
+        result.addAll(writeDividerForChannel(0, adsModel.getAdsChannel(0).getDivider()));
+        result.addAll(writeDividerForChannel(1, adsModel.getAdsChannel(1).getDivider()));
         for (int i = 0; i < 3; i++) {
             result.addAll(writeDividerForChannel(i+2,50));
         }
@@ -90,12 +88,12 @@ public class AdsManager {
         int config2RegisterValue = 0xA0 + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();
         result.addAll(writeRegister(0x42,config2RegisterValue));
 
-        ChannelModel ch1Model = adsModel.getChannel(0);
+        AdsChannelModel ch1Model = adsModel.getAdsChannel(0);
         int ch1SetRegisterValue = ch1Model.enabledBit() + ch1Model.getGain().getRegisterBits() +
                 ch1Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x44,ch1SetRegisterValue));
 
-        ChannelModel ch2Model = adsModel.getChannel(1);
+        AdsChannelModel ch2Model = adsModel.getAdsChannel(1);
         int ch2SetRegisterValue = ch2Model.enabledBit() + ch2Model.getGain().getRegisterBits() +
                 ch2Model.getCommutatorState().getRegisterBits();
         result.addAll(writeRegister(0x45, ch2SetRegisterValue));
