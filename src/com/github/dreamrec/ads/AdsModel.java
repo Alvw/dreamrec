@@ -21,13 +21,35 @@ public class AdsModel {
             dividers[i] = adsChannels.get(i).getDivider();
         }
         for (int i = 0; i < accelerometerChannels.size(); i++) {
-            dividers[i] = accelerometerChannels.get(i).getDivider();
+            dividers[i + adsChannels.size()] = accelerometerChannels.get(i).getDivider();
         }
         return dividers;
     }
+
+    // all active channels including accelerometer channels
+    public int getNumberOfActiveChannels(){
+        int number = 0;
+        int[] dividers = getAllDividers();
+        for (int i = 0; i < dividers.length; i++) {
+            if(dividers[i] != 0) {
+                number++;
+            }
+        }
+        return number;
+    }
     
-    public int getNumberOfAllChannels(){
-        return adsChannels.size()+accelerometerChannels.size();
+    // all dividers that != 0, including dividers for accelerometer channels
+    public int[]  getActiveChannelDividers(){
+        int[] allDividers = getAllDividers();
+        int[] activeDividers = new int[getNumberOfActiveChannels()];
+        int counter = 0;
+        for (int i = 0; i < allDividers.length; i++) {
+            if(allDividers[i] != 0) {
+                activeDividers[counter] = allDividers[i];
+                counter++;
+            }
+        }
+        return  activeDividers;
     }
 
     /*
