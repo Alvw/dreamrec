@@ -119,7 +119,7 @@ public class Factory {
         }
 
         for (int chNum = 0; chNum < 3; chNum++) {
-            ChannelModel accelerometerChannelModel = new AdsChannelModel();
+            ChannelModel accelerometerChannelModel = new ChannelModel();
             accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
             accelerometerChannelModel.setHiPassBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));

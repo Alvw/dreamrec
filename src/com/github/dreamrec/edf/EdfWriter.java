@@ -8,12 +8,11 @@ import com.github.dreamrec.ads.ChannelModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
+import java.security.PrivateKey;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,6 +30,7 @@ public class EdfWriter implements AdsDataListener{
     private int inputFramesPerRecord;
     private long startTime;
     private int numberOfDataRecords = -1;
+
     
 
     
@@ -43,7 +43,6 @@ public class EdfWriter implements AdsDataListener{
         Charset characterSet = Charset.forName("US-ASCII");
         try {
             outStream.write(createEdfHeader().getBytes(characterSet));
-            System.out.println(createEdfHeader());
         } catch (IOException e) {
             log.error(e);
         }
@@ -68,7 +67,8 @@ public class EdfWriter implements AdsDataListener{
             }
             channelPosition += channelSampleNumber;
         }
-        if (inputFramesCounter == (inputFramesPerRecord - 1)) {  // when edfFrame is ready
+        inputFramesCounter++;
+        if (inputFramesCounter == inputFramesPerRecord ) {  // when edfFrame is ready
             // change format to Little_endian and save to file
             for (int i = 0; i < edfFrame.length; i++) {
                Short element = (short) edfFrame[i] ;
@@ -79,14 +79,13 @@ public class EdfWriter implements AdsDataListener{
                 }
             }
             inputFramesCounter = 0;
-            if (numberOfDataRecords == -1){
-                numberOfDataRecords = 1;
-            }
-            else{
-                numberOfDataRecords++;
-            }
-        }else {
-            inputFramesCounter++;
+        }
+
+        if (numberOfDataRecords == -1){
+            numberOfDataRecords = 1;
+        }
+        else{
+            numberOfDataRecords++;
         }
     }
 
@@ -126,7 +125,7 @@ public class EdfWriter implements AdsDataListener{
 
     ns - number of signals
     */
-    private String createEdfHeader() {
+    public String createEdfHeader() {
         StringBuilder edfHeader = new StringBuilder();
         
         String version = "0";
@@ -207,7 +206,7 @@ public class EdfWriter implements AdsDataListener{
                 labels.append(adjustLength(channel.getName(), 16) );
                 transducerTypes.append(adjustLength(accelerometerTransducerType, 80) );
                 physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8) );
-                physicalMinimums.append(adjustLength(accelerometerPhysicalMinimum, 8) );
+                physicalMinimums.append(adjustLength(accelerometerPhysicalMinimum, 8));
                 physicalMaximums.append(adjustLength(accelerometerPhysicalMaximum, 8) );
                 digitalMinimums.append(adjustLength(accelerometerDigitalMinimum, 8) );
                 digitalMaximums.append(adjustLength(accelerometerDigitalMaximum, 8) );
@@ -216,7 +215,7 @@ public class EdfWriter implements AdsDataListener{
 
                 int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider();
 
-                samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8) );
+                samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
                 reservedForChannels.append(adjustLength(reserved, 32) );
             }
         }
@@ -244,11 +243,11 @@ public class EdfWriter implements AdsDataListener{
 
     private String adjustLength (String text, int length) {
         StringBuilder sB = new StringBuilder(text);
-        if( sB.length() > length ) {
-            sB.delete((length + 1), sB.length());
+        if( text.length() > length ) {
+            sB.delete((length + 1), text.length());
             
         } else {
-            for (int i = sB.length(); i < length; i++) {
+            for (int i = text.length(); i < length; i++) {
                 sB.append(" ");
             }            
         }
