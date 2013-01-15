@@ -186,7 +186,7 @@ public class EdfWriter implements AdsDataListener{
                 if (channel.getDivider() != 0) {
                     labels.append(adjustLength(channel.getName(), 16) );
                     transducerTypes.append(adjustLength(channelsTransducerType, 80) );
-                    physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8) );
+                    physicalDimensions.append(adjustLength(channel.getPhysicalDimension(), 8) );
                     physicalMinimums.append(adjustLength(channelsPhysicalMinimum, 8) );
                     physicalMaximums.append(adjustLength(channelsPhysicalMaximum, 8) );
                     digitalMinimums.append(adjustLength(channelsDigitalMinimum, 8) );
@@ -206,7 +206,7 @@ public class EdfWriter implements AdsDataListener{
             if (channel.getDivider() != 0) {
                 labels.append(adjustLength(channel.getName(), 16) );
                 transducerTypes.append(adjustLength(accelerometerTransducerType, 80) );
-                physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8) );
+                physicalDimensions.append(adjustLength(channel.getPhysicalDimension(), 8) );
                 physicalMinimums.append(adjustLength(accelerometerPhysicalMinimum, 8) );
                 physicalMaximums.append(adjustLength(accelerometerPhysicalMaximum, 8) );
                 digitalMinimums.append(adjustLength(accelerometerDigitalMinimum, 8) );
