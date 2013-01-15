@@ -3,6 +3,7 @@ package com.github.dreamrec;
 import com.github.dreamrec.ads.AdsManager;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.comport.ComPort;
+import com.github.dreamrec.edf.EdfWriter;
 import gnu.io.NoSuchPortException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -36,6 +38,8 @@ public class Controller {
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
+    private EdfWriter edfWriter;
+    private ArrayList<AdsDataListener>   adsDataListeners = new ArrayList<AdsDataListener>();
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
         this.model = model;
@@ -52,6 +56,10 @@ public class Controller {
 
     }
 
+    public void addAdsDataListener (AdsDataListener adsDataListener){
+        adsDataListeners.add(adsDataListener);
+    }
+
     public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
@@ -65,6 +73,8 @@ public class Controller {
     protected void updateModel() {
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
+            notifyListeners(frame);
+
             ch1PreFilter.add(frame[0]);
             model.addEyeData(ch1PreFilter.poll());
             ch2PreFilter.add(frame[1]);
@@ -83,6 +93,12 @@ public class Controller {
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
+        }
+    }
+
+    private void notifyListeners(int[] frame) {
+        for (AdsDataListener adsDataListener : adsDataListeners) {
+            adsDataListener.onDataReceived(frame);
         }
     }
 
@@ -127,6 +143,8 @@ public class Controller {
         model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());
+        edfWriter = new EdfWriter(adsModel);
+        this.addAdsDataListener(edfWriter);
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
@@ -156,6 +174,7 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace(); //todo refactor
         }
+        edfWriter.stopRecording();
     }
 
     public void changeXSize(int xSize) {

@@ -34,7 +34,7 @@ public class EdfWriter implements AdsDataListener{
     
 
     
-    public EdfWriter(AdsModel adsModel) throws ApplicationException {
+    public EdfWriter(AdsModel adsModel) {
         this.adsModel = adsModel;
         openFile();
         inputFramesPerRecord = (adsModel.getSps().getValue() / AdsModel.MAX_DIV) * RECORD_PERIOD;
@@ -88,14 +88,14 @@ public class EdfWriter implements AdsDataListener{
         }
     }
 
-    private void openFile() throws ApplicationException {
+    private void openFile() {
         Date date = new Date(System.currentTimeMillis());
         String fileName = new SimpleDateFormat("ss_mm_HH_dd_MM_yyyy").format(date) + ".edf";
         try {
             outStream = new DataOutputStream(new FileOutputStream(fileName));
         } catch (Exception e) {
             log.error(e);
-            throw new ApplicationException("Error while creating file " + fileName);
+            //throw new ApplicationException("Error while creating file " + fileName);
         }
     }
 
