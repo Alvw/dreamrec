@@ -18,7 +18,7 @@ public class FrameDecoder implements ComPortListener {
     private static final Log log = LogFactory.getLog(FrameDecoder.class);
 
     public FrameDecoder(int decodedFrameSize) {
-        this.decodedFrameSize = decodedFrameSize;
+        this.decodedFrameSize = decodedFrameSize + 2;
         rawFrameSize = (decodedFrameSize * 3) + 3; //3 bytes for each value + marker + counter + loff
         rawFrame = new int[rawFrameSize];
         decodedFrameQueue = new ConcurrentLinkedQueue<int[]>();
@@ -43,9 +43,11 @@ public class FrameDecoder implements ComPortListener {
 
     private void onFrameReceived() {
         int[] decodedFrame = new int[decodedFrameSize];
-        for (int i = 0; i < decodedFrameSize; i++) {
+        for (int i = 0; i < decodedFrameSize - 2 ; i++) {
             decodedFrame[i] = (((rawFrame[i * 3 + 3] << 24) + ((rawFrame[i * 3 + 2]) << 16) + (rawFrame[i * 3 + 1] << 8)) /256);
         }
+        decodedFrame[decodedFrame.length -2] = rawFrame[rawFrame.length - 2];  //counter value
+        decodedFrame[decodedFrame.length -1] = rawFrame[rawFrame.length - 1];  //loff status
         decodedFrameQueue.offer(decodedFrame);
         //todo check lost frames and loff status;
     }

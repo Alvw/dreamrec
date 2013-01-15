@@ -138,8 +138,8 @@ public class AdsModel {
     }
 
     public int loffComparatorEnabledBit(){
-//        return 0x40;
-        return 0x00;
+        return 0x40;
+//        return 0x00;
     }
     
     public int intTestEnabledBits(){
@@ -148,10 +148,6 @@ public class AdsModel {
         return (isCh1Test | isCh2Test) ? 0x03 : 0;
     }
     
-    public int rldEnabledBit(){
-        return 0x20;
-    }
-
     public int rldLoffSenseBit() {
         return 0x10;
     }
