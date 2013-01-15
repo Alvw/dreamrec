@@ -98,6 +98,7 @@ public class Factory {
         // array_size = Number of Channels
         int[] rldSenseEnabledBits = {0x03, 0x0C};
         int[] loffSenseEnabledBits = {0x03, 0x0C};
+        int[] loffFlipBits = {0x10, 0x20};
 
         AdsModel adsModel = new AdsModel();
 
@@ -112,7 +113,8 @@ public class Factory {
             adsChannelModel.setRldSenseEnabled(applicationProperties.isChannelRldSenseEnable(chNum));
             adsChannelModel.setRldSenseEnabledBits(rldSenseEnabledBits[chNum]);
             adsChannelModel.setLoffSenseEnabledBits(loffSenseEnabledBits[chNum]);
-            
+            adsChannelModel.setLoffFlipBits(loffFlipBits[chNum]);
+
             adsModel.addAdsChannel(adsChannelModel);
         }
 

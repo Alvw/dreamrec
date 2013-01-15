@@ -92,6 +92,8 @@ public class AdsManager {
         int config2RegisterValue = 0xA0 + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();
         result.addAll(writeRegister(0x42,config2RegisterValue));
 
+        result.addAll(writeRegister(0x43, 0x10));//Loff comparator threshold
+
         AdsChannelModel ch1Model = adsModel.getAdsChannel(0);
         int ch1SetRegisterValue = ch1Model.enabledBit() + ch1Model.getGain().getRegisterBits() +
                 ch1Model.getCommutatorState().getRegisterBits();
@@ -106,8 +108,8 @@ public class AdsManager {
                 ch1Model.getRldSenseEnabledBits() + ch2Model.getRldSenseEnabledBits();
         result.addAll(writeRegister(RLD_SENS_REGISTER, rldSensRegisterValue));
 
-        /* int loffSensRegisterValue = ch1Model.loffSenseEnabledBits() + ch2Model.loffSenseEnabledBits();
-       result.addAll(writeRegister(0x47, loffSensRegisterValue));*/
+       int loffSensRegisterValue = ch1Model.getLoffSenseEnabledBits() + ch2Model.getLoffSenseEnabledBits();
+       result.addAll(writeRegister(0x47, loffSensRegisterValue));
 
         result.addAll(writeConfigDataReceivedCode());
 

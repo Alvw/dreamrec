@@ -116,8 +116,8 @@ public class AdsModel {
     }
 
     public int loffComparatorEnabledBit(){
-//        return 0x40;
-        return 0x00;
+        return 0x40;
+//        return 0x00;
     }
     
     public int intTestEnabledBits(){
