@@ -86,10 +86,10 @@ public class Controller {
             acc3PreFilter.add(frame[4]);
             model.addAcc3Data(acc3PreFilter.poll());
             
-            int loff = frame[frame.length - 1];
+           /* int loff = frame[frame.length - 1];
             if(loff!=0xC0){
                 System.out.println(loff);
-            }
+            }*/
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();

@@ -40,8 +40,10 @@ public class EdfWriter implements AdsDataListener{
         inputFramesPerRecord = (adsModel.getSps().getValue() / AdsModel.MAX_DIV) * RECORD_PERIOD;
         edfFrame = new int[inputFramesPerRecord * adsModel.getFrameSize()];
         startTime = System.currentTimeMillis();
+        Charset characterSet = Charset.forName("US-ASCII");
         try {
-            outStream.writeChars(createEdfHeader());
+            outStream.write(createEdfHeader().getBytes(characterSet));
+            System.out.println(createEdfHeader());
         } catch (IOException e) {
             log.error(e);
         }
@@ -133,7 +135,6 @@ public class EdfWriter implements AdsDataListener{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");
-        Charset characterSet = Charset.forName("US-ASCII");
         
         String startDateOfRecording =  dateFormat.format(new Date(startTime));
         String startTimeOfRecording = timeFormat.format(new Date(startTime));
@@ -155,56 +156,56 @@ public class EdfWriter implements AdsDataListener{
         String accelerometerTransducerType = "none";
         String accelerometerDigitalMaximum = "1024";
         String accelerometerDigitalMinimum = "-1024";
-        String accelerometerPhysicalMaximum = "g";
-        String accelerometerPhysicalMinimum = "1";
+        String accelerometerPhysicalMaximum = "10";
+        String accelerometerPhysicalMinimum = "0";
 
-        edfHeader.append(adjustLength(version, 8).getBytes(characterSet));
-        edfHeader.append(adjustLength(localPatientIdentification, 80).getBytes(characterSet));
-        edfHeader.append(adjustLength(localRecordingIdentification, 80).getBytes(characterSet));
-        edfHeader.append(startDateOfRecording.getBytes(characterSet));
-        edfHeader.append(startTimeOfRecording.getBytes(characterSet));
-        edfHeader.append(adjustLength(Integer.toString(numberOfBytesInHeaderRecord), 8).getBytes(characterSet));
-        edfHeader.append(adjustLength(reserved, 44).getBytes(characterSet));
-        edfHeader.append(adjustLength(Integer.toString(numberOfDataRecords), 8).getBytes(characterSet));
-        edfHeader.append(adjustLength(durationOfDataRecord, 8).getBytes(characterSet));
-        edfHeader.append(adjustLength(Integer.toString(numberOfSignals), 4).getBytes(characterSet));
+        edfHeader.append(adjustLength(version, 8));
+        edfHeader.append(adjustLength(localPatientIdentification, 80));
+        edfHeader.append(adjustLength(localRecordingIdentification, 80) );
+        edfHeader.append(startDateOfRecording );
+        edfHeader.append(startTimeOfRecording );
+        edfHeader.append(adjustLength(Integer.toString(numberOfBytesInHeaderRecord), 8) );
+        edfHeader.append(adjustLength(reserved, 44) );
+        edfHeader.append(adjustLength(Integer.toString(numberOfDataRecords), 8) );
+        edfHeader.append(adjustLength(durationOfDataRecord, 8) );
+        edfHeader.append(adjustLength(Integer.toString(numberOfSignals), 4) );
 
         for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
             AdsChannelModel channel = adsModel.getAdsChannel(i);
                 if (channel.getDivider() != 0) {
-                    edfHeader.append(adjustLength(channel.getName(), 16).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channelsTransducerType, 80).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channel.PHYSICAL_DIMENSION, 8).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channelsPhysicalMinimum, 8).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channelsPhysicalMaximum, 8).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channelsDigitalMinimum, 8).getBytes(characterSet));
-                    edfHeader.append(adjustLength(channelsDigitalMaximum, 8).getBytes(characterSet));
+                    edfHeader.append(adjustLength(channel.getName(), 16) );
+                    edfHeader.append(adjustLength(channelsTransducerType, 80) );
+                    edfHeader.append(adjustLength(channel.PHYSICAL_DIMENSION, 8) );
+                    edfHeader.append(adjustLength(channelsPhysicalMinimum, 8) );
+                    edfHeader.append(adjustLength(channelsPhysicalMaximum, 8) );
+                    edfHeader.append(adjustLength(channelsDigitalMinimum, 8) );
+                    edfHeader.append(adjustLength(channelsDigitalMaximum, 8) );
 
-                    edfHeader.append(adjustLength(channelsPreFiltering, 80).getBytes(characterSet));
+                    edfHeader.append(adjustLength(channelsPreFiltering, 80) );
                     
                     int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider();
 
-                    edfHeader.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8).getBytes(characterSet));
-                    edfHeader.append(adjustLength(reserved, 32).getBytes(characterSet));
+                    edfHeader.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8) );
+                    edfHeader.append(adjustLength(reserved, 32) );
                 }
         }
         for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = adsModel.getAccelerometerChannel(i);
             if (channel.getDivider() != 0) {
-                edfHeader.append(adjustLength(channel.getName(), 16).getBytes(characterSet));
-                edfHeader.append(adjustLength(accelerometerTransducerType, 80).getBytes(characterSet));
-                edfHeader.append(adjustLength(channel.PHYSICAL_DIMENSION, 8).getBytes(characterSet));
-                edfHeader.append(adjustLength(accelerometerPhysicalMinimum, 8).getBytes(characterSet));
-                edfHeader.append(adjustLength(accelerometerPhysicalMaximum, 8).getBytes(characterSet));
-                edfHeader.append(adjustLength(accelerometerDigitalMinimum, 8).getBytes(characterSet));
-                edfHeader.append(adjustLength(accelerometerDigitalMaximum, 8).getBytes(characterSet));
+                edfHeader.append(adjustLength(channel.getName(), 16) );
+                edfHeader.append(adjustLength(accelerometerTransducerType, 80) );
+                edfHeader.append(adjustLength(channel.PHYSICAL_DIMENSION, 8) );
+                edfHeader.append(adjustLength(accelerometerPhysicalMinimum, 8) );
+                edfHeader.append(adjustLength(accelerometerPhysicalMaximum, 8) );
+                edfHeader.append(adjustLength(accelerometerDigitalMinimum, 8) );
+                edfHeader.append(adjustLength(accelerometerDigitalMaximum, 8) );
 
-                edfHeader.append(adjustLength(accelerometerPreFiltering, 80).getBytes(characterSet));
+                edfHeader.append(adjustLength(accelerometerPreFiltering, 80) );
 
                 int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider();
 
-                edfHeader.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8).getBytes(characterSet));
-                edfHeader.append(adjustLength(reserved, 32).getBytes(characterSet));
+                edfHeader.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8) );
+                edfHeader.append(adjustLength(reserved, 32) );
             }
         }
         return edfHeader.toString();
