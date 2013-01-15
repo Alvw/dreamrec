@@ -4,13 +4,14 @@ package com.github.dreamrec.ads;
  * 
  */
 public class ChannelModel {
-    public final String PHYSICAL_DIMENSION = "g";
 
     protected int divider;
     protected String name;
     protected int hiPassBufferSize;
 
-
+    public String getPhysicalDimension() {
+        return "g";
+    }
     public void setDivider(int divider) {
         this.divider = divider;
     }
