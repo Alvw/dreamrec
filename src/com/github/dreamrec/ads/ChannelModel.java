@@ -1,5 +1,7 @@
 package com.github.dreamrec.ads;
 
+import com.github.dreamrec.HiPassPreFilter;
+
 /**
  * 
  */
@@ -7,8 +9,15 @@ public class ChannelModel {
     public String PHYSICAL_DIMENSION = "g";
     protected int divider;
     protected String name;
-    protected int hiPassBufferSize;
+    private HiPassPreFilter hiPassPreFilter;
 
+    public void setHiPassBufferSize(int bufferSize){
+          hiPassPreFilter =  new HiPassPreFilter(bufferSize);
+    }
+
+    public HiPassPreFilter getHiPassPreFilter() {
+        return hiPassPreFilter;
+    }
 
     public void setDivider(int divider) {
         this.divider = divider;
@@ -25,13 +34,5 @@ public class ChannelModel {
 
     public String getName() {
         return name;
-    }
-
-    public int getHiPassBufferSize() {
-        return hiPassBufferSize;
-    }
-
-    public void setHiPassBufferSize(int hiPassBufferSize) {
-        this.hiPassBufferSize = hiPassBufferSize;
     }
 }

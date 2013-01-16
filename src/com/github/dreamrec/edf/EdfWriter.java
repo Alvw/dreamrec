@@ -1,6 +1,7 @@
 package com.github.dreamrec.edf;
 
 import com.github.dreamrec.AdsDataListener;
+import com.github.dreamrec.HiPassPreFilter;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
 import com.github.dreamrec.ads.ChannelType;
@@ -12,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -56,14 +58,17 @@ public class EdfWriter implements AdsDataListener {
 
     @Override
     public void onDataReceived(int[] dataFrame) {
-        int[] dividers = adsModel.getActiveChannelsDividers();
+        ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
         int channelPosition = 0;
-        for (int i = 0; i < dividers.length; i++) {
-            int channelSampleNumber = AdsModel.MAX_DIV / dividers[i];
+        for (ChannelModel channel : activeChannels) {
+            int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider();
+            HiPassPreFilter channelFilter = channel.getHiPassPreFilter();
             for (int j = 0; j < channelSampleNumber; j++) {
-                edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = dataFrame[channelPosition + j];
+                int filteredValue = channelFilter.getFilteredValue(dataFrame[channelPosition + j]);
+                edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = filteredValue;
             }
             channelPosition += channelSampleNumber;
+
         }
         inputFramesCounter++;
         if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
