@@ -21,11 +21,11 @@ public class AdsModel {
  *  ChannelType = { ADS, ACCELEROMETER }
  */
 
-    public int getNumberOfAllChannels(){
+    public int getNumberOfChannels(){
         return ( adsChannels.size() + accelerometerChannels.size() );
     }
     
-    public int getNumberOfAllChannels(ChannelType channelType){
+    public int getNumberOfChannels(ChannelType channelType){
         int channelsNumber = 0;
         if (channelType == ChannelType.ADS) {
             channelsNumber = adsChannels.size();
@@ -71,8 +71,8 @@ public class AdsModel {
         return number;
     }
     
-    public int[]  getAllDividers(){
-        int[] dividers = new int[getNumberOfAllChannels()];
+    public int[] getDividers(){
+        int[] dividers = new int[getNumberOfChannels()];
         int i = 0;
         for (ChannelModel channel : adsChannels) {
             dividers[i] = channel.getDivider();
@@ -85,8 +85,8 @@ public class AdsModel {
         return dividers;
     }
 
-    public int[]  getAllDividers(ChannelType channelType){
-        int[] dividers = new int[getNumberOfAllChannels(channelType)];
+    public int[] getDividers(ChannelType channelType){
+        int[] dividers = new int[getNumberOfChannels(channelType)];
         if (channelType == ChannelType.ADS) {
             for (int i = 0; i < adsChannels.size(); i++) {
                 dividers[i] = adsChannels.get(i).getDivider();
@@ -161,13 +161,12 @@ public class AdsModel {
     }
     
 
-    public void addChannel(ChannelModel channel, ChannelType channelType) {
-        if (channelType == ChannelType.ADS){
-            adsChannels.add( (AdsChannelModel)channel );
-        }
-        if (channelType == ChannelType.ACCELEROMETER){
-            accelerometerChannels.add( channel );
-        }
+    public void addAdsChannel(AdsChannelModel adsChannel) {
+            adsChannels.add( adsChannel );
+    }
+
+    public void addAccelerometerChannel(ChannelModel accelerometerChannel) {
+        accelerometerChannels.add( accelerometerChannel );
     }
 
     public ArrayList<ChannelModel> getActiveChannels() {

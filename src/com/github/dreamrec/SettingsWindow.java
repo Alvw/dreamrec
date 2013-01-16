@@ -44,7 +44,7 @@ public class SettingsWindow extends JFrame {
         this.adsModel = adsModel;
         setDefaultCloseOperation( EXIT_ON_CLOSE );
         
-        int nChannels = adsModel.getNumberOfAllChannels(ChannelType.ADS);
+        int nChannels = adsModel.getNumberOfChannels(ChannelType.ADS);
         
         sps = new JComboBox(Sps.values());
 
@@ -105,7 +105,7 @@ public class SettingsWindow extends JFrame {
 
         }
 
-        for (int i = 0; i < adsModel.getNumberOfAllChannels(ChannelType.ADS); i++) {
+        for (int i = 0; i < adsModel.getNumberOfChannels(ChannelType.ADS); i++) {
             channelPanel.add(new JLabel(" "+i+" "));
             channelPanel.add(isEnable[i]);
             channelPanel.add(name[i]);

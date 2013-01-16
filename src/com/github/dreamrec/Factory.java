@@ -115,7 +115,7 @@ public class Factory {
             adsChannelModel.setLoffSenseEnabledBits(loffSenseEnabledBits[chNum]);
             adsChannelModel.setLoffFlipBits(loffFlipBits[chNum]);
 
-            adsModel.addChannel(adsChannelModel, ChannelType.ADS);
+            adsModel.addAdsChannel(adsChannelModel);
         }
 
         for (int chNum = 0; chNum < 3; chNum++) {
@@ -124,7 +124,7 @@ public class Factory {
             accelerometerChannelModel.setHiPassBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));
 
-            adsModel.addChannel(accelerometerChannelModel, ChannelType.ACCELEROMETER);
+            adsModel.addAccelerometerChannel(accelerometerChannelModel);
         }
 
         adsModel.setSps(applicationProperties.getSps());
