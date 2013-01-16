@@ -169,12 +169,12 @@ public class Controller {
         dataProvider.stopRecording();
         repaintTimer.stop();
         isAutoScroll = false;
+        edfWriter.stopRecording();
         try {
             outputStream.close();
         } catch (IOException e) {
             e.printStackTrace(); //todo refactor
         }
-        edfWriter.stopRecording();
     }
 
     public void changeXSize(int xSize) {

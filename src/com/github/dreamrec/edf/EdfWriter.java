@@ -23,13 +23,14 @@ public class EdfWriter implements AdsDataListener{
     private static final int RECORD_PERIOD = 1;  // duration of EDF data record (in seconds)
 
     private static final Log log = LogFactory.getLog(EdfWriter.class);
-    private DataOutputStream outStream = null;
+    private RandomAccessFile outStream = null;
     private AdsModel adsModel;
     private int[] edfFrame;
     private int inputFramesCounter;
     private int inputFramesPerRecord;
     private long startTime;
     private int numberOfDataRecords = -1;
+    private Charset characterSet = Charset.forName("US-ASCII");
 
     
 
@@ -40,16 +41,17 @@ public class EdfWriter implements AdsDataListener{
         inputFramesPerRecord = (adsModel.getSps().getValue() / AdsModel.MAX_DIV) * RECORD_PERIOD;
         edfFrame = new int[inputFramesPerRecord * adsModel.getFrameSize()];
         startTime = System.currentTimeMillis();
-        Charset characterSet = Charset.forName("US-ASCII");
         try {
             outStream.write(createEdfHeader().getBytes(characterSet));
         } catch (IOException e) {
             log.error(e);
         }
-    } 
+     }
 
     public void stopRecording(){
         try {
+            outStream.seek(0);
+            outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
         } catch (IOException e) {
             log.error(e);
@@ -93,7 +95,7 @@ public class EdfWriter implements AdsDataListener{
         Date date = new Date(System.currentTimeMillis());
         String fileName = new SimpleDateFormat("ss_mm_HH_dd_MM_yyyy").format(date) + ".edf";
         try {
-            outStream = new DataOutputStream(new FileOutputStream(fileName));
+            outStream = new RandomAccessFile(fileName, "rw");
         } catch (Exception e) {
             log.error(e);
             //throw new ApplicationException("Error while creating file " + fileName);
