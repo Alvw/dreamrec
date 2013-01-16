@@ -33,30 +33,27 @@ public class Controller {
     private HiPassPreFilter acc1PreFilter;
     private HiPassPreFilter acc2PreFilter;
     private HiPassPreFilter acc3PreFilter;
-    private DataSaveManager dataSaveManager = new DataSaveManager();//todo delete
-    private DataOutputStream outputStream;
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
     private EdfWriter edfWriter;
-    private ArrayList<AdsDataListener>   adsDataListeners = new ArrayList<AdsDataListener>();
+    private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
         this.model = model;
         this.adsModel = adsModel;
         this.comport = comport;
         this.applicationProperties = applicationProperties;
-        int frequencyDivider = applicationProperties.getFrequencyDivider();
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);
 
     }
 
-    public void addAdsDataListener (AdsDataListener adsDataListener){
+    public void addAdsDataListener(AdsDataListener adsDataListener) {
         adsDataListeners.add(adsDataListener);
     }
 
@@ -71,25 +68,20 @@ public class Controller {
     }
 
     protected void updateModel() {
+        boolean isLoffUpdated = false;
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
+            model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
+            model.addCh2Data(ch2PreFilter.getFilteredValue(frame[1]));
+            model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
+            model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
+            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));
+            if (!isLoffUpdated) {
+                log.info("Loff status: " + frame[frame.length - 1]);
+                isLoffUpdated = true;
+            }
 
-            ch1PreFilter.add(frame[0]);
-            model.addEyeData(ch1PreFilter.poll());
-            ch2PreFilter.add(frame[1]);
-            model.addCh2Data(ch2PreFilter.poll());
-            acc1PreFilter.add(frame[2]);
-            model.addAcc1Data(acc1PreFilter.poll());
-            acc2PreFilter.add(frame[3]);
-            model.addAcc2Data(acc2PreFilter.poll());
-            acc3PreFilter.add(frame[4]);
-            model.addAcc3Data(acc3PreFilter.poll());
-            
-           /* int loff = frame[frame.length - 1];
-            if(loff!=0xC0){
-                System.out.println(loff);
-            }*/
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -154,7 +146,7 @@ public class Controller {
         } catch (NoSuchPortException e) {
             String msg = "No port with the name " + applicationProperties.getComPortName() +
                     ".\nCheck Com Port settings and power connection.\nRestart application.";
-             log.error(msg, e);
+            log.error(msg, e);
             JOptionPane.showMessageDialog(null, msg);
             System.exit(0);
         } catch (Exception e) {
@@ -166,15 +158,10 @@ public class Controller {
     }
 
     public void stopRecording() {
-        dataProvider.stopRecording();
         repaintTimer.stop();
         isAutoScroll = false;
+        comport.writeToPort(new AdsManager().startPinLo());
         edfWriter.stopRecording();
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace(); //todo refactor
-        }
     }
 
     public void changeXSize(int xSize) {
