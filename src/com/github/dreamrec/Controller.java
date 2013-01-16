@@ -33,8 +33,6 @@ public class Controller {
     private HiPassPreFilter acc1PreFilter;
     private HiPassPreFilter acc2PreFilter;
     private HiPassPreFilter acc3PreFilter;
-    private DataSaveManager dataSaveManager = new DataSaveManager();//todo delete
-    private DataOutputStream outputStream;
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
@@ -46,13 +44,12 @@ public class Controller {
         this.adsModel = adsModel;
         this.comport = comport;
         this.applicationProperties = applicationProperties;
-        int frequencyDivider = applicationProperties.getFrequencyDivider();
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize, frequencyDivider);
+        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);
 
     }
 
@@ -75,17 +72,11 @@ public class Controller {
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
-
-            ch1PreFilter.add(frame[0]);
-            model.addEyeData(ch1PreFilter.poll());
-            ch2PreFilter.add(frame[1]);
-            model.addCh2Data(ch2PreFilter.poll());
-            acc1PreFilter.add(frame[2]);
-            model.addAcc1Data(acc1PreFilter.poll());
-            acc2PreFilter.add(frame[3]);
-            model.addAcc2Data(acc2PreFilter.poll());
-            acc3PreFilter.add(frame[4]);
-            model.addAcc3Data(acc3PreFilter.poll());
+            model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
+            model.addCh2Data(ch2PreFilter.getFilteredValue(frame[1]));
+            model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
+            model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
+            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));
             if (!isLoffUpdated) {
                 log.info("Loff status: " + frame[frame.length - 1]);
                 isLoffUpdated = true;
@@ -171,11 +162,6 @@ public class Controller {
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
         edfWriter.stopRecording();
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace(); //todo refactor
-        }
     }
 
     public void changeXSize(int xSize) {

@@ -17,19 +17,17 @@ public class HiPassPreFilter {
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
     private Queue<Short> filteredData = new LinkedList<Short>();
-    private int divider;
     private static final Log log = LogFactory.getLog(HiPassPreFilter.class);
 
-    public HiPassPreFilter(int bufferSize, int divider) {
+    public HiPassPreFilter(int bufferSize) {
         this.bufferSize = bufferSize;
-        this.divider = divider;
     }
 
     public int size() {
-        return filteredData.size() / divider;
+        return filteredData.size() ;
     }
 
-    public void add(int value) {
+    public short getFilteredValue(int value) {
         rawData.add(value);
         if (rawData.size() == bufferSize + 1) {
             rawData.remove(0);
@@ -55,14 +53,6 @@ public class HiPassPreFilter {
             filteredValue = Short.MIN_VALUE;
         }
         filteredData.offer((short) filteredValue);
-//        filteredData.offer(value);
-    }
-
-    public short poll() {
-        int sum = 0;
-        for (int i = 0; i < divider; i++) {
-            sum += filteredData.poll();
-        }
-        return (short) (sum / divider);
+        return filteredData.poll();
     }
 }
