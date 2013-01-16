@@ -39,7 +39,7 @@ public class Controller {
     private AdsModel adsModel;
     private ComPort comport;
     private EdfWriter edfWriter;
-    private ArrayList<AdsDataListener>   adsDataListeners = new ArrayList<AdsDataListener>();
+    private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
         this.model = model;
@@ -56,7 +56,7 @@ public class Controller {
 
     }
 
-    public void addAdsDataListener (AdsDataListener adsDataListener){
+    public void addAdsDataListener(AdsDataListener adsDataListener) {
         adsDataListeners.add(adsDataListener);
     }
 
@@ -71,6 +71,7 @@ public class Controller {
     }
 
     protected void updateModel() {
+        boolean isLoffUpdated = false;
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
@@ -85,11 +86,11 @@ public class Controller {
             model.addAcc2Data(acc2PreFilter.poll());
             acc3PreFilter.add(frame[4]);
             model.addAcc3Data(acc3PreFilter.poll());
-            
-           /* int loff = frame[frame.length - 1];
-            if(loff!=0xC0){
-                System.out.println(loff);
-            }*/
+            if (!isLoffUpdated) {
+                log.info("Loff status: " + frame[frame.length - 1]);
+                isLoffUpdated = true;
+            }
+
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -154,7 +155,7 @@ public class Controller {
         } catch (NoSuchPortException e) {
             String msg = "No port with the name " + applicationProperties.getComPortName() +
                     ".\nCheck Com Port settings and power connection.\nRestart application.";
-             log.error(msg, e);
+            log.error(msg, e);
             JOptionPane.showMessageDialog(null, msg);
             System.exit(0);
         } catch (Exception e) {
@@ -166,9 +167,9 @@ public class Controller {
     }
 
     public void stopRecording() {
-        dataProvider.stopRecording();
         repaintTimer.stop();
         isAutoScroll = false;
+        comport.writeToPort(new AdsManager().startPinLo());
         edfWriter.stopRecording();
         try {
             outputStream.close();
