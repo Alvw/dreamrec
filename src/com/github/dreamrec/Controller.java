@@ -22,17 +22,16 @@ public class Controller {
 
     private Timer repaintTimer;
     private Model model;
-    private IDataProvider dataProvider;
     private MainWindow mainWindow;
     private ApplicationProperties applicationProperties;
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
-    private HiPassPreFilter ch1PreFilter;
+    /*private HiPassPreFilter ch1PreFilter;
     private HiPassPreFilter ch2PreFilter;
     private HiPassPreFilter acc1PreFilter;
     private HiPassPreFilter acc2PreFilter;
-    private HiPassPreFilter acc3PreFilter;
+    private HiPassPreFilter acc3PreFilter;*/
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
@@ -45,11 +44,11 @@ public class Controller {
         this.comport = comport;
         this.applicationProperties = applicationProperties;
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-        ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+       /* ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
         ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
         acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
         acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);*/
 
     }
 
@@ -72,11 +71,16 @@ public class Controller {
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
-            model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
+            /*model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
             model.addCh2Data(ch2PreFilter.getFilteredValue(frame[1]));
             model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
             model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
-            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));
+            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));*/
+            model.addEyeData(frame[0]);
+            model.addCh2Data(frame[1]);
+            model.addAcc1Data(frame[2]);
+            model.addAcc2Data(frame[3]);
+            model.addAcc3Data(frame[4]);
             if (!isLoffUpdated) {
                 log.info("Loff status: " + frame[frame.length - 1]);
                 isLoffUpdated = true;

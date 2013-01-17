@@ -12,14 +12,14 @@ public class GraphPainter implements IPainter<IGraphPainterModel> {
     private Color[] graphColors = {Color.YELLOW, Color.RED, Color.BLUE};
 
     public void paint(Graphics2D g, IGraphPainterModel paintModel) {
-        Filter<Short>[] dataViewArray = paintModel.getDataView();
+        Filter<Integer>[] dataViewArray = paintModel.getDataView();
         for (int i = 0; i < dataViewArray.length; i++) {
             g.setColor(graphColors[i]);
             paintSingleGraph(g, paintModel, dataViewArray[i]);
         }
     }
 
-    private void paintSingleGraph(Graphics2D g, IGraphPainterModel paintModel, Filter<Short> points) {
+    private void paintSingleGraph(Graphics2D g, IGraphPainterModel paintModel, Filter<Integer> points) {
         VerticalLine vLine = new VerticalLine(-1, 0);
         int size = points.size();
         int pointsPerScreen = paintModel.getXSize();

@@ -3,17 +3,17 @@ package com.github.dreamrec;
 /**
  *
  */
-public class LoPassFilter extends AbstractFilter<Short>{
+public class LoPassFilter extends AbstractFilter<Integer>{
 
     private int bufferSize;
 
-    public LoPassFilter(int bufferSize, Filter<Short> inputData) {
+    public LoPassFilter(int bufferSize, Filter<Integer> inputData) {
         super(inputData);
         this.bufferSize = bufferSize;
     }
 
     @Override
-    protected Short doFilter(int index) {
+    protected Integer doFilter(int index) {
         int sum = 0;
         if(index<bufferSize-1){
             return inputData.get(index);
@@ -21,7 +21,7 @@ public class LoPassFilter extends AbstractFilter<Short>{
             for (int i = 0; i < bufferSize; i++) {
                  sum+=inputData.get(index - i);
             }
-            return (short)(sum/bufferSize);
+            return (sum/bufferSize);
         }
     }
 }

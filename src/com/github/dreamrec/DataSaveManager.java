@@ -18,6 +18,11 @@ public class DataSaveManager {
 
 
     private static final Log log = LogFactory.getLog(DataSaveManager.class);
+    HiPassPreFilter ch1PreFilter = new HiPassPreFilter(500);
+    HiPassPreFilter ch2PreFilter = new HiPassPreFilter(500);
+    HiPassPreFilter acc1PreFilter = new HiPassPreFilter(500);
+    HiPassPreFilter acc2PreFilter = new HiPassPreFilter(500);
+    HiPassPreFilter acc3PreFilter = new HiPassPreFilter(500);
 
     public void saveToFile(File file, Model model) throws ApplicationException {
         DataOutputStream outStream = null;
@@ -108,28 +113,28 @@ public class DataSaveManager {
             writeEdfHeader(model, outStream, headerData1, headerData2, headerData3, headerData4, headerData5);
             for (int j = 0; j < model.getEyeDataList().size() / 250; j++) {
                 for (int i = 0; i < 250; i++) {
-                    outStream.writeShort(toLittleEndian(model.getEyeDataList().get(i+j*250)));
+                    outStream.writeShort(toLittleEndian(ch1PreFilter.getFilteredValue(model.getEyeDataList().get(i+j*250))));
                 }
                 for (int i = 0; i < 250; i++) {
-                    outStream.writeShort(toLittleEndian(model.getCh2DataList().get(i+j*250)));
+                    outStream.writeShort(toLittleEndian(ch2PreFilter.getFilteredValue(model.getCh2DataList().get(i+j*250))));
                 }
                  for (int i = 0; i < 250; i++) {
                     try {
-                        outStream.writeShort(toLittleEndian(model.getAcc1DataList().get(i+j*250)));
+                        outStream.writeShort(toLittleEndian(acc1PreFilter.getFilteredValue(model.getAcc1DataList().get(i+j*250))));
                     } catch (IOException e) {
                         e.printStackTrace();  //todo refactor
                     }
                 }
                 for (int i = 0; i < 250; i++) {
                     try {
-                        outStream.writeShort(toLittleEndian(model.getAcc2DataList().get(i+j*250)));
+                        outStream.writeShort(toLittleEndian(acc2PreFilter.getFilteredValue(model.getAcc2DataList().get(i+j*250))));
                     } catch (IOException e) {
                         e.printStackTrace();  //todo refactor
                     }
                 }
                for (int i = 0; i < 250; i++) {
                     try {
-                        outStream.writeShort(toLittleEndian(model.getAcc3DataList().get(i+j*250)));
+                        outStream.writeShort(toLittleEndian(acc2PreFilter.getFilteredValue(model.getAcc3DataList().get(i+j*250))));
                     } catch (IOException e) {
                         e.printStackTrace();  //todo refactor
                     }
