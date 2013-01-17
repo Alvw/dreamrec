@@ -29,6 +29,7 @@ public class EdfWriter implements AdsDataListener {
     private int inputFramesPerRecord;
     private long startTime;
     private int numberOfDataRecords = -1;
+    private Charset characterSet = Charset.forName("US-ASCII");
 
 
     public EdfWriter(AdsModel adsModel) {
@@ -38,7 +39,7 @@ public class EdfWriter implements AdsDataListener {
         edfFrame = new int[inputFramesPerRecord * adsModel.getFrameSize()];
         startTime = System.currentTimeMillis();
         try {
-            outStream.writeChars(createEdfHeader());
+            outStream.write(createEdfHeader().getBytes(characterSet));
         } catch (IOException e) {
             log.error(e);
         }
@@ -47,7 +48,7 @@ public class EdfWriter implements AdsDataListener {
     public void stopRecording() {
         try {
             outStream.seek(0);
-            outStream.writeChars(createEdfHeader());
+            outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
         } catch (IOException e) {
             log.error(e);
