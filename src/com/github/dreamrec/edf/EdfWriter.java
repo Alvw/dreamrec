@@ -4,7 +4,6 @@ import com.github.dreamrec.AdsDataListener;
 import com.github.dreamrec.HiPassPreFilter;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
-import com.github.dreamrec.ads.ChannelType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,7 +67,6 @@ public class EdfWriter implements AdsDataListener {
                 edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = filteredValue;
             }
             channelPosition += channelSampleNumber;
-
         }
         inputFramesCounter++;
         if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
@@ -183,7 +181,7 @@ public class EdfWriter implements AdsDataListener {
         StringBuilder reservedForChannels = new StringBuilder();
 
 
-        for (ChannelModel channel : adsModel.getActiveChannels(ChannelType.ADS)) {
+        for (ChannelModel channel : adsModel.getAdsActiveChannels()) {
             labels.append(adjustLength(channel.getName(), 16));
             transducerTypes.append(adjustLength(channelsTransducerType, 80));
             physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8));
@@ -199,7 +197,7 @@ public class EdfWriter implements AdsDataListener {
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
             reservedForChannels.append(adjustLength(reserved, 32));
         }
-        for (ChannelModel channel : adsModel.getActiveChannels(ChannelType.ACCELEROMETER)) {
+        for (ChannelModel channel : adsModel.getAccelerometerActiveChannels()) {
             labels.append(adjustLength(channel.getName(), 16));
             transducerTypes.append(adjustLength(accelerometerTransducerType, 80));
             physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8));

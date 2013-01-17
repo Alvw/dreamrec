@@ -12,66 +12,67 @@ public class AdsModel {
     public static final int MAX_DIV = 50;
 
     private ArrayList<AdsChannelModel> adsChannels = new ArrayList<AdsChannelModel>();
-    private ArrayList<ChannelModel>  accelerometerChannels = new ArrayList<ChannelModel>();
-    
-/**
- *  Active channels - channels with divider != 0;
- *  All Channels  means including channels with divider == 0
- *  
- *  ChannelType = { ADS, ACCELEROMETER }
- */
+    private ArrayList<ChannelModel> accelerometerChannels = new ArrayList<ChannelModel>();
 
-    public int getNumberOfChannels(){
-        return ( adsChannels.size() + accelerometerChannels.size() );
-    }
-    
-    public int getNumberOfChannels(ChannelType channelType){
-        int channelsNumber = 0;
-        if (channelType == ChannelType.ADS) {
-            channelsNumber = adsChannels.size();
-        }
-        else if (channelType == ChannelType.ACCELEROMETER) {
-            channelsNumber = accelerometerChannels.size();
-        }
-        return channelsNumber;
+    /**
+     * Active channels - channels with divider != 0;
+     *
+     * Methods where channel type (Ads or Accelerometer) is not specified explicitly at the name threat
+     * adsChannels and  accelerometerChannels as common (united) array of Channels
+     */
+
+
+
+    public int getNumberOfChannels() {
+        return (adsChannels.size() + accelerometerChannels.size());
     }
 
+    public int getNumberOfAdsChannels() {
+        return adsChannels.size();
+    }
 
-    public int getNumberOfActiveChannels(){
+    public int getNumberOfAccelerometerChannels() {
+        return accelerometerChannels.size();
+    }
+
+
+    public int getNumberOfActiveChannels() {
         int number = 0;
         for (AdsChannelModel channel : adsChannels) {
-            if(channel.getDivider() != 0) {
+            if (channel.getDivider() != 0) {
                 number++;
             }
         }
         for (ChannelModel channel : accelerometerChannels) {
-            if(channel.getDivider() != 0) {
+            if (channel.getDivider() != 0) {
                 number++;
             }
         }
         return number;
     }
 
-    public int getNumberOfActiveChannels(ChannelType channelType){
-        int number = 0;
-        if (channelType == ChannelType.ADS){
-            for (ChannelModel channel : adsChannels) {
-                if(channel.getDivider() != 0) {
-                    number++;
-                }
+    public int getNumberOfAdsActiveChannels() {
+        int channelsNumber = 0;
+        for (ChannelModel channel : adsChannels) {
+            if (channel.getDivider() != 0) {
+                channelsNumber++;
             }
         }
-        else if (channelType == ChannelType.ACCELEROMETER) {
-            for (ChannelModel channel : accelerometerChannels) {
-                if(channel.getDivider() != 0) {
-                    number++;
-                }
-            }
-        }
-        return number;
+        return channelsNumber;
     }
-    
-    public int[] getDividers(){
+
+    public int getNumberOfAccelerometerActiveChannels() {
+        int channelsNumber = 0;
+        for (ChannelModel channel : accelerometerChannels) {
+            if (channel.getDivider() != 0) {
+                channelsNumber++;
+            }
+        }
+        return channelsNumber;
+    }
+
+    // dividers of all Channels (AdsChannels and AccelerometerChannels)
+    public int[] getDividers() {
         int[] dividers = new int[getNumberOfChannels()];
         int i = 0;
         for (ChannelModel channel : adsChannels) {
@@ -85,33 +86,36 @@ public class AdsModel {
         return dividers;
     }
 
-    public int[] getDividers(ChannelType channelType){
-        int[] dividers = new int[getNumberOfChannels(channelType)];
-        if (channelType == ChannelType.ADS) {
-            for (int i = 0; i < adsChannels.size(); i++) {
-                dividers[i] = adsChannels.get(i).getDivider();
-            }
+    // dividers of all AdsChannels
+    public int[] getAdsDividers() {
+        int[] dividers = new int[getNumberOfAdsChannels()];
+        for (int i = 0; i < adsChannels.size(); i++) {
+            dividers[i] = adsChannels.get(i).getDivider();
         }
-        else if (channelType == ChannelType.ACCELEROMETER) {
-            for (int i = 0; i < accelerometerChannels.size(); i++) {
-                dividers[i] = accelerometerChannels.get(i).getDivider();
-            }
-        }                       
         return dividers;
     }
 
+    // dividers of all AccelerometerChannels
+    public int[] getAccelerometerDividers() {
+        int[] dividers = new int[getNumberOfAccelerometerChannels()];
+        for (int i = 0; i < accelerometerChannels.size(); i++) {
+            dividers[i] = accelerometerChannels.get(i).getDivider();
+        }
+        return dividers;
+    }
 
-    public int[]  getActiveChannelsDividers(){
+    // non-zero dividers of all Channels
+    public int[] getActiveDividers() {
         int[] dividers = new int[getNumberOfActiveChannels()];
         int i = 0;
-        for (AdsChannelModel channel : adsChannels) {
-            if(channel.getDivider() != 0){
+        for (ChannelModel channel : adsChannels) {
+            if (channel.getDivider() != 0) {
                 dividers[i] = channel.getDivider();
                 i++;
             }
         }
         for (ChannelModel channel : accelerometerChannels) {
-            if(channel.getDivider() != 0){
+            if (channel.getDivider() != 0) {
                 dividers[i] = channel.getDivider();
                 i++;
             }
@@ -119,103 +123,108 @@ public class AdsModel {
         return dividers;
     }
 
-    public int[]  getActiveChannelsDividers(ChannelType channelType){
-        int[] dividers = new int[getNumberOfActiveChannels(channelType)];
+    // non-zero dividers of all AdsChannels
+    public int[] getActiveAdsChannelsDividers() {
+        int[] dividers = new int[getNumberOfAdsActiveChannels()];
         int i = 0;
-        if (channelType == ChannelType.ADS){
-            for (AdsChannelModel channel : adsChannels) {
-                if(channel.getDivider() != 0){
-                    dividers[i] = channel.getDivider();
-                    i++;
-                }
+        for (ChannelModel channel : adsChannels) {
+            if (channel.getDivider() != 0) {
+                dividers[i] = channel.getDivider();
+                i++;
             }
         }
-        else if (channelType == ChannelType.ACCELEROMETER) {
-            for (ChannelModel channel : accelerometerChannels) {
-                if(channel.getDivider() != 0){
-                    dividers[i] = channel.getDivider();
-                    i++;
-                }
+        return dividers;
+    }
+
+    // non-zero dividers of all AccelerometerChannels
+    public int[] getActiveAccelerometerDividers() {
+        int[] dividers = new int[getNumberOfAdsActiveChannels()];
+        int i = 0;
+        for (ChannelModel channel : accelerometerChannels) {
+            if (channel.getDivider() != 0) {
+                dividers[i] = channel.getDivider();
+                i++;
             }
         }
         return dividers;
     }
 
 
-    public AdsChannelModel getAdsChannel (int chanelNumber) {
+    public AdsChannelModel getAdsChannel(int chanelNumber) {
         AdsChannelModel channel = null;
-        if ( chanelNumber < adsChannels.size() ){
+        if (chanelNumber < adsChannels.size()) {
             channel = adsChannels.get(chanelNumber);
-            
+
         }
-         return channel;
+        return channel;
     }
 
-    public ChannelModel getAccelerometerChannel (int chanelNumber) {
+    public ChannelModel getAccelerometerChannel(int chanelNumber) {
         ChannelModel channel = null;
-        if ( chanelNumber < accelerometerChannels.size() ){
+        if (chanelNumber < accelerometerChannels.size()) {
             channel = accelerometerChannels.get(chanelNumber);
 
         }
         return channel;
     }
-    
+
 
     public void addAdsChannel(AdsChannelModel adsChannel) {
-            adsChannels.add( adsChannel );
+        adsChannels.add(adsChannel);
     }
 
     public void addAccelerometerChannel(ChannelModel accelerometerChannel) {
-        accelerometerChannels.add( accelerometerChannel );
+        accelerometerChannels.add(accelerometerChannel);
     }
 
     public ArrayList<ChannelModel> getActiveChannels() {
-        ArrayList<ChannelModel>  activeChannels = new ArrayList<ChannelModel>();
+        ArrayList<ChannelModel> activeChannels = new ArrayList<ChannelModel>();
         for (ChannelModel channel : adsChannels) {
-            if (channel.getDivider() != 0){
+            if (channel.getDivider() != 0) {
                 activeChannels.add(channel);
             }
         }
         for (ChannelModel channel : accelerometerChannels) {
-            if (channel.getDivider() != 0){
+            if (channel.getDivider() != 0) {
                 activeChannels.add(channel);
             }
         }
-        return  activeChannels;
+        return activeChannels;
     }
 
-    public ArrayList<ChannelModel> getActiveChannels(ChannelType channelType) {
-        ArrayList<ChannelModel>  activeChannels = new ArrayList<ChannelModel>();
-        if (channelType == ChannelType.ADS) {
-            for (ChannelModel channel : adsChannels) {
-                if (channel.getDivider() != 0){
-                    activeChannels.add(channel);
-                }
+    public ArrayList<AdsChannelModel> getAdsActiveChannels() {
+        ArrayList<AdsChannelModel> activeChannels = new ArrayList<AdsChannelModel>();
+        for (AdsChannelModel channel : adsChannels) {
+            if (channel.getDivider() != 0) {
+                activeChannels.add(channel);
             }
         }
-        else if (channelType == ChannelType.ACCELEROMETER) {
-            for (ChannelModel channel : accelerometerChannels) {
-                if (channel.getDivider() != 0){
-                    activeChannels.add(channel);
-                }
+        return activeChannels;
+    }
+
+    public ArrayList<ChannelModel> getAccelerometerActiveChannels() {
+        ArrayList<ChannelModel> activeChannels = new ArrayList<ChannelModel>();
+        for (ChannelModel channel : accelerometerChannels) {
+            if (channel.getDivider() != 0) {
+                activeChannels.add(channel);
             }
         }
-        return  activeChannels;
+        return activeChannels;
     }
 
     /*
      *
      */
-    public int getFrameSize(){
+    public int getFrameSize() {
         int frameSize = 0;
         for (int i = 0; i < accelerometerChannels.size(); i++) {
-            if(accelerometerChannels.get(i).getDivider() != 0){
-                frameSize += MAX_DIV/accelerometerChannels.get(i).getDivider();
+            if (accelerometerChannels.get(i).getDivider() != 0) {
+                frameSize += MAX_DIV / accelerometerChannels.get(i).getDivider();
             }
         }
         for (int i = 0; i < adsChannels.size(); i++) {
-            if(adsChannels.get(i).getDivider() != 0){
-                frameSize += MAX_DIV/ adsChannels.get(i).getDivider();
+            if (adsChannels.get(i).getDivider() != 0) {
+                frameSize += MAX_DIV / adsChannels.get(i).getDivider();
             }
 
         }
@@ -238,17 +247,17 @@ public class AdsModel {
         isAccelerometerEnabled = accelerometerEnabled;
     }
 
-    public int loffComparatorEnabledBit(){
+    public int loffComparatorEnabledBit() {
         return 0x40;
 //        return 0x00;
     }
-    
-    public int intTestEnabledBits(){
+
+    public int intTestEnabledBits() {
         boolean isCh1Test = adsChannels.get(0).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
         boolean isCh2Test = adsChannels.get(1).getCommutatorState().equals(CommutatorState.TEST_SIGNAL);
         return (isCh1Test | isCh2Test) ? 0x03 : 0;
     }
-    
+
     public int rldLoffSenseBit() {
         return 0x10;
     }

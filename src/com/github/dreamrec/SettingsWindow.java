@@ -1,7 +1,6 @@
 package com.github.dreamrec;
 
 import com.github.dreamrec.ads.AdsModel;
-import com.github.dreamrec.ads.ChannelType;
 import com.github.dreamrec.ads.HighPassFrequency;
 import com.github.dreamrec.ads.Sps;
 import com.github.dreamrec.layout.gnu.TableLayout;
@@ -44,7 +43,7 @@ public class SettingsWindow extends JFrame {
         this.adsModel = adsModel;
         setDefaultCloseOperation( EXIT_ON_CLOSE );
         
-        int nChannels = adsModel.getNumberOfChannels(ChannelType.ADS);
+        int nChannels = adsModel.getNumberOfAdsChannels();
         
         sps = new JComboBox(Sps.values());
 
@@ -105,7 +104,7 @@ public class SettingsWindow extends JFrame {
 
         }
 
-        for (int i = 0; i < adsModel.getNumberOfChannels(ChannelType.ADS); i++) {
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
             channelPanel.add(new JLabel(" "+i+" "));
             channelPanel.add(isEnable[i]);
             channelPanel.add(name[i]);
