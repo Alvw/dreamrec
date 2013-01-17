@@ -79,12 +79,11 @@ public class EdfWriter implements AdsDataListener {
                 }
             }
             inputFramesCounter = 0;
-        }
-
-        if (numberOfDataRecords == -1) {
-            numberOfDataRecords = 1;
-        } else {
-            numberOfDataRecords++;
+            if (numberOfDataRecords == -1) {
+                numberOfDataRecords = 1;
+            } else {
+                numberOfDataRecords++;
+            }
         }
     }
 
