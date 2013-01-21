@@ -105,7 +105,7 @@ public class Factory {
         for (int chNum = 0; chNum < 2; chNum++) {
             AdsChannelModel adsChannelModel = new AdsChannelModel();
             adsChannelModel.setDivider(applicationProperties.getChannelDivider(chNum));
-            adsChannelModel.setHiPassBufferSize(applicationProperties.getChannelHiPassBufferSize(chNum));
+            adsChannelModel.setHiPassPreFilterBufferSize(applicationProperties.getChannelHiPassBufferSize(chNum));
             adsChannelModel.setName(applicationProperties.getChannelName(chNum));
             adsChannelModel.setGain(applicationProperties.getChannelGain(chNum));
             adsChannelModel.setCommutatorState(applicationProperties.getChannelCommutatorState(chNum));
@@ -114,7 +114,6 @@ public class Factory {
             adsChannelModel.setRldSenseEnabledBits(rldSenseEnabledBits[chNum]);
             adsChannelModel.setLoffSenseEnabledBits(loffSenseEnabledBits[chNum]);
             adsChannelModel.setLoffFlipBits(loffFlipBits[chNum]);
-            adsChannelModel.setHiPassBufferSize(applicationProperties.getChannelHiPassBufferSize(chNum));
 
             adsModel.addAdsChannel(adsChannelModel);
         }
@@ -122,9 +121,9 @@ public class Factory {
         for (int chNum = 0; chNum < 3; chNum++) {
             ChannelModel accelerometerChannelModel = new ChannelModel();
             accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
-            accelerometerChannelModel.setHiPassBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
+            accelerometerChannelModel.setHiPassPreFilterBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));
-            accelerometerChannelModel.setHiPassBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
+            accelerometerChannelModel.setHiPassPreFilterBufferSize(applicationProperties.getAccelerometerHiPassBufferSize());
 
             adsModel.addAccelerometerChannel(accelerometerChannelModel);
         }

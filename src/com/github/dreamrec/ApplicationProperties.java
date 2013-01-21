@@ -93,6 +93,18 @@ public class ApplicationProperties {
         config.setProperty(DIRECTORY_NAME, directory);
     }
 
+    public void setSps(int spsValue) {
+        config.setProperty(SPS, spsValue);
+    }
+
+    public void setChannelDivider(int channelNumber, int divider){
+        config.setProperty(CHANNEL_DIVIDER+channelNumber, divider);
+    }
+
+    public void setAccelerometerDivider(int channelNumber, int divider){
+        config.setProperty(ACCELEROMETER_DIVIDER+channelNumber, divider);
+    }
+
     public String getLastVisitedDirectory() {
         return config.getString(DIRECTORY_NAME);
     }
@@ -170,6 +182,7 @@ public class ApplicationProperties {
     public void save() {
         try {
             config.save(APPLICATION_PROPERTIES);
+
         } catch (ConfigurationException e) {
             log.error(e);
             JOptionPane.showMessageDialog(null, "Error saving to properties file: " + APPLICATION_PROPERTIES);

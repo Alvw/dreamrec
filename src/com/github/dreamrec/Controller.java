@@ -1,7 +1,9 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.ads.AdsChannelModel;
 import com.github.dreamrec.ads.AdsManager;
 import com.github.dreamrec.ads.AdsModel;
+import com.github.dreamrec.ads.ChannelModel;
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfWriter;
 import gnu.io.NoSuchPortException;
@@ -22,7 +24,6 @@ public class Controller {
 
     private Timer repaintTimer;
     private Model model;
-    private IDataProvider dataProvider;
     private MainWindow mainWindow;
     private ApplicationProperties applicationProperties;
     private static final Log log = LogFactory.getLog(Controller.class);
@@ -51,6 +52,10 @@ public class Controller {
         acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
         acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);
 
+    }
+
+    public AdsModel getAdsModel() {
+        return adsModel;
     }
 
     public void addAdsDataListener(AdsDataListener adsDataListener) {
@@ -137,6 +142,9 @@ public class Controller {
         model.setStartTime(System.currentTimeMillis());
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
+
+        saveAdsModelToAppProperties();
+
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
@@ -154,7 +162,6 @@ public class Controller {
         }
         repaintTimer.start();
         isAutoScroll = true;
-
     }
 
     public void stopRecording() {
@@ -204,5 +211,21 @@ public class Controller {
             e.printStackTrace();
         }
         comport.disconnect();
+    }
+
+    private void saveAdsModelToAppProperties(){
+        applicationProperties.setSps(adsModel.getSps().getValue());
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
+            AdsChannelModel channel = adsModel.getAdsChannel(i);
+            applicationProperties.setChannelDivider(i, channel.getDivider());
+
+        }
+
+        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
+             ChannelModel channel = adsModel.getAccelerometerChannel(i);
+             applicationProperties.setAccelerometerDivider(i, channel.getDivider());
+
+        }
+
     }
 }

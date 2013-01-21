@@ -11,7 +11,7 @@ public class ChannelModel {
     protected String name;
     private HiPassPreFilter hiPassPreFilter;
 
-    public void setHiPassBufferSize(int bufferSize){
+    public void setHiPassPreFilterBufferSize(int bufferSize){
           hiPassPreFilter =  new HiPassPreFilter(bufferSize);
     }
 

@@ -11,7 +11,7 @@ public class DreamRec {
         Controller controller = new Controller(model,adsModel,Factory.getComPort(applicationProperties), applicationProperties);
         MainWindow mainWindow = new MainWindow(controller, model, applicationProperties);
         controller.setMainWindow(mainWindow);
-//        SettingsWindow settingsWindow = new SettingsWindow(adsModel);
+        SettingsWindow settingsWindow = new SettingsWindow(controller);
 
     }
 }
