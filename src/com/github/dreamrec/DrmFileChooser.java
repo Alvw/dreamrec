@@ -22,7 +22,7 @@ public class DrmFileChooser extends JFileChooser {
 
     public DrmFileChooser(ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
-        addChoosableFileFilter(new FileNameExtensionFilter("Dream record file", "drm"));
+        addChoosableFileFilter(new FileNameExtensionFilter("EDF", "edf"));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class DrmFileChooser extends JFileChooser {
 
     @Override
     public int showSaveDialog(Component parent) throws HeadlessException {
-        String suggestedFileName = format.format(new Date(System.currentTimeMillis())) + ".drm";
+        String suggestedFileName = format.format(new Date(System.currentTimeMillis())) + ".edf";
         setSelectedFile(new File(suggestedFileName));
         setLastVisitedDirectory();
         int fileChooserState = super.showSaveDialog(parent);

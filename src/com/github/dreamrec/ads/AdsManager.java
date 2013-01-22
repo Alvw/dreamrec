@@ -84,7 +84,7 @@ public class AdsManager {
         result.addAll(writeDividerForChannel(0, adsModel.getAdsChannel(0).getDivider()));
         result.addAll(writeDividerForChannel(1, adsModel.getAdsChannel(1).getDivider()));
         for (int i = 0; i < 3; i++) {
-            result.addAll(writeDividerForChannel(i+2,50));
+            result.addAll(writeDividerForChannel(i+2,adsModel.getAccelerometerDividers()[i]));
         }
         result.addAll(writeAccelerometerEnabled(adsModel.isAccelerometerEnabled()));
         int config1RegisterValue = adsModel.getSps().getRegisterBits();
