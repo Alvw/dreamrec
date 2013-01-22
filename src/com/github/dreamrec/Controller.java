@@ -178,8 +178,7 @@ public class Controller {
         repaintTimer.stop();
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
-//        edfWriter.stopRecording(chooseFileToSave());
-        edfWriter.stopRecording(null);
+        edfWriter.stopRecording(chooseFileToSave());
     }
 
     public void changeXSize(int xSize) {
@@ -251,7 +250,7 @@ public class Controller {
         }
         for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = adsModel.getAccelerometerChannel(i);
-            applicationProperties.setAccelerometerDivider(i, channel.getDivider());
+            applicationProperties.setAccelerometerDivider(channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
             HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
             if (hiPassPreFilter != null) {
