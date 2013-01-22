@@ -175,8 +175,8 @@ public class ApplicationProperties {
         config.setProperty(CHANNEL_DIVIDER+channelNumber, divider);
     }
 
-    public void setAccelerometerDivider(int channelNumber, int divider){
-        config.setProperty(ACCELEROMETER_DIVIDER+channelNumber, divider);
+    public void setAccelerometerDivider(int divider){
+        config.setProperty(ACCELEROMETER_DIVIDER, divider);
     }
 
     public void setChannelName(int channelNumber, String name){

@@ -5,7 +5,7 @@ package com.github.dreamrec.ads;
  */
 public class AdsChannelModel extends ChannelModel {
 
-    public String PHYSICAL_DIMENSION = "uV";
+    private final String PHYSICAL_DIMENSION = "uV";
     private Gain gain;
     private CommutatorState commutatorState;
     protected boolean isLoffEnable;
@@ -13,6 +13,10 @@ public class AdsChannelModel extends ChannelModel {
     private int rldSenseEnabledBits;
     private int loffSenseEnabledBits;
     private int loffFlipBits;
+
+    public String getPhysicalDimension() {
+        return PHYSICAL_DIMENSION;
+    }
 
     public void setLoffFlipBits(int loffFlipBits) {
         this.loffFlipBits = loffFlipBits;

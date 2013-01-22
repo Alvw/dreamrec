@@ -62,10 +62,6 @@ public class EdfWriter implements AdsDataListener {
 
 
 
-    private void showMessage(String s) {
-        JOptionPane.showMessageDialog(null, s);
-    }
-
     @Override
     public void onDataReceived(int[] dataFrame) {
         ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
@@ -101,6 +97,10 @@ public class EdfWriter implements AdsDataListener {
 
     private void openFile() {
         try {
+            file = new File(fileName);
+            //delete old existing file
+            file.delete();
+            // create the new one with the same name
             file = new File(fileName);
             outStream = new RandomAccessFile(file, "rw");
         } catch (Exception e) {
@@ -193,7 +193,7 @@ public class EdfWriter implements AdsDataListener {
         for (ChannelModel channel : adsModel.getAdsActiveChannels()) {
             labels.append(adjustLength(channel.getName(), 16));
             transducerTypes.append(adjustLength(channelsTransducerType, 80));
-            physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8));
+            physicalDimensions.append(adjustLength(channel.getPhysicalDimension(), 8));
             physicalMinimums.append(adjustLength(channelsPhysicalMinimum, 8));
             physicalMaximums.append(adjustLength(channelsPhysicalMaximum, 8));
             digitalMinimums.append(adjustLength(channelsDigitalMinimum, 8));
@@ -209,7 +209,7 @@ public class EdfWriter implements AdsDataListener {
         for (ChannelModel channel : adsModel.getAccelerometerActiveChannels()) {
             labels.append(adjustLength(channel.getName(), 16));
             transducerTypes.append(adjustLength(accelerometerTransducerType, 80));
-            physicalDimensions.append(adjustLength(channel.PHYSICAL_DIMENSION, 8));
+            physicalDimensions.append(adjustLength(channel.getPhysicalDimension(), 8));
             physicalMinimums.append(adjustLength(accelerometerPhysicalMinimum, 8));
             physicalMaximums.append(adjustLength(accelerometerPhysicalMaximum, 8));
             digitalMinimums.append(adjustLength(accelerometerDigitalMinimum, 8));

@@ -6,10 +6,14 @@ import com.github.dreamrec.HiPassPreFilter;
  * 
  */
 public class ChannelModel {
-    public String PHYSICAL_DIMENSION = "g";
+    private final String PHYSICAL_DIMENSION = "g";
     protected int divider;
     protected String name;
     private HiPassPreFilter hiPassPreFilter;
+
+    public String getPhysicalDimension() {
+        return PHYSICAL_DIMENSION;
+    }
 
     public void setHiPassPreFilterBufferSize(int bufferSize){
           hiPassPreFilter =  new HiPassPreFilter(bufferSize);

@@ -146,9 +146,9 @@ public class Controller {
 /*        model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());  */
-        saveAdsModelToProperties();
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
+        saveAdsModelToProperties();
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
@@ -245,8 +245,8 @@ public class Controller {
         }
         for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = adsModel.getAccelerometerChannel(i);
-            applicationProperties.setAccelerometerDivider(i, channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
+            applicationProperties.setAccelerometerDivider(channel.getDivider());
             HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
             if (hiPassPreFilter != null) {
                 applicationProperties.setAccelerometerHiPassBufferSize(hiPassPreFilter.getBufferSize());
