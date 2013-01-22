@@ -52,6 +52,7 @@ public class EdfWriter implements AdsDataListener {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
+
             if(fileToSave != null){
                 file.renameTo(fileToSave);
             }
@@ -60,13 +61,6 @@ public class EdfWriter implements AdsDataListener {
         }
     }
 
-
-
-    private void showMessage(String s) {
-        JOptionPane.showMessageDialog(null, s);
-    }
-
-    @Override
     public void onDataReceived(int[] dataFrame) {
         ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
         int channelPosition = 0;

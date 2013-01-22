@@ -30,11 +30,11 @@ public class Controller {
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
-    /*private HiPassPreFilter ch1PreFilter;
+   /* private HiPassPreFilter ch1PreFilter;
     private HiPassPreFilter ch2PreFilter;
     private HiPassPreFilter acc1PreFilter;
     private HiPassPreFilter acc2PreFilter;
-    private HiPassPreFilter acc3PreFilter;  */
+    private HiPassPreFilter acc3PreFilter;*/
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
@@ -42,17 +42,23 @@ public class Controller {
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
-       // this.model = model;
+       this.model = model;
         this.adsModel = adsModel;
         this.comport = comport;
         this.applicationProperties = applicationProperties;
-        int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-        /* ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+        repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                updateModel();
+//                mainWindow.repaint();
+            }
+        });
+        /*int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
+         ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
      ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
      acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
      acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
-     acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);*/
-
+     acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);
+*/
     }
 
     public AdsModel getAdsModel() {
@@ -63,7 +69,7 @@ public class Controller {
         adsDataListeners.add(adsDataListener);
     }
 
-    public void setMainWindow(MainWindow _mainWindow) {
+    /*public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -71,32 +77,31 @@ public class Controller {
                 mainWindow.repaint();
             }
         });
-    }
+    }*/
 
     protected void updateModel() {
         boolean isLoffUpdated = false;
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
-            /*model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
+          /*  model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
             model.addCh2Data(ch2PreFilter.getFilteredValue(frame[1]));
             model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
             model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
-            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));
-            model.addEyeData(frame[0]);
+            model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));*/
+          /*  model.addEyeData(frame[0]);
             model.addCh2Data(frame[1]);
             model.addAcc1Data(frame[2]);
             model.addAcc2Data(frame[3]);
-            model.addAcc3Data(frame[4]);
-            if (!isLoffUpdated) {
+            model.addAcc3Data(frame[4]);*/
+           /* if (!isLoffUpdated) {
                 log.info("Loff status: " + frame[frame.length - 1]);
                 isLoffUpdated = true;
-            }   */
-
+            }*/
         }
-        if (isAutoScroll) {
+        /*if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
-        }
+        }*/
     }
 
     private void notifyListeners(int[] frame) {
@@ -143,9 +148,9 @@ public class Controller {
     }
 
     public void startRecording() {
-/*        model.clear();
+        model.clear();
         model.setFrequency(250);
-        model.setStartTime(System.currentTimeMillis());  */
+        model.setStartTime(System.currentTimeMillis());
         saveAdsModelToProperties();
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
@@ -164,16 +169,17 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-      /*  repaintTimer.start();
-        isAutoScroll = true;  */
+        repaintTimer.start();
+        isAutoScroll = true;
 
     }
 
     public void stopRecording() {
-     /*   repaintTimer.stop();
-        isAutoScroll = false;   */
+        repaintTimer.stop();
+        isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
-        edfWriter.stopRecording(chooseFileToSave());
+//        edfWriter.stopRecording(chooseFileToSave());
+        edfWriter.stopRecording(null);
     }
 
     public void changeXSize(int xSize) {
