@@ -1,12 +1,12 @@
 package com.github.dreamrec.edf;
 
-import com.github.dreamrec.AdsDataListener;
-import com.github.dreamrec.HiPassPreFilter;
+import com.github.dreamrec.*;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,6 +30,8 @@ public class EdfWriter implements AdsDataListener {
     private long startTime;
     private int numberOfDataRecords = -1;
     private Charset characterSet = Charset.forName("US-ASCII");
+    private String fileName = "tralivali.edf";
+    private File file;
 
 
     public EdfWriter(AdsModel adsModel) {
@@ -45,14 +47,23 @@ public class EdfWriter implements AdsDataListener {
         }
     }
 
-    public void stopRecording() {
+    public void stopRecording(File fileToSave) {
         try {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
+            if(fileToSave != null){
+                file.renameTo(fileToSave);
+            }
         } catch (IOException e) {
             log.error(e);
         }
+    }
+
+
+
+    private void showMessage(String s) {
+        JOptionPane.showMessageDialog(null, s);
     }
 
     @Override
@@ -89,10 +100,9 @@ public class EdfWriter implements AdsDataListener {
     }
 
     private void openFile() {
-        Date date = new Date(System.currentTimeMillis());
-        String fileName = new SimpleDateFormat("ss_mm_HH_dd_MM_yyyy").format(date) + ".edf";
         try {
-            outStream = new RandomAccessFile(fileName, "rw");
+            file = new File(fileName);
+            outStream = new RandomAccessFile(file, "rw");
         } catch (Exception e) {
             log.error(e);
             //throw new ApplicationException("Error while creating file " + fileName);

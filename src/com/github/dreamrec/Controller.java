@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -41,16 +42,16 @@ public class Controller {
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
-        this.model = model;
+       // this.model = model;
         this.adsModel = adsModel;
         this.comport = comport;
         this.applicationProperties = applicationProperties;
         int hiPassBufferSize = applicationProperties.getHiPassBufferSize();
-       /* ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
-        ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
-        acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
-        acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
-        acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);*/
+        /* ch1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+     ch2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+     acc1PreFilter = new HiPassPreFilter(hiPassBufferSize);
+     acc2PreFilter = new HiPassPreFilter(hiPassBufferSize);
+     acc3PreFilter = new HiPassPreFilter(hiPassBufferSize);*/
 
     }
 
@@ -142,9 +143,10 @@ public class Controller {
     }
 
     public void startRecording() {
-        model.clear();
+/*        model.clear();
         model.setFrequency(250);
-        model.setStartTime(System.currentTimeMillis());
+        model.setStartTime(System.currentTimeMillis());  */
+        saveAdsModelToProperties();
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
         try {
@@ -162,16 +164,16 @@ public class Controller {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        repaintTimer.start();
-        isAutoScroll = true;
+      /*  repaintTimer.start();
+        isAutoScroll = true;  */
 
     }
 
     public void stopRecording() {
-        repaintTimer.stop();
-        isAutoScroll = false;
+     /*   repaintTimer.stop();
+        isAutoScroll = false;   */
         comport.writeToPort(new AdsManager().startPinLo());
-        edfWriter.stopRecording();
+        edfWriter.stopRecording(chooseFileToSave());
     }
 
     public void changeXSize(int xSize) {
@@ -214,5 +216,41 @@ public class Controller {
             e.printStackTrace();
         }
         comport.disconnect();
+    }
+
+    private File chooseFileToSave() {
+        File file = null;
+
+        JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+        int fileChooserState = fileChooser.showSaveDialog(null);
+        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
+            file = fileChooser.getSelectedFile();
+        }
+        return file;
+    }
+
+    private void saveAdsModelToProperties() {
+        applicationProperties.setSps(adsModel.getSps().getValue());
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
+            AdsChannelModel channel = adsModel.getAdsChannel(i);
+            applicationProperties.setChannelDivider(i, channel.getDivider());
+            applicationProperties.setChannelName(i, channel.getName());
+            applicationProperties.setChannelLoffEnabled(i, channel.isLoffEnable());
+            applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
+            HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
+            if (hiPassPreFilter != null) {
+                applicationProperties.setChannelHiPassBufferSize(i, hiPassPreFilter.getBufferSize());
+            }
+
+        }
+        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
+            ChannelModel channel = adsModel.getAccelerometerChannel(i);
+            applicationProperties.setAccelerometerDivider(i, channel.getDivider());
+            applicationProperties.setAccelerometerName(i, channel.getName());
+            HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
+            if (hiPassPreFilter != null) {
+                applicationProperties.setAccelerometerHiPassBufferSize(hiPassPreFilter.getBufferSize());
+            }
+        }
     }
 }

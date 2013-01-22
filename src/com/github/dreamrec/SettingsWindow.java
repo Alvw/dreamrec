@@ -22,6 +22,7 @@ public class SettingsWindow extends JFrame {
 
     private JComboBox spsField;
     private String spsLabel = "Sampling Frequency (Hz)";
+    private String[] accelerometerNamesEnds = {"X", "Y", "Z"};
 
     private JComboBox[] channelFrequency;
     private JComboBox[] channelHiPassFrequency;
@@ -30,9 +31,9 @@ public class SettingsWindow extends JFrame {
     private JCheckBox[] channelRldSenseEnable;
     private JTextField[] channelName;
 
-    private JComboBox[] accelerometerFrequency;
-    private JTextField[] accelerometerName;
-    private JCheckBox[] accelerometerEnable;
+    private JComboBox accelerometerFrequency;
+    private JTextField accelerometerName;
+    private JCheckBox accelerometerEnable;
     private JComboBox accelerometerHiPassFrequency;
 
 
@@ -42,9 +43,9 @@ public class SettingsWindow extends JFrame {
     private Color okColor = Color.GREEN;
     private Color problemColor = Color.RED;
 
-    private String title = "Simple EDF Server";
+    private String title = "Simple EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "DRL", "Lead Off Detection"};
-    private String[] accelerometerHeaders = {"Number", "Enable", "Name", "Frequency (Hz)"};
+    private String[] accelerometerHeaders = {"Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)"};
 
 
     public SettingsWindow(Controller controller) {
@@ -70,11 +71,6 @@ public class SettingsWindow extends JFrame {
         channelRldSenseEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
 
-        accelerometerFrequency = new JComboBox[accelerometerChannelsNumber];
-        accelerometerName = new JTextField[accelerometerChannelsNumber];
-        accelerometerEnable = new JCheckBox[accelerometerChannelsNumber];
-        accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
-
         int textFieldLength = 10;
         for (int i = 0; i < adsChannelsNumber; i++) {
             channelFrequency[i] = new JComboBox();
@@ -86,25 +82,64 @@ public class SettingsWindow extends JFrame {
         }
 
 
-        for (int i = 0; i < accelerometerChannelsNumber; i++) {
-            accelerometerEnable[i] = new JCheckBox();
-            accelerometerName[i] = new JTextField(textFieldLength);
-            accelerometerFrequency[i] = new JComboBox();
-            accelerometerFrequency[i].setEnabled(false);
-        }
+        accelerometerEnable = new JCheckBox();
+        accelerometerName = new JTextField(textFieldLength);
+        accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
+        accelerometerFrequency = new JComboBox();
+        accelerometerFrequency.setEnabled(false);
+
     }
 
     private void setActions() {
+
         for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
             channelEnable[i].addActionListener(new AdsChannelEnableListener(i));
         }
-        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
-            accelerometerEnable[i].addActionListener(new AccelerometerChannelEnableListener(i));
-        }
 
-        spsField.addActionListener(new SpsChangeListener());
-        startButton.addActionListener(new StartButtonListener());
-        stopButton.addActionListener(new StopButtonListener());
+        accelerometerEnable.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JCheckBox checkBox = (JCheckBox) actionEvent.getSource();
+                if (checkBox.isSelected()) {
+                    enableAccelerometer();
+                } else {
+                    disableAccelerometerChannel();
+                }
+            }
+        });
+
+
+        spsField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JComboBox comboBox = (JComboBox) actionEvent.getSource();
+                Sps sps = (Sps) comboBox.getSelectedItem();
+                setAdsChannelAvailableFrequencies(sps);
+                setAccelerometerAvailableFrequencies(sps);
+            }
+        });
+
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                startButton.setEnabled(false);
+                stopButton.setEnabled(true);
+                saveDataToModel();
+                controller.startRecording();
+
+            }
+        });
+
+
+        stopButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                startButton.setEnabled(true);
+                stopButton.setEnabled(false);
+                controller.stopRecording();
+            }
+        });
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -162,25 +197,16 @@ public class SettingsWindow extends JFrame {
         for (int i = 0; i < accelerometerHeaders.length; i++) {
             accelerometerPanel.add(new JLabel(accelerometerHeaders[i]));
         }
-        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
-            accelerometerPanel.add(new JLabel(" " + i + " "));
-            accelerometerPanel.add(accelerometerEnable[i]);
-            accelerometerPanel.add(accelerometerName[i]);
-            accelerometerPanel.add(accelerometerFrequency[i]);
-        }
+        accelerometerPanel.add(accelerometerEnable);
+        accelerometerPanel.add(accelerometerName);
+        accelerometerPanel.add(accelerometerFrequency);
+        accelerometerPanel.add(accelerometerHiPassFrequency);
         accelerometerPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
 
-        hgap = 0;
-        vgap = 5;
-        JPanel hiPassPanel = new JPanel(new BorderLayout(hgap, vgap));
-        hiPassPanel.add(new JLabel("Hi Pass Filter (Hz)"), BorderLayout.NORTH);
-        hiPassPanel.add(accelerometerHiPassFrequency, BorderLayout.CENTER);
-
-
         JPanel accelerometerBorderPanel = new JPanel();
-        accelerometerBorderPanel.setBorder(BorderFactory.createTitledBorder("Accelerometer Channels"));
+        accelerometerBorderPanel.setBorder(BorderFactory.createTitledBorder("Accelerometer"));
         accelerometerBorderPanel.add(accelerometerPanel);
-        accelerometerBorderPanel.add(hiPassPanel);
+
 
         hgap = 0;
         vgap = 20;
@@ -224,18 +250,21 @@ public class SettingsWindow extends JFrame {
             }
         }
 
-        int numberOfAccelerometerChannels = adsModel.getNumberOfAccelerometerChannels();
-        for (int i = 0; i < numberOfAccelerometerChannels; i++) {
-            ChannelModel channel = adsModel.getAccelerometerChannel(i);
+        if (adsModel.getNumberOfAccelerometerChannels() > 0) {
+            ChannelModel channel = adsModel.getAccelerometerChannel(0);
+            StringBuilder name = new StringBuilder(channel.getName());
+            //delete last symbol
+            name.deleteCharAt(name.length()-1);
+            accelerometerName.setText(name.toString());
             if (channel.getDivider() == 0) {
-                accelerometerEnable[i].setSelected(false);
-                disableAccelerometerChannel(i);
+                accelerometerEnable.setSelected(false);
+                disableAccelerometerChannel();
             } else {
-                accelerometerEnable[i].setSelected(true);
-                accelerometerName[i].setText(channel.getName());
-                setAccelerometerChannelFrequency(i);
+                accelerometerEnable.setSelected(true);
+                setAccelerometerFrequency();
+                setAccelerometerHiPassFrequency();
             }
-            setAccelerometerChannelsHiPassFrequency();
+
         }
     }
 
@@ -244,31 +273,23 @@ public class SettingsWindow extends JFrame {
         int numberOfAdsChannels = adsModel.getNumberOfAdsChannels();
         for (int i = 0; i < numberOfAdsChannels; i++) {
             AdsChannelModel channel = adsModel.getAdsChannel(i);
-            if (isChannelEnable(i)) {
-                channel.setLoffEnable(isChannelLoffEnable(i));
-                channel.setRldSenseEnabled(isChannelRldSenseEnable(i));
-                channel.setName(getChannelName(i));
-                int divider = adsModel.getSps().getValue() / getChannelFrequency(i);
-                channel.setDivider(divider);
-                int hiPassPreFilterBufferSize = (int) (getChannelFrequency(i) / getChannelHiPassFrequency(i));
-                channel.setHiPassPreFilterBufferSize(hiPassPreFilterBufferSize);
-            } else {
-                channel.setDivider(0);
-            }
+            channel.setName(getChannelName(i));
+            channel.setLoffEnable(isChannelLoffEnable(i));
+            channel.setRldSenseEnabled(isChannelRldSenseEnable(i));
+            channel.setDivider(getChannelDivider(i));
+            channel.setHiPassPreFilterBufferSize(getAdsChannelHiPassBufferSize(i));
         }
 
         int numberOfAccelerometerChannels = adsModel.getNumberOfAccelerometerChannels();
         for (int i = 0; i < numberOfAccelerometerChannels; i++) {
             ChannelModel channel = adsModel.getAccelerometerChannel(i);
-            if (isAccelerometerEnable(i)) {
-                channel.setName(getAccelerometerName(i));
-                int divider = adsModel.getSps().getValue() / getAccelerometerFrequency(i);
-                channel.setDivider(divider);
-                int hiPassPreFilterBufferSize = (int) (getAccelerometerFrequency(i) / getAccelerometerHiPassFrequency());
-                channel.setHiPassPreFilterBufferSize(hiPassPreFilterBufferSize);
+            if (i < accelerometerNamesEnds.length) {
+                channel.setName(getAccelerometerName() + accelerometerNamesEnds[i]);
             } else {
-                channel.setDivider(0);
+                channel.setName(getAccelerometerName());
             }
+            channel.setDivider(getAccelerometerDivider());
+            channel.setHiPassPreFilterBufferSize(getAccelerometerHiPassBufferSize());
         }
     }
 
@@ -285,28 +306,22 @@ public class SettingsWindow extends JFrame {
         for (Integer frequency : availableFrequencies) {
             channelFrequency[channelNumber].addItem(frequency);
         }
-        if (! isChannelEnable(channelNumber) ) {
+        if (!isChannelEnable(channelNumber)) {
             channelFrequency[channelNumber].addItem("");
             channelFrequency[channelNumber].setSelectedItem("");
         }
     }
 
-    private void setAccelerometerChannelAvailableFrequencies(Sps sps) {
-        int numberOfAccelerometerChannels = adsModel.getNumberOfAccelerometerChannels();
-        for (int i = 0; i < numberOfAccelerometerChannels; i++) {
-            setAccelerometerChannelAvailableFrequencies(sps, i);
-        }
-    }
 
-    private void setAccelerometerChannelAvailableFrequencies(Sps sps, int channelNumber) {
+    private void setAccelerometerAvailableFrequencies(Sps sps) {
         Integer[] availableFrequencies = sps.getAccelerometerChannelsAvailableFrequencies();
-        accelerometerFrequency[channelNumber].removeAllItems();
+        accelerometerFrequency.removeAllItems();
         for (Integer frequency : availableFrequencies) {
-            accelerometerFrequency[channelNumber].addItem(frequency);
+            accelerometerFrequency.addItem(frequency);
         }
-        if (!isAccelerometerEnable(channelNumber)) {
-            accelerometerFrequency[channelNumber].addItem("");
-            accelerometerFrequency[channelNumber].setSelectedItem("");
+        if (!isAccelerometerEnable()) {
+            accelerometerFrequency.addItem("");
+            accelerometerFrequency.setSelectedItem("");
         }
     }
 
@@ -333,30 +348,22 @@ public class SettingsWindow extends JFrame {
         channelName[channelNumber].setEnabled(true);
     }
 
-    private void disableAccelerometerChannel(int channelNumber) {
-        accelerometerFrequency[channelNumber].addItem("");
-        accelerometerFrequency[channelNumber].setSelectedItem("");
-        //  accelerometerFrequency[channelNumber].setEnabled(false);
-        accelerometerName[channelNumber].setEnabled(false);
-        boolean anyAccelerometerChannelEnabled = false;
-        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
-            anyAccelerometerChannelEnabled |= accelerometerEnable[i].isSelected();
-        }
-        // if all AccelerometerChannels are disabled
-        if (!anyAccelerometerChannelEnabled) {
-            accelerometerHiPassFrequency.setSelectedItem(HiPassFrequency.DISABLED);
-            accelerometerHiPassFrequency.setEnabled(false);
-        }
+    private void disableAccelerometerChannel() {
+        accelerometerFrequency.addItem("");
+        accelerometerFrequency.setSelectedItem("");
+        //  accelerometerFrequency.setEnabled(false);
+        accelerometerName.setEnabled(false);
+        accelerometerHiPassFrequency.setSelectedItem(HiPassFrequency.DISABLED);
+        accelerometerHiPassFrequency.setEnabled(false);
+
     }
 
-    private void enableAccelerometerChannel(int channelNumber) {
+    private void enableAccelerometer() {
         Sps sps = (Sps) spsField.getSelectedItem();
-        setAccelerometerChannelAvailableFrequencies(sps, channelNumber);
+        setAccelerometerAvailableFrequencies(sps);
         // accelerometerFrequency[channelNumber].setEnabled(true);
-        accelerometerName[channelNumber].setEnabled(true);
-        if (!accelerometerHiPassFrequency.isEnabled()) {
-            accelerometerHiPassFrequency.setEnabled(true);
-        }
+        accelerometerName.setEnabled(true);
+        accelerometerHiPassFrequency.setEnabled(true);
     }
 
     /*
@@ -364,31 +371,45 @@ public class SettingsWindow extends JFrame {
      *   channelFrequency = sps / channelDivider
      */
     private void setAdsChannelHiPassFrequency(int channelNumber) {
+        HiPassFrequency hiPassFrequency = HiPassFrequency.DISABLED;
         int hiPassPreFilterBufferSize = adsModel.getAdsChannel(channelNumber).getHiPassPreFilter().getBufferSize();
         int divider = adsModel.getAdsChannel(channelNumber).getDivider();
-        HiPassFrequency hiPassFrequency;
-        if ((hiPassPreFilterBufferSize * divider) == 0) {
-            hiPassFrequency = HiPassFrequency.DISABLED;
-        } else {
+        if ((hiPassPreFilterBufferSize * divider) != 0) {
             double hiPassFrequencyValue = new Double(adsModel.getSps().getValue()) / (divider * hiPassPreFilterBufferSize);
             hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
         }
         channelHiPassFrequency[channelNumber].setSelectedItem(hiPassFrequency);
     }
 
-    private void setAccelerometerChannelsHiPassFrequency() {
-        ArrayList<ChannelModel> activeChannels = adsModel.getAccelerometerActiveChannels();
-        HiPassFrequency hiPassFrequency;
-        if (activeChannels.size() == 0) {
-            hiPassFrequency = HiPassFrequency.DISABLED;
-        } else {
-            ChannelModel channel = activeChannels.get(0);
-            int hiPassPreFilterBufferSize = channel.getHiPassPreFilter().getBufferSize();
-            int divider = channel.getDivider();
-            double hiPassFrequencyValue = new Double(adsModel.getSps().getValue()) / (divider * hiPassPreFilterBufferSize);
-            hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
+    private void setAccelerometerHiPassFrequency() {
+        HiPassFrequency hiPassFrequency = HiPassFrequency.DISABLED;
+        if (adsModel.getNumberOfAccelerometerChannels() > 0) {
+            int hiPassPreFilterBufferSize = adsModel.getAccelerometerChannel(0).getHiPassPreFilter().getBufferSize();
+            int divider = adsModel.getAccelerometerChannel(0).getDivider();
+            if ((hiPassPreFilterBufferSize * divider) != 0) {
+                double hiPassFrequencyValue = new Double(adsModel.getSps().getValue()) / (divider * hiPassPreFilterBufferSize);
+                hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
+            }
         }
         accelerometerHiPassFrequency.setSelectedItem(hiPassFrequency);
+    }
+
+    private int getAdsChannelHiPassBufferSize(int channelNumber) {
+        int hiPassPreFilterBufferSize = 0;
+        if (getChannelDivider(channelNumber) * getChannelHiPassFrequency(channelNumber) != 0) {
+            hiPassPreFilterBufferSize = (int) (getSps().getValue() / (getChannelDivider(channelNumber) * getChannelHiPassFrequency(channelNumber)));
+
+        }
+        return hiPassPreFilterBufferSize;
+    }
+
+    private int getAccelerometerHiPassBufferSize() {
+        int hiPassPreFilterBufferSize = 0;
+        if (getAccelerometerDivider() * getAccelerometerHiPassFrequency() != 0) {
+            hiPassPreFilterBufferSize = (int) (getSps().getValue() / (getAccelerometerDivider() * getAccelerometerHiPassFrequency()));
+
+        }
+        return hiPassPreFilterBufferSize;
     }
 
     private void setAdsChannelFrequency(int channelNumber) {
@@ -400,14 +421,31 @@ public class SettingsWindow extends JFrame {
         }
     }
 
-    private void setAccelerometerChannelFrequency(int channelNumber) {
-        int divider = adsModel.getAccelerometerChannel(channelNumber).getDivider();
+    private void setAccelerometerFrequency() {
+        int divider = adsModel.getAccelerometerChannel(0).getDivider();
         if (divider != 0) {
-            setAccelerometerChannelAvailableFrequencies(adsModel.getSps(), channelNumber);
+            setAccelerometerAvailableFrequencies(adsModel.getSps());
             Integer frequency = adsModel.getSps().getValue() / divider;
-            accelerometerFrequency[channelNumber].setSelectedItem(frequency);
+            accelerometerFrequency.setSelectedItem(frequency);
         }
     }
+
+    private int getChannelDivider(int channelNumber) {
+        int divider = 0;
+        if (isChannelEnable(channelNumber)) {
+            divider = adsModel.getSps().getValue() / getChannelFrequency(channelNumber);
+        }
+        return divider;
+    }
+
+    private int getAccelerometerDivider() {
+        int divider = 0;
+        if (isAccelerometerEnable()) {
+            divider = adsModel.getSps().getValue() / getAccelerometerFrequency();
+        }
+        return divider;
+    }
+
 
     private int getChannelFrequency(int channelNumber) {
         return (Integer) channelFrequency[channelNumber].getSelectedItem();
@@ -433,35 +471,24 @@ public class SettingsWindow extends JFrame {
         return channelName[channelNumber].getText();
     }
 
-    private boolean isAccelerometerEnable(int channelNumber) {
-        return accelerometerEnable[channelNumber].isSelected();
+    private boolean isAccelerometerEnable() {
+        return accelerometerEnable.isSelected();
     }
 
-    private String getAccelerometerName(int channelNumber) {
-        return accelerometerName[channelNumber].getText();
+    private String getAccelerometerName() {
+        return accelerometerName.getText();
     }
 
     private double getAccelerometerHiPassFrequency() {
         return ((HiPassFrequency) accelerometerHiPassFrequency.getSelectedItem()).getValue();
     }
 
-    private int getAccelerometerFrequency(int channelNumber) {
-        return (Integer) accelerometerFrequency[channelNumber].getSelectedItem();
+    private int getAccelerometerFrequency() {
+        return (Integer) accelerometerFrequency.getSelectedItem();
     }
 
     private Sps getSps() {
         return (Sps) spsField.getSelectedItem();
-    }
-
-
-    private class SpsChangeListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            JComboBox comboBox = (JComboBox) actionEvent.getSource();
-            Sps sps = (Sps) comboBox.getSelectedItem();
-            setAdsChannelAvailableFrequencies(sps);
-            setAccelerometerChannelAvailableFrequencies(sps);
-        }
     }
 
     private class AdsChannelEnableListener implements ActionListener {
@@ -481,45 +508,4 @@ public class SettingsWindow extends JFrame {
             }
         }
     }
-
-
-    private class AccelerometerChannelEnableListener implements ActionListener {
-        private int channelNumber;
-
-        private AccelerometerChannelEnableListener(int channelNumber) {
-            this.channelNumber = channelNumber;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            JCheckBox checkBox = (JCheckBox) actionEvent.getSource();
-            if (checkBox.isSelected()) {
-                enableAccelerometerChannel(channelNumber);
-            } else {
-                disableAccelerometerChannel(channelNumber);
-            }
-        }
-    }
-
-
-    private class StartButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            startButton.setEnabled(false);
-            stopButton.setEnabled(true);
-            saveDataToModel();
-            controller.startRecording();
-
-        }
-    }
-
-    private class StopButtonListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            startButton.setEnabled(true);
-            stopButton.setEnabled(false);
-            controller.stopRecording();
-        }
-    }
-
 }

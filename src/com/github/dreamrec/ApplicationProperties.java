@@ -93,18 +93,6 @@ public class ApplicationProperties {
         config.setProperty(DIRECTORY_NAME, directory);
     }
 
-    public void setSps(int spsValue) {
-        config.setProperty(SPS, spsValue);
-    }
-
-    public void setChannelDivider(int channelNumber, int divider){
-        config.setProperty(CHANNEL_DIVIDER+channelNumber, divider);
-    }
-
-    public void setAccelerometerDivider(int channelNumber, int divider){
-        config.setProperty(ACCELEROMETER_DIVIDER+channelNumber, divider);
-    }
-
     public String getLastVisitedDirectory() {
         return config.getString(DIRECTORY_NAME);
     }
@@ -178,6 +166,42 @@ public class ApplicationProperties {
         return config.getBoolean(CHANNEL_RLD_SENSE_ENABLED+channelNumber);
     }
 
+
+    public void setSps(int spsValue) {
+        config.setProperty(SPS, spsValue);
+    }
+
+    public void setChannelDivider(int channelNumber, int divider){
+        config.setProperty(CHANNEL_DIVIDER+channelNumber, divider);
+    }
+
+    public void setAccelerometerDivider(int channelNumber, int divider){
+        config.setProperty(ACCELEROMETER_DIVIDER+channelNumber, divider);
+    }
+
+    public void setChannelName(int channelNumber, String name){
+        config.setProperty(CHANNEL_NAME+channelNumber, name);
+    }
+
+    public void setAccelerometerName(int channelNumber, String name){
+        config.setProperty(ACCELEROMETER_NAME+channelNumber, name);
+    }
+
+    public void setChannelHiPassBufferSize(int channelNumber, int bufferSize){
+        config.setProperty(CHANNEL_HI_PASS_BUFFER_SIZE+channelNumber, bufferSize);
+    }
+
+    public void setAccelerometerHiPassBufferSize(int bufferSize){
+        config.setProperty(ACCELEROMETER_HI_PASS_BUFFER_SIZE, bufferSize);
+    }
+
+    public void setChannelRldSenseEnabled(int channelNumber, boolean isRldEnabled){
+        config.setProperty(CHANNEL_RLD_SENSE_ENABLED+channelNumber, isRldEnabled);
+    }
+
+    public void setChannelLoffEnabled(int channelNumber, boolean isLoffEnabled){
+        config.setProperty(CHANNEL_LOFF_ENABLED+channelNumber, isLoffEnabled);
+    }
 
     public void save() {
         try {

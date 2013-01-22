@@ -16,7 +16,8 @@ import java.util.Date;
 public class DrmFileChooser extends JFileChooser {
 
     private ApplicationProperties applicationProperties;
-    SimpleDateFormat format = new SimpleDateFormat("dd_MM_yyyy_HH_mm");
+    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy_HH:mm");
+
     private static final Log log = LogFactory.getLog(DrmFileChooser.class);
 
     public DrmFileChooser(ApplicationProperties applicationProperties) {
