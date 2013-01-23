@@ -23,12 +23,11 @@ public enum Sps {
         this.registerBits = registerBits;
         this.value = value;
         this.label = label;
+        adsChannelsAvailableDividers = new int[]{1, 2, 5, 10, 25, 50};
         if (value ==  250) {
-            adsChannelsAvailableDividers = new int[]{1, 2, 5, 10, 25, 50};
             accelerometerChannelsAvailableDividers = new int[] {25};
         }
         else{
-            adsChannelsAvailableDividers = new int[]{1, 2, 5, 10, 20, 25, 50};
             accelerometerChannelsAvailableDividers = new int[] {50};
         }
     }

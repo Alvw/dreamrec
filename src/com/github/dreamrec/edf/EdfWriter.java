@@ -121,7 +121,7 @@ public class EdfWriter implements AdsDataListener {
     }
 
     private void openFile() {
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy_HH:mm");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
         String suggestedFileName = format.format(new Date(startTime)) + fileExtension;
         try {
             file = new File(suggestedFileName);

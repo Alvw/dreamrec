@@ -172,6 +172,7 @@ public class Controller {
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+        temDebugMethod();
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());

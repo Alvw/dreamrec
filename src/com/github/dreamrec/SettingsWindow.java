@@ -26,8 +26,6 @@ public class SettingsWindow  extends JFrame{
     private JComboBox[] channelFrequency;
     private JComboBox[] channelHiPassFrequency;
     private JCheckBox[] channelEnable;
-    private JCheckBox[] channelLoffEnable;
-    private JCheckBox[] channelRldSenseEnable;
     private JTextField[] channelName;
 
     private JComboBox accelerometerFrequency;
@@ -51,7 +49,7 @@ public class SettingsWindow  extends JFrame{
     private ColoredLabel[] channelLoffStatNegative;
 
     private String title = "Simple EDF Recorder";
-    private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "DRL", "Lead Off Detection"};
+    private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)",  "Lead Off Detection"};
 
 
     public SettingsWindow(Controller controller) {
@@ -61,6 +59,7 @@ public class SettingsWindow  extends JFrame{
         arrangeForm();
         setActions();
         loadDataFromModel();
+        setVisible(true);
     }
 
     private void init() {
@@ -72,8 +71,6 @@ public class SettingsWindow  extends JFrame{
         channelFrequency = new JComboBox[adsChannelsNumber];
         channelHiPassFrequency = new JComboBox[adsChannelsNumber];
         channelEnable = new JCheckBox[adsChannelsNumber];
-        channelLoffEnable = new JCheckBox[adsChannelsNumber];
-        channelRldSenseEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
         channelLoffStatPositive = new ColoredLabel[adsChannelsNumber];
         channelLoffStatNegative = new ColoredLabel[adsChannelsNumber];
@@ -83,8 +80,6 @@ public class SettingsWindow  extends JFrame{
             channelFrequency[i] = new JComboBox();
             channelHiPassFrequency[i] = new JComboBox(HiPassFrequency.values());
             channelEnable[i] = new JCheckBox();
-            channelLoffEnable[i] = new JCheckBox();
-            channelRldSenseEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
             channelLoffStatPositive[i] = new ColoredLabel();
             channelLoffStatNegative[i] = new ColoredLabel();
@@ -133,6 +128,7 @@ public class SettingsWindow  extends JFrame{
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                disableFields();
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 saveDataToModel();
@@ -145,6 +141,7 @@ public class SettingsWindow  extends JFrame{
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                enableFields();
                 startButton.setEnabled(true);
                 stopButton.setEnabled(false);
                 controller.stopRecording();
@@ -194,11 +191,8 @@ public class SettingsWindow  extends JFrame{
             channelsPanel.add(channelName[i]);
             channelsPanel.add(channelFrequency[i]);
             channelsPanel.add(channelHiPassFrequency[i]);
-            channelsPanel.add(channelRldSenseEnable[i]);
-            channelsPanel.add(channelLoffEnable[i]);
 
             JPanel loffPanel = new JPanel();
-            loffPanel.add(channelLoffEnable[i]);
             loffPanel.add(channelLoffStatPositive[i]);
             loffPanel.add(channelLoffStatNegative[i]);
             channelsPanel.add(loffPanel);
@@ -217,12 +211,10 @@ public class SettingsWindow  extends JFrame{
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
         channelsBorderPanel.add(channelsPanel);
 
-        JPanel reportInnerPanel = new JPanel();
-        reportInnerPanel.add(markerLabel);
-        reportInnerPanel.add(reportLabel);
-        reportInnerPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-        reportPanel.add(reportInnerPanel);
-        reportPanel.setBorder(BorderFactory.createTitledBorder("Report"));
+        reportPanel.add(markerLabel);
+        reportPanel.add(reportLabel);
+        reportPanel.setBorder(BorderFactory.createTitledBorder(""));
+    
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
@@ -231,8 +223,9 @@ public class SettingsWindow  extends JFrame{
 
 
         JPanel groupPanel = new JPanel(new BorderLayout());
-        groupPanel.add(reportPanel, BorderLayout.NORTH);
-        groupPanel.add(buttonPanel, BorderLayout.CENTER);
+        groupPanel.add(buttonPanel, BorderLayout.NORTH);
+        groupPanel.add(reportPanel, BorderLayout.CENTER);
+
 
 
         // Root Panel of the SettingsWindow
@@ -242,7 +235,38 @@ public class SettingsWindow  extends JFrame{
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);
-        setVisible(true);
+    }
+
+    private void disableEnableFields(boolean isEnable) {
+        spsField.setEnabled(isEnable);
+
+        accelerometerName.setEnabled(isEnable);
+        accelerometerEnable.setEnabled(isEnable);
+        accelerometerHiPassFrequency.setEnabled(isEnable);
+
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
+            channelEnable[i].setEnabled(isEnable);
+            channelName[i].setEnabled(isEnable);
+            channelFrequency[i].setEnabled(isEnable);
+            channelHiPassFrequency[i].setEnabled(isEnable);
+        }
+    }
+
+    private void disableFields(){
+        disableEnableFields(false);
+        
+        
+    }
+    
+
+    private void enableFields() {
+         disableEnableFields(true);
+
+        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
+            if(!isChannelEnable(i)){
+                disableAdsChannel(i);
+            }
+        }
     }
 
     public void setReport(boolean isRecording, String report){
@@ -267,8 +291,6 @@ public class SettingsWindow  extends JFrame{
                 disableAdsChannel(i);
             } else {
                 channelEnable[i].setSelected(true);
-                channelLoffEnable[i].setSelected(channel.isLoffEnable());
-                channelRldSenseEnable[i].setSelected(channel.isRldSenseEnabled());
                 setAdsChannelFrequency(i);
                 setAdsChannelHiPassFrequency(i);
             }
@@ -303,7 +325,7 @@ public class SettingsWindow  extends JFrame{
             channelLoffStatNegative[0].setColor(okColor);
         }
         else{
-            channelLoffStatPositive[0].setColor(problemColor);
+            channelLoffStatNegative[0].setColor(problemColor);
         }
         if((loffStatusRegisterValue & 32) == 0) {
             channelLoffStatPositive[1].setColor(okColor);
@@ -314,7 +336,7 @@ public class SettingsWindow  extends JFrame{
             channelLoffStatNegative[1].setColor(okColor);
         }
         else{
-            channelLoffStatPositive[1].setColor(problemColor);
+            channelLoffStatNegative[1].setColor(problemColor);
         }
 
     }
@@ -325,8 +347,6 @@ public class SettingsWindow  extends JFrame{
         for (int i = 0; i < numberOfAdsChannels; i++) {
             AdsChannelModel channel = adsModel.getAdsChannel(i);
             channel.setName(getChannelName(i));
-            channel.setLoffEnable(isChannelLoffEnable(i));
-            channel.setRldSenseEnabled(isChannelRldSenseEnable(i));
             channel.setDivider(getChannelDivider(i));
             channel.setHiPassPreFilterBufferSize(getAdsChannelHiPassBufferSize(i));
         }
@@ -382,10 +402,6 @@ public class SettingsWindow  extends JFrame{
         channelFrequency[channelNumber].setEnabled(false);
         channelHiPassFrequency[channelNumber].setSelectedItem(HiPassFrequency.DISABLED);
         channelHiPassFrequency[channelNumber].setEnabled(false);
-        channelLoffEnable[channelNumber].setSelected(false);
-        channelLoffEnable[channelNumber].setEnabled(false);
-        channelRldSenseEnable[channelNumber].setSelected(false);
-        channelRldSenseEnable[channelNumber].setEnabled(false);
         channelName[channelNumber].setEnabled(false);
     }
 
@@ -394,8 +410,6 @@ public class SettingsWindow  extends JFrame{
         setAdsChannelAvailableFrequencies(sps, channelNumber);
         channelFrequency[channelNumber].setEnabled(true);
         channelHiPassFrequency[channelNumber].setEnabled(true);
-        channelLoffEnable[channelNumber].setEnabled(true);
-        channelRldSenseEnable[channelNumber].setEnabled(true);
         channelName[channelNumber].setEnabled(true);
     }
 
@@ -508,14 +522,6 @@ public class SettingsWindow  extends JFrame{
 
     private boolean isChannelEnable(int channelNumber) {
         return channelEnable[channelNumber].isSelected();
-    }
-
-    private boolean isChannelLoffEnable(int channelNumber) {
-        return channelLoffEnable[channelNumber].isSelected();
-    }
-
-    private boolean isChannelRldSenseEnable(int channelNumber) {
-        return channelRldSenseEnable[channelNumber].isSelected();
     }
 
     private String getChannelName(int channelNumber) {
