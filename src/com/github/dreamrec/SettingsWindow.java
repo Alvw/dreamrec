@@ -91,8 +91,6 @@ public class SettingsWindow  extends JFrame{
         accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
         accelerometerFrequency = new JComboBox();
         accelerometerFrequency.setEnabled(false);
-
-        reportPanel.setVisible(false);
     }
 
     private void setActions() {
@@ -132,7 +130,6 @@ public class SettingsWindow  extends JFrame{
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 saveDataToModel();
-                reportPanel.setVisible(true);
                 controller.startRecording();
             }
         });
@@ -168,6 +165,13 @@ public class SettingsWindow  extends JFrame{
         JPanel adsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         adsPanel.add(new JLabel(spsLabel));
         adsPanel.add(spsField);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(startButton);
+        buttonPanel.add(stopButton);
+
+        adsPanel.add(buttonPanel);
+
         adsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
 
         /*       JLabel colorLabel = new JLabel();
@@ -213,25 +217,12 @@ public class SettingsWindow  extends JFrame{
 
         reportPanel.add(markerLabel);
         reportPanel.add(reportLabel);
-        reportPanel.setBorder(BorderFactory.createTitledBorder(""));
-    
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(startButton);
-        buttonPanel.add(stopButton);
-        buttonPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-
-
-        JPanel groupPanel = new JPanel(new BorderLayout());
-        groupPanel.add(buttonPanel, BorderLayout.NORTH);
-        groupPanel.add(reportPanel, BorderLayout.CENTER);
-
 
 
         // Root Panel of the SettingsWindow
         add(adsPanel, BorderLayout.NORTH);
         add(channelsBorderPanel, BorderLayout.CENTER);
-        add(groupPanel, BorderLayout.SOUTH);
+        add(reportPanel, BorderLayout.SOUTH);
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);

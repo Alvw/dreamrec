@@ -14,7 +14,7 @@ public class ColoredLabel extends JLabel {
     public ColoredLabel() {
         setOpaque(true);
         setPreferredSize(defaultDimension);
-        setBackground(defaultColor);
+       // setBackground(defaultColor);
     }
 
     public ColoredLabel(Dimension dimension) {
