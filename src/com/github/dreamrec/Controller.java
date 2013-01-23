@@ -26,30 +26,40 @@ public class Controller {
     private Timer repaintTimer;
     private Model model;
     private MainWindow mainWindow;
+    private SettingsWindow settingsWindow;
+
+    public void setSettingsWindow(SettingsWindow settingsWindow) {
+        this.settingsWindow = settingsWindow;
+    }
+
     private ApplicationProperties applicationProperties;
     private static final Log log = LogFactory.getLog(Controller.class);
     public static int CURSOR_SCROLL_STEP = 1; //in points
     private boolean isAutoScroll = false;
-   /* private HiPassPreFilter ch1PreFilter;
-    private HiPassPreFilter ch2PreFilter;
-    private HiPassPreFilter acc1PreFilter;
-    private HiPassPreFilter acc2PreFilter;
-    private HiPassPreFilter acc3PreFilter;*/
+    /* private HiPassPreFilter ch1PreFilter;
+  private HiPassPreFilter ch2PreFilter;
+  private HiPassPreFilter acc1PreFilter;
+  private HiPassPreFilter acc2PreFilter;
+  private HiPassPreFilter acc3PreFilter;*/
     private FrameDecoder frameDecoder;
     private AdsModel adsModel;
     private ComPort comport;
     private EdfWriter edfWriter;
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
-    private SettingsWindow settingsWindow;
+
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
-       this.model = model;
+        this.model = model;
         this.adsModel = adsModel;
         this.comport = comport;
         this.applicationProperties = applicationProperties;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
+                if (edfWriter.isReportUpdated()) {
+                    settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+                }
+
 //                mainWindow.repaint();
             }
         });
@@ -70,7 +80,7 @@ public class Controller {
         adsDataListeners.add(adsDataListener);
     }
 
-   /* public void setMainWindow(MainWindow _mainWindow) {
+    /*public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -85,20 +95,25 @@ public class Controller {
         while (frameDecoder.available()) {
             int[] frame = frameDecoder.poll();
             notifyListeners(frame);
-          /*  model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
+            /*  model.addEyeData(ch1PreFilter.getFilteredValue(frame[0]));
             model.addCh2Data(ch2PreFilter.getFilteredValue(frame[1]));
             model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
             model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
             model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));*/
-//            model.addEyeData(frame[0]);
-//            model.addCh2Data(frame[1]);
-           /* model.addAcc1Data(frame[2]);
+            /*  model.addEyeData(frame[0]);
+            model.addCh2Data(frame[1]);
+            model.addAcc1Data(frame[2]);
             model.addAcc2Data(frame[3]);
             model.addAcc3Data(frame[4]);*/
+            /* if (!isLoffUpdated) {
+                log.info("Loff status: " + frame[frame.length - 1]);
+                isLoffUpdated = true;
+            }*/
             if (!isLoffUpdated) {
                 settingsWindow.updateLoffStatus(frame[frame.length - 1]);
                 isLoffUpdated = true;
             }
+
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -155,6 +170,8 @@ public class Controller {
         saveAdsModelToProperties();
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
+        edfWriter.startRecording();
+        settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
@@ -179,8 +196,8 @@ public class Controller {
         repaintTimer.stop();
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
-//        edfWriter.stopRecording(chooseFileToSave());
-        edfWriter.stopRecording(null);
+        edfWriter.stopRecording();
+        settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
     }
 
     public void changeXSize(int xSize) {
@@ -227,7 +244,6 @@ public class Controller {
 
     private File chooseFileToSave() {
         File file = null;
-
         JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
         int fileChooserState = fileChooser.showSaveDialog(null);
         if (fileChooserState == JFileChooser.APPROVE_OPTION) {
@@ -261,7 +277,31 @@ public class Controller {
         }
     }
 
-    public void setSettingsWindow(SettingsWindow settingsWindow) {
-        this.settingsWindow = settingsWindow;
+    // temporary file for debugging Gala
+    private void temDebugMethod() {
+            Runnable r = new Runnable() {
+            public void run() {
+                int n = 0;
+                int[] frame = new int[100000];
+                for (int i = 0; i < 100000; i++) {
+                    frame[i] = i;
+                }
+                while (true) {
+                    try {
+                        notifyListeners(frame);
+                        if (edfWriter.isReportUpdated()) {
+                            settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+                        }
+                        Thread.sleep(200);
+                        //settingsWindow.setReport(true, "Recording of Edf...  Record duration: " + n + " sec");
+                        System.out.println(n);
+                        n++;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        new Thread(r).start();
     }
 }

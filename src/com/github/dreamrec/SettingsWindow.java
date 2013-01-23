@@ -10,13 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 
 
 /**
  *
  */
-public class SettingsWindow extends JFrame {
+public class SettingsWindow  extends JFrame{
     private AdsModel adsModel;
     private Controller controller;
 
@@ -30,25 +29,29 @@ public class SettingsWindow extends JFrame {
     private JCheckBox[] channelLoffEnable;
     private JCheckBox[] channelRldSenseEnable;
     private JTextField[] channelName;
-    private JCheckBox[] channelLoffStatPositive;
-    private JCheckBox[] channelLoffStatNegative;
-
 
     private JComboBox accelerometerFrequency;
     private JTextField accelerometerName;
     private JCheckBox accelerometerEnable;
     private JComboBox accelerometerHiPassFrequency;
+    private JCheckBox[] channelLoffStatPositive;
+    private JCheckBox[] channelLoffStatNegative;
 
-
+    private ColoredLabel markerLabel = new ColoredLabel();
+    private Color recordColor = Color.RED;
+    private Color stopColor = Color.GREEN;
+    private JLabel reportLabel = new JLabel();
+    private JPanel reportPanel = new JPanel();
+    
     private JButton startButton = new JButton("Start");
     private JButton stopButton = new JButton("Stop");
+    private JButton saveAsButton = new JButton("Save As");
 
     private Color okColor = Color.GREEN;
     private Color problemColor = Color.RED;
 
     private String title = "Simple EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "DRL", "Lead Off Detection"};
-    private String[] accelerometerHeaders = {"Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)"};
 
 
     public SettingsWindow(Controller controller) {
@@ -62,7 +65,6 @@ public class SettingsWindow extends JFrame {
 
     private void init() {
         int adsChannelsNumber = adsModel.getNumberOfAdsChannels();
-        int accelerometerChannelsNumber = adsModel.getNumberOfAccelerometerChannels();
 
         spsField = new JComboBox(Sps.values());
         spsField.setSelectedItem(adsModel.getSps());
@@ -95,6 +97,7 @@ public class SettingsWindow extends JFrame {
         accelerometerFrequency = new JComboBox();
         accelerometerFrequency.setEnabled(false);
 
+        reportPanel.setVisible(false);
     }
 
     private void setActions() {
@@ -133,8 +136,8 @@ public class SettingsWindow extends JFrame {
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
                 saveDataToModel();
+                reportPanel.setVisible(true);
                 controller.startRecording();
-
             }
         });
 
@@ -178,53 +181,48 @@ public class SettingsWindow extends JFrame {
 
         int hgap = 20;
         int vgap = 5;
-        JPanel adsChannelsPanel = new JPanel(new TableLayout(channelsHeaders.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE), hgap, vgap));
+        JPanel channelsPanel = new JPanel(new TableLayout(channelsHeaders.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE), hgap, vgap));
 
         for (int i = 0; i < channelsHeaders.length; i++) {
-            adsChannelsPanel.add(new JLabel(channelsHeaders[i]));
+            channelsPanel.add(new JLabel(channelsHeaders[i]));
 
         }
 
         for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
-            adsChannelsPanel.add(new JLabel(" " + i + " "));
-            adsChannelsPanel.add(channelEnable[i]);
-            adsChannelsPanel.add(channelName[i]);
-            adsChannelsPanel.add(channelFrequency[i]);
-            adsChannelsPanel.add(channelHiPassFrequency[i]);
-            adsChannelsPanel.add(channelRldSenseEnable[i]);
+            channelsPanel.add(new JLabel(" " + i + " "));
+            channelsPanel.add(channelEnable[i]);
+            channelsPanel.add(channelName[i]);
+            channelsPanel.add(channelFrequency[i]);
+            channelsPanel.add(channelHiPassFrequency[i]);
+            channelsPanel.add(channelRldSenseEnable[i]);
+            channelsPanel.add(channelLoffEnable[i]);
+
             JPanel loffPanel = new JPanel();
             loffPanel.add(channelLoffEnable[i]);
             loffPanel.add(channelLoffStatPositive[i]);
             loffPanel.add(channelLoffStatNegative[i]);
-            adsChannelsPanel.add(loffPanel);
+            channelsPanel.add(loffPanel);
         }
-        adsChannelsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-        JPanel adsChannelsBorderPanel = new JPanel();
-        adsChannelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Ads Channels"));
-        adsChannelsBorderPanel.add(adsChannelsPanel);
+        // Add line of accelerometer
+        channelsPanel.add(new JLabel(" " + adsModel.getNumberOfAdsChannels() + " "));
+        channelsPanel.add(accelerometerEnable);
+        channelsPanel.add(accelerometerName);
+        channelsPanel.add(accelerometerFrequency);
+        channelsPanel.add(accelerometerHiPassFrequency);
+        channelsPanel.add(new JLabel(""));
+        channelsPanel.add(new JLabel(""));
+        
+        channelsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+        JPanel channelsBorderPanel = new JPanel();
+        channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
+        channelsBorderPanel.add(channelsPanel);
 
-
-        JPanel accelerometerPanel = new JPanel(new TableLayout(accelerometerHeaders.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE), hgap, vgap));
-        for (int i = 0; i < accelerometerHeaders.length; i++) {
-            accelerometerPanel.add(new JLabel(accelerometerHeaders[i]));
-        }
-        accelerometerPanel.add(accelerometerEnable);
-        accelerometerPanel.add(accelerometerName);
-        accelerometerPanel.add(accelerometerFrequency);
-        accelerometerPanel.add(accelerometerHiPassFrequency);
-        accelerometerPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-
-        JPanel accelerometerBorderPanel = new JPanel();
-        accelerometerBorderPanel.setBorder(BorderFactory.createTitledBorder("Accelerometer"));
-        accelerometerBorderPanel.add(accelerometerPanel);
-
-
-        hgap = 0;
-        vgap = 20;
-        JPanel channelsPanel = new JPanel(new BorderLayout(hgap, vgap));
-        channelsPanel.add(adsChannelsBorderPanel, BorderLayout.NORTH);
-        channelsPanel.add(accelerometerBorderPanel, BorderLayout.CENTER);
-
+        JPanel reportInnerPanel = new JPanel();
+        reportInnerPanel.add(markerLabel);
+        reportInnerPanel.add(reportLabel);
+        reportInnerPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+        reportPanel.add(reportInnerPanel);
+        reportPanel.setBorder(BorderFactory.createTitledBorder("Report"));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
@@ -232,16 +230,31 @@ public class SettingsWindow extends JFrame {
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
 
 
+        JPanel groupPanel = new JPanel(new BorderLayout());
+        groupPanel.add(reportPanel, BorderLayout.NORTH);
+        groupPanel.add(buttonPanel, BorderLayout.CENTER);
+
+
         // Root Panel of the SettingsWindow
         add(adsPanel, BorderLayout.NORTH);
-        add(channelsPanel, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        add(channelsBorderPanel, BorderLayout.CENTER);
+        add(groupPanel, BorderLayout.SOUTH);
         pack();
         // place the window to the screen center
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
+    public void setReport(boolean isRecording, String report){
+        reportLabel.setText(report);
+        if (isRecording) {
+            markerLabel.setColor(recordColor);
+        }
+        else{
+            markerLabel.setColor(stopColor);
+        }
+        pack();
+    }
 
     private void loadDataFromModel() {
         spsField.setSelectedItem(adsModel.getSps());
@@ -275,6 +288,7 @@ public class SettingsWindow extends JFrame {
                 setAccelerometerFrequency();
                 setAccelerometerHiPassFrequency();
             }
+
         }
     }
 

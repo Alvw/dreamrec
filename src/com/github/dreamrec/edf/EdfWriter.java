@@ -30,75 +30,101 @@ public class EdfWriter implements AdsDataListener {
     private long startTime;
     private int numberOfDataRecords = -1;
     private Charset characterSet = Charset.forName("US-ASCII");
-    private String fileName = "tralivali.edf";
     private File file;
+    private String fileExtension = ".edf";
+    private String report;   // can be Html
+    private boolean isReportUpdated;
+    private boolean isRecording;
+
 
 
     public EdfWriter(AdsModel adsModel) {
         this.adsModel = adsModel;
+        startTime = System.currentTimeMillis();
         openFile();
         inputFramesPerRecord = (adsModel.getSps().getValue() / AdsModel.MAX_DIV) * RECORD_PERIOD;
         edfFrame = new int[inputFramesPerRecord * adsModel.getFrameSize()];
-        startTime = System.currentTimeMillis();
         try {
             outStream.write(createEdfHeader().getBytes(characterSet));
         } catch (IOException e) {
             log.error(e);
         }
     }
+    
+    public void startRecording(){
+        isRecording = true;
+        report = "Recording started...";
+        isReportUpdated = true;
+    }
 
-    public void stopRecording(File fileToSave) {
+    public void stopRecording() {
+        isRecording = false;
         try {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
-            if(fileToSave != null){
-                file.renameTo(fileToSave);
-            }
+            report = "Recording stopped.    Record duration: "+numberOfDataRecords+" sec.   "+"Data saved at: "+file.getName();
+            isReportUpdated = true;
         } catch (IOException e) {
             log.error(e);
         }
     }
 
+    public boolean isRecording(){
+        return isRecording;
+    }
+
+    public String getReport(){
+        isReportUpdated = false;
+        return report;
+    }
+
+    public boolean isReportUpdated () {
+        return isReportUpdated;
+    }
+
+    @Override
     public void onDataReceived(int[] dataFrame) {
-        ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
-        int channelPosition = 0;
-        for (ChannelModel channel : activeChannels) {
-            int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider();
-            HiPassPreFilter channelFilter = channel.getHiPassPreFilter();
-            for (int j = 0; j < channelSampleNumber; j++) {
-                int filteredValue = channelFilter.getFilteredValue(dataFrame[channelPosition + j]);
-                edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = filteredValue;
-            }
-            channelPosition += channelSampleNumber;
-        }
-        inputFramesCounter++;
-        if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
-            // change format to Little_endian and save to file
-            for (int i = 0; i < edfFrame.length; i++) {
-                Short element = (short) edfFrame[i];
-                try {
-                    outStream.writeShort(toLittleEndian(element));
-                } catch (IOException e) {
-                    log.error(e);
+        if(isRecording) {
+            ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
+            int channelPosition = 0;
+            for (ChannelModel channel : activeChannels) {
+                int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider();
+                HiPassPreFilter channelFilter = channel.getHiPassPreFilter();
+                for (int j = 0; j < channelSampleNumber; j++) {
+                    int filteredValue = channelFilter.getFilteredValue(dataFrame[channelPosition + j]);
+                    edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = filteredValue;
                 }
+                channelPosition += channelSampleNumber;
             }
-            inputFramesCounter = 0;
-            if (numberOfDataRecords == -1) {
-                numberOfDataRecords = 1;
-            } else {
-                numberOfDataRecords++;
+            inputFramesCounter++;
+            if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
+                // change format to Little_endian and save to file
+                for (int i = 0; i < edfFrame.length; i++) {
+                    Short element = (short) edfFrame[i];
+                    try {
+                        outStream.writeShort(toLittleEndian(element));
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
+                }
+                inputFramesCounter = 0;
+                if (numberOfDataRecords == -1) {
+                    numberOfDataRecords = 1;
+                } else {
+                    numberOfDataRecords++;
+                }
+                report = "Recording of Edf...   Record duration: "+numberOfDataRecords+" sec";
+                isReportUpdated = true;
             }
         }
     }
 
     private void openFile() {
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy_HH:mm");
+        String suggestedFileName = format.format(new Date(startTime)) + fileExtension;
         try {
-            file = new File(fileName);
-            //delete old existing file
-            file.delete();
-            // create the new one with the same name
-            file = new File(fileName);
+            file = new File(suggestedFileName);
             outStream = new RandomAccessFile(file, "rw");
         } catch (Exception e) {
             log.error(e);
