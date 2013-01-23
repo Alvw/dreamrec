@@ -215,6 +215,7 @@ public class SettingsWindow  extends JFrame{
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
         channelsBorderPanel.add(channelsPanel);
 
+        reportPanel.add(new JLabel(" "));
         reportPanel.add(markerLabel);
         reportPanel.add(reportLabel);
 
