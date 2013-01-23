@@ -34,9 +34,7 @@ public class SettingsWindow  extends JFrame{
     private JTextField accelerometerName;
     private JCheckBox accelerometerEnable;
     private JComboBox accelerometerHiPassFrequency;
-    private JCheckBox[] channelLoffStatPositive;
-    private JCheckBox[] channelLoffStatNegative;
-
+ 
     private ColoredLabel markerLabel = new ColoredLabel();
     private Color recordColor = Color.RED;
     private Color stopColor = Color.GREEN;
@@ -49,6 +47,8 @@ public class SettingsWindow  extends JFrame{
 
     private Color okColor = Color.GREEN;
     private Color problemColor = Color.RED;
+    private ColoredLabel[] channelLoffStatPositive;
+    private ColoredLabel[] channelLoffStatNegative;
 
     private String title = "Simple EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "DRL", "Lead Off Detection"};
@@ -75,8 +75,8 @@ public class SettingsWindow  extends JFrame{
         channelLoffEnable = new JCheckBox[adsChannelsNumber];
         channelRldSenseEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
-        channelLoffStatPositive = new JCheckBox[adsChannelsNumber];
-        channelLoffStatNegative = new JCheckBox[adsChannelsNumber];
+        channelLoffStatPositive = new ColoredLabel[adsChannelsNumber];
+        channelLoffStatNegative = new ColoredLabel[adsChannelsNumber];
 
         int textFieldLength = 10;
         for (int i = 0; i < adsChannelsNumber; i++) {
@@ -86,8 +86,8 @@ public class SettingsWindow  extends JFrame{
             channelLoffEnable[i] = new JCheckBox();
             channelRldSenseEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
-            channelLoffStatPositive[i] = new JCheckBox();
-            channelLoffStatNegative[i] = new JCheckBox();
+            channelLoffStatPositive[i] = new ColoredLabel();
+            channelLoffStatNegative[i] = new ColoredLabel();
         }
 
 
@@ -293,10 +293,29 @@ public class SettingsWindow  extends JFrame{
     }
 
     public void updateLoffStatus(int loffStatusRegisterValue){
-        channelLoffStatPositive[0].setSelected((loffStatusRegisterValue & 8) == 0);
-        channelLoffStatNegative[0].setSelected((loffStatusRegisterValue & 16) == 0);
-        channelLoffStatPositive[1].setSelected((loffStatusRegisterValue & 32) == 0);
-        channelLoffStatNegative[1].setSelected((loffStatusRegisterValue & 64) == 0);
+        if((loffStatusRegisterValue & 8) == 0) {
+            channelLoffStatPositive[0].setColor(okColor);
+        }
+        else{
+            channelLoffStatPositive[0].setColor(problemColor);
+        }
+        if((loffStatusRegisterValue & 16) == 0) {
+            channelLoffStatNegative[0].setColor(okColor);
+        }
+        else{
+            channelLoffStatPositive[0].setColor(problemColor);
+        }
+        if((loffStatusRegisterValue & 32) == 0) {
+            channelLoffStatPositive[1].setColor(okColor);
+        } else{
+            channelLoffStatPositive[1].setColor(problemColor);
+        }
+        if((loffStatusRegisterValue & 64) == 0) {
+            channelLoffStatNegative[1].setColor(okColor);
+        }
+        else{
+            channelLoffStatPositive[1].setColor(problemColor);
+        }
 
     }
 
