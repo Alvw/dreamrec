@@ -40,6 +40,7 @@ public class Controller {
     private ComPort comport;
     private EdfWriter edfWriter;
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
+    private SettingsWindow settingsWindow;
 
     public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
        this.model = model;
@@ -69,7 +70,7 @@ public class Controller {
         adsDataListeners.add(adsDataListener);
     }
 
-    /*public void setMainWindow(MainWindow _mainWindow) {
+   /* public void setMainWindow(MainWindow _mainWindow) {
         this.mainWindow = _mainWindow;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -89,19 +90,19 @@ public class Controller {
             model.addAcc1Data(acc1PreFilter.getFilteredValue(frame[2]));
             model.addAcc2Data(acc2PreFilter.getFilteredValue(frame[3]));
             model.addAcc3Data(acc3PreFilter.getFilteredValue(frame[4]));*/
-          /*  model.addEyeData(frame[0]);
-            model.addCh2Data(frame[1]);
-            model.addAcc1Data(frame[2]);
+//            model.addEyeData(frame[0]);
+//            model.addCh2Data(frame[1]);
+           /* model.addAcc1Data(frame[2]);
             model.addAcc2Data(frame[3]);
             model.addAcc3Data(frame[4]);*/
-           /* if (!isLoffUpdated) {
-                log.info("Loff status: " + frame[frame.length - 1]);
+            if (!isLoffUpdated) {
+                settingsWindow.updateLoffStatus(frame[frame.length - 1]);
                 isLoffUpdated = true;
-            }*/
+            }
         }
-        /*if (isAutoScroll) {
+        if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
-        }*/
+        }
     }
 
     private void notifyListeners(int[] frame) {
@@ -178,7 +179,8 @@ public class Controller {
         repaintTimer.stop();
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
-        edfWriter.stopRecording(chooseFileToSave());
+//        edfWriter.stopRecording(chooseFileToSave());
+        edfWriter.stopRecording(null);
     }
 
     public void changeXSize(int xSize) {
@@ -257,5 +259,9 @@ public class Controller {
                 applicationProperties.setAccelerometerHiPassBufferSize(hiPassPreFilter.getBufferSize());
             }
         }
+    }
+
+    public void setSettingsWindow(SettingsWindow settingsWindow) {
+        this.settingsWindow = settingsWindow;
     }
 }

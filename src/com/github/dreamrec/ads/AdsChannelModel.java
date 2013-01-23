@@ -12,14 +12,9 @@ public class AdsChannelModel extends ChannelModel {
     private boolean isRldSenseEnabled;   // DRL
     private int rldSenseEnabledBits;
     private int loffSenseEnabledBits;
-    private int loffFlipBits;
 
     public String getPhysicalDimension() {
         return PHYSICAL_DIMENSION;
-    }
-
-    public void setLoffFlipBits(int loffFlipBits) {
-        this.loffFlipBits = loffFlipBits;
     }
 
     @Override

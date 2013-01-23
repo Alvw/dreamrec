@@ -30,6 +30,9 @@ public class SettingsWindow extends JFrame {
     private JCheckBox[] channelLoffEnable;
     private JCheckBox[] channelRldSenseEnable;
     private JTextField[] channelName;
+    private JCheckBox[] channelLoffStatPositive;
+    private JCheckBox[] channelLoffStatNegative;
+
 
     private JComboBox accelerometerFrequency;
     private JTextField accelerometerName;
@@ -70,6 +73,8 @@ public class SettingsWindow extends JFrame {
         channelLoffEnable = new JCheckBox[adsChannelsNumber];
         channelRldSenseEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
+        channelLoffStatPositive = new JCheckBox[adsChannelsNumber];
+        channelLoffStatNegative = new JCheckBox[adsChannelsNumber];
 
         int textFieldLength = 10;
         for (int i = 0; i < adsChannelsNumber; i++) {
@@ -79,6 +84,8 @@ public class SettingsWindow extends JFrame {
             channelLoffEnable[i] = new JCheckBox();
             channelRldSenseEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
+            channelLoffStatPositive[i] = new JCheckBox();
+            channelLoffStatNegative[i] = new JCheckBox();
         }
 
 
@@ -185,7 +192,11 @@ public class SettingsWindow extends JFrame {
             adsChannelsPanel.add(channelFrequency[i]);
             adsChannelsPanel.add(channelHiPassFrequency[i]);
             adsChannelsPanel.add(channelRldSenseEnable[i]);
-            adsChannelsPanel.add(channelLoffEnable[i]);
+            JPanel loffPanel = new JPanel();
+            loffPanel.add(channelLoffEnable[i]);
+            loffPanel.add(channelLoffStatPositive[i]);
+            loffPanel.add(channelLoffStatNegative[i]);
+            adsChannelsPanel.add(loffPanel);
         }
         adsChannelsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
         JPanel adsChannelsBorderPanel = new JPanel();
@@ -264,8 +275,15 @@ public class SettingsWindow extends JFrame {
                 setAccelerometerFrequency();
                 setAccelerometerHiPassFrequency();
             }
-
         }
+    }
+
+    public void updateLoffStatus(int loffStatusRegisterValue){
+        channelLoffStatPositive[0].setSelected((loffStatusRegisterValue & 8) == 0);
+        channelLoffStatNegative[0].setSelected((loffStatusRegisterValue & 16) == 0);
+        channelLoffStatPositive[1].setSelected((loffStatusRegisterValue & 32) == 0);
+        channelLoffStatNegative[1].setSelected((loffStatusRegisterValue & 64) == 0);
+
     }
 
     private void saveDataToModel() {

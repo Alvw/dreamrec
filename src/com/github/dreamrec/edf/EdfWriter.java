@@ -60,9 +60,6 @@ public class EdfWriter implements AdsDataListener {
         }
     }
 
-
-
-    @Override
     public void onDataReceived(int[] dataFrame) {
         ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
         int channelPosition = 0;

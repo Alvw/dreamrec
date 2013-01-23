@@ -12,6 +12,7 @@ public class DreamRec {
 //        MainWindow mainWindow = new MainWindow(controller, model, applicationProperties);
 //        controller.setMainWindow(mainWindow);
         SettingsWindow settingsWindow = new SettingsWindow(controller);
+        controller.setSettingsWindow(settingsWindow);
 
     }
 }
