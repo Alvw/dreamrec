@@ -56,9 +56,6 @@ public class Controller {
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
-                if (edfWriter.isReportUpdated()) {
-                    settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
-                }
 
 //                mainWindow.repaint();
             }
@@ -112,6 +109,9 @@ public class Controller {
             if (!isLoffUpdated) {
                 settingsWindow.updateLoffStatus(frame[frame.length - 1]);
                 isLoffUpdated = true;
+            }
+            if (edfWriter.isReportUpdated()) {
+                settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
             }
 
         }
@@ -167,7 +167,6 @@ public class Controller {
         model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());
-        saveAdsModelToProperties();
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
@@ -233,6 +232,7 @@ public class Controller {
     }
 
     public void closeApplication() {
+        saveAdsModelToProperties();
         applicationProperties.save();
         try {
             comport.writeToPort(new AdsManager().startPinLo());
@@ -254,27 +254,20 @@ public class Controller {
     }
 
     private void saveAdsModelToProperties() {
-        applicationProperties.setSps(adsModel.getSps().getValue());
+        applicationProperties.setSps(adsModel.getSps());
         for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
             AdsChannelModel channel = adsModel.getAdsChannel(i);
             applicationProperties.setChannelDivider(i, channel.getDivider());
             applicationProperties.setChannelName(i, channel.getName());
-            applicationProperties.setChannelLoffEnabled(i, channel.isLoffEnable());
-            applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
-            HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
-            if (hiPassPreFilter != null) {
-                applicationProperties.setChannelHiPassBufferSize(i, hiPassPreFilter.getBufferSize());
-            }
-
+            applicationProperties.setChannelHiPassFrequency(i, channel.getHiPassFilterFrequency());
+            applicationProperties.setChannelEnabled(i, channel.isEnabled());
         }
         for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = adsModel.getAccelerometerChannel(i);
             applicationProperties.setAccelerometerDivider(channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
-            HiPassPreFilter hiPassPreFilter = channel.getHiPassPreFilter();
-            if (hiPassPreFilter != null) {
-                applicationProperties.setAccelerometerHiPassBufferSize(hiPassPreFilter.getBufferSize());
-            }
+            applicationProperties.setAccelerometerHiPassFrequency(channel.getHiPassFilterFrequency());
+            applicationProperties.setAccelerometerEnabled(channel.isEnabled());
         }
     }
 

@@ -89,7 +89,7 @@ public class EdfWriter implements AdsDataListener {
             ArrayList<ChannelModel> activeChannels = adsModel.getActiveChannels();
             int channelPosition = 0;
             for (ChannelModel channel : activeChannels) {
-                int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider();
+                int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider().getValue();
                 HiPassPreFilter channelFilter = channel.getHiPassPreFilter();
                 for (int j = 0; j < channelSampleNumber; j++) {
                     int filteredValue = channelFilter.getFilteredValue(dataFrame[channelPosition + j]);
@@ -224,7 +224,7 @@ public class EdfWriter implements AdsDataListener {
 
             preFilterings.append(adjustLength(channelsPreFiltering, 80));
 
-            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider();
+            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
             reservedForChannels.append(adjustLength(reserved, 32));
@@ -240,7 +240,7 @@ public class EdfWriter implements AdsDataListener {
 
             preFilterings.append(adjustLength(accelerometerPreFiltering, 80));
 
-            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider();
+            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * adsModel.getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
             reservedForChannels.append(adjustLength(reserved, 32));

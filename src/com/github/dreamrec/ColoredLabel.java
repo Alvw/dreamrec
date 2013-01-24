@@ -9,12 +9,12 @@ import java.awt.*;
 public class ColoredLabel extends JLabel {
 
     private Dimension defaultDimension = new Dimension(10,10);
-    private Color  defaultColor = Color.GRAY;
+    private Color  backgroundColor = Color.GRAY;
 
     public ColoredLabel() {
         setOpaque(true);
         setPreferredSize(defaultDimension);
-       // setBackground(defaultColor);
+        backgroundColor = getBackground();
     }
 
     public ColoredLabel(Dimension dimension) {
@@ -24,6 +24,10 @@ public class ColoredLabel extends JLabel {
 
     public void setColor(Color color) {
         setBackground(color);
+    }
+
+    public void setBackgroundColor(){
+        setBackground(backgroundColor);
     }
 
 

@@ -8,8 +8,8 @@ public class AdsChannelModel extends ChannelModel {
     private final String PHYSICAL_DIMENSION = "uV";
     private Gain gain;
     private CommutatorState commutatorState;
-    protected boolean isLoffEnable;
-    private boolean isRldSenseEnabled;   // DRL
+    protected boolean isLoffEnable = true;
+    private boolean isRldSenseEnabled = true;   // DRL
     private int rldSenseEnabledBits;
     private int loffSenseEnabledBits;
 
@@ -18,12 +18,10 @@ public class AdsChannelModel extends ChannelModel {
     }
 
     @Override
-    public void setDivider(int divider) {
-        this.divider = divider;
-        if (divider == 0) {
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+        if (!enabled){
             commutatorState = CommutatorState.INPUT_SHORT;
-            isLoffEnable = false;
-            isRldSenseEnabled = false;
         }
     }
 
@@ -31,8 +29,8 @@ public class AdsChannelModel extends ChannelModel {
         return isRldSenseEnabled;
     }
 
-    public void setRldSenseEnabled(boolean rldSenseEnabled) {
-        isRldSenseEnabled = rldSenseEnabled;
+    public boolean isLoffEnable() {
+        return isLoffEnable;
     }
 
 
@@ -45,27 +43,20 @@ public class AdsChannelModel extends ChannelModel {
     }
 
     public CommutatorState getCommutatorState() {
-        return (divider == 0) ? CommutatorState.INPUT_SHORT : commutatorState;
+        return (!isEnabled) ? CommutatorState.INPUT_SHORT : commutatorState;
     }
 
     public void setCommutatorState(CommutatorState commutatorState) {
         this.commutatorState = commutatorState;
     }
 
-    public boolean isLoffEnable() {
-        return isLoffEnable;
-    }
-
-    public void setLoffEnable(boolean loffEnable) {
-        isLoffEnable = loffEnable;
-    }
 
     public int enabledBit() {
-        return divider == 0 ? 0x80 : 0;
+        return (!isEnabled) ? 0x80 : 0;
     }
 
     public int getRldSenseEnabledBits() {
-        return (isRldSenseEnabled & (divider != 0)) ? rldSenseEnabledBits : 0;
+        return (isRldSenseEnabled & isEnabled) ? rldSenseEnabledBits : 0;
     }
 
     public void setRldSenseEnabledBits(int rldSenseEnabledBits) {
@@ -73,7 +64,7 @@ public class AdsChannelModel extends ChannelModel {
     }
 
     public int getLoffSenseEnabledBits() {
-        if (divider == 0) {
+        if (!isEnabled) {
             return 0;
         } else{
             return isLoffEnable ? loffSenseEnabledBits : 0;

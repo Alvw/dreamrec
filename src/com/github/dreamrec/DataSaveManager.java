@@ -1,5 +1,7 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.ads.HiPassFrequency;
+import com.github.dreamrec.ads.Sps;
 import com.github.dreamrec.edf.EdfHeaderData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,11 +20,11 @@ public class DataSaveManager {
 
 
     private static final Log log = LogFactory.getLog(DataSaveManager.class);
-    HiPassPreFilter ch1PreFilter = new HiPassPreFilter(500);
-    HiPassPreFilter ch2PreFilter = new HiPassPreFilter(500);
-    HiPassPreFilter acc1PreFilter = new HiPassPreFilter(500);
-    HiPassPreFilter acc2PreFilter = new HiPassPreFilter(500);
-    HiPassPreFilter acc3PreFilter = new HiPassPreFilter(500);
+    HiPassPreFilter ch1PreFilter = new HiPassPreFilter(250, HiPassFrequency.H01);
+    HiPassPreFilter ch2PreFilter = new HiPassPreFilter(250, HiPassFrequency.H01);
+    HiPassPreFilter acc1PreFilter = new HiPassPreFilter(250, HiPassFrequency.H01);
+    HiPassPreFilter acc2PreFilter = new HiPassPreFilter(250, HiPassFrequency.H01);
+    HiPassPreFilter acc3PreFilter = new HiPassPreFilter(250, HiPassFrequency.H01);
 
     public void saveToFile(File file, Model model) throws ApplicationException {
         DataOutputStream outStream = null;

@@ -7,27 +7,69 @@ import com.github.dreamrec.HiPassPreFilter;
  */
 public class ChannelModel {
     private final String PHYSICAL_DIMENSION = "g";
-    protected int divider;
+    protected Divider divider;
     protected String name;
-    private HiPassPreFilter hiPassPreFilter;
+    protected HiPassPreFilter hiPassPreFilter;
+    protected boolean isEnabled;
 
-    public String getPhysicalDimension() {
-        return PHYSICAL_DIMENSION;
+    public boolean isPositiveOk() {
+        return isPositiveOk;
     }
 
-    public void setHiPassPreFilterBufferSize(int bufferSize){
-          hiPassPreFilter =  new HiPassPreFilter(bufferSize);
+    public void setPositiveOk(boolean positiveOk) {
+        isPositiveOk = positiveOk;
     }
+
+    public boolean isNegativeOk() {
+        return isNegativeOk;
+    }
+
+    public void setNegativeOk(boolean negativeOk) {
+        isNegativeOk = negativeOk;
+    }
+
+    protected boolean  isPositiveOk;   // is positive electrode good connected
+    protected boolean isNegativeOk;   // is negative electrode good connected
 
     public HiPassPreFilter getHiPassPreFilter() {
         return hiPassPreFilter;
     }
 
-    public void setDivider(int divider) {
+    public int getIntDivider(){
+        int intDivider = 0;
+        if (isEnabled){
+            intDivider = divider.getValue();
+        }
+        return intDivider;
+
+    }
+    
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public String getPhysicalDimension() {
+        return PHYSICAL_DIMENSION;
+    }
+
+    public void setHiPassFilterFrequency(int sps, HiPassFrequency hiPassFrequency){
+        int channelFrequency = sps / divider.getValue();
+        hiPassPreFilter =  new HiPassPreFilter(channelFrequency, hiPassFrequency);
+    }
+
+    public HiPassFrequency getHiPassFilterFrequency() {
+        return hiPassPreFilter.getCutOffFrequency();
+    }
+
+    public void setDivider(Divider divider) {
         this.divider = divider;
     }
 
-    public int getDivider() {
+    public Divider getDivider() {
         return divider;
     }
 

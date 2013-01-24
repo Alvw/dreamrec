@@ -1,6 +1,7 @@
 package com.github.dreamrec;
 
 
+import com.github.dreamrec.ads.HiPassFrequency;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -17,13 +18,26 @@ public class HiPassPreFilter {
     private List<Integer> rawData = new ArrayList<Integer>();
     private int bufferSize;
     private static final Log log = LogFactory.getLog(HiPassPreFilter.class);
+    private HiPassFrequency cutOffFrequency;
 
-    public HiPassPreFilter(int bufferSize) {
-        this.bufferSize = bufferSize;
+    /*
+    *   bufferSize = inputFrequency/cutOffFrequency
+    */
+
+    public HiPassPreFilter(int inputFrequency, HiPassFrequency cutOffFrequency) {
+        this.cutOffFrequency = cutOffFrequency;
+        if(cutOffFrequency == HiPassFrequency.DISABLED){
+           bufferSize = 0;
+
+        }
+        else{
+            bufferSize = (int) (inputFrequency / cutOffFrequency.getValue());
+
+        }
     }
 
-    public int getBufferSize() {
-        return bufferSize;
+    public HiPassFrequency getCutOffFrequency() {
+        return cutOffFrequency;
     }
 
     public short getFilteredValue(int value) {

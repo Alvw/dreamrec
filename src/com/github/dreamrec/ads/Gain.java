@@ -20,11 +20,26 @@ public enum Gain {
         this.value = value;
     }
 
-    public int getRegisterBits(){
+    public static Gain valueOf(int value) throws IllegalArgumentException {
+        for (Gain gain : Gain.values()) {
+            if (gain.getValue() == value) {
+                return gain;
+            }
+        }
+        String msg = "Invalid Gain value";
+        throw new IllegalArgumentException(msg);
+    }
+
+    public int getRegisterBits() {
         return registerBits;
     }
-    
-    public int getValue(){
+
+    public int getValue() {
         return value;
+    }
+
+    @Override
+    public String toString(){
+        return new Integer(value).toString();
     }
 }
