@@ -53,7 +53,7 @@ public class EdfWriter implements AdsDataListener {
     
     public void startRecording(){
         isRecording = true;
-        report = "Recording started...";
+        report = "Connecting...";
         isReportUpdated = true;
     }
 
@@ -63,7 +63,7 @@ public class EdfWriter implements AdsDataListener {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
-            report = "Recording stopped.    Record duration: "+numberOfDataRecords+" sec.   "+"Data saved at: "+file.getName();
+            report = "Finished!    Duration: "+numberOfDataRecords+" sec.   "+"Saved to: "+file.getName();
             isReportUpdated = true;
         } catch (IOException e) {
             log.error(e);
@@ -114,7 +114,7 @@ public class EdfWriter implements AdsDataListener {
                 } else {
                     numberOfDataRecords++;
                 }
-                report = "Recording of Edf...   Record duration: "+numberOfDataRecords+" sec";
+                report = "Recording...   Duration: "+numberOfDataRecords+" sec";
                 isReportUpdated = true;
             }
         }

@@ -48,7 +48,7 @@ public class SettingsWindow  extends JFrame{
     private ColoredLabel[] channelLoffStatPositive;
     private ColoredLabel[] channelLoffStatNegative;
 
-    private String title = "Simple EDF Recorder";
+    private String title = "EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)",  "Lead Off Detection"};
 
 
