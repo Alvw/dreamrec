@@ -56,8 +56,7 @@ public class ChannelModel {
         return PHYSICAL_DIMENSION;
     }
 
-    public void setHiPassFilterFrequency(int sps, HiPassFrequency hiPassFrequency){
-        int channelFrequency = sps / divider.getValue();
+    public void setHiPassFilterFrequency(int channelFrequency, HiPassFrequency hiPassFrequency){
         hiPassPreFilter =  new HiPassPreFilter(channelFrequency, hiPassFrequency);
     }
 

@@ -104,7 +104,8 @@ public class Factory {
         for (int chNum = 0; chNum < applicationProperties.getNumberOfChannels(); chNum++) {
             AdsChannelModel adsChannelModel = new AdsChannelModel();
             adsChannelModel.setDivider(applicationProperties.getChannelDivider(chNum));
-            adsChannelModel.setHiPassFilterFrequency(adsModel.getSps().getValue(), applicationProperties.getChannelHiPassFrequency(chNum));
+            int chFrequency = applicationProperties.getSps().getValue() /  applicationProperties.getChannelDivider(chNum).getValue();
+            adsChannelModel.setHiPassFilterFrequency(chFrequency, applicationProperties.getChannelHiPassFrequency(chNum));
             adsChannelModel.setName(applicationProperties.getChannelName(chNum));
             adsChannelModel.setGain(applicationProperties.getChannelGain(chNum));
             adsChannelModel.setCommutatorState(applicationProperties.getChannelCommutatorState(chNum));
@@ -118,7 +119,8 @@ public class Factory {
             ChannelModel accelerometerChannelModel = new ChannelModel();
             accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));
-            accelerometerChannelModel.setHiPassFilterFrequency(adsModel.getSps().getValue(), applicationProperties.getAccelerometerHiPassFrequency());
+            int chFrequency = applicationProperties.getSps().getValue() /  applicationProperties.getAccelerometerDivider().getValue();
+            accelerometerChannelModel.setHiPassFilterFrequency(chFrequency, applicationProperties.getAccelerometerHiPassFrequency());
             accelerometerChannelModel.setEnabled(applicationProperties.isAccelerometerEnabled());
             adsModel.addAccelerometerChannel(accelerometerChannelModel);
         }
