@@ -180,8 +180,8 @@ public class EdfWriter implements AdsDataListener {
         String channelsTransducerType = "AgAgCl cup electrodes";
         String channelsDigitalMaximum = "32767";
         String channelsDigitalMinimum = "-32767";
-        String channelsPhysicalMaximum = "6304";  // todo function(channel.gain)
-        String channelsPhysicalMinimum = "-6304"; // todo function(channel.gain)
+        String channelsPhysicalMaximum = "4725";  // todo function(channel.gain)
+        String channelsPhysicalMinimum = "-4725"; // todo function(channel.gain)
 
         String accelerometerPreFiltering = "HP:0.05Hz LP:250Hz N:50Hz"; // todo function(channel.hiPassBufferSize)
         String accelerometerTransducerType = "none";

@@ -4,13 +4,13 @@ package com.github.dreamrec.ads;
  *
  */
 public enum Gain {
-    G1(1, 1),
-    G2(2, 2),
-    G3(3, 3),
-    G4(4, 4),
-    G6(0, 6),
-    G8(5, 8),
-    G12(6, 12);
+    G1(0x10, 1),
+    G2(0x20, 2),
+    G3(0x30, 3),
+    G4(0x40, 4),
+    G6(0x00, 6),
+    G8(0x50, 8),
+    G12(0x60, 12);
 
     private int registerBits;
     private int value;

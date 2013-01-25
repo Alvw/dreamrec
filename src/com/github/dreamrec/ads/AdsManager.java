@@ -91,6 +91,7 @@ public class AdsManager {
         result.addAll(writeAccelerometerEnabled(adsModel.isAccelerometerEnabled()));
         int config1RegisterValue = adsModel.getSps().getRegisterBits();
         result.addAll(writeRegister(0x41,config1RegisterValue));  //set SPS
+
         int config2RegisterValue = 0xA0 + adsModel.loffComparatorEnabledBit() + adsModel.intTestEnabledBits();
         result.addAll(writeRegister(0x42,config2RegisterValue));
 
@@ -104,10 +105,10 @@ public class AdsManager {
         AdsChannelModel ch2Model = adsModel.getAdsChannel(1);
         int ch2SetRegisterValue = ch2Model.enabledBit() + ch2Model.getGain().getRegisterBits() +
                 ch2Model.getCommutatorState().getRegisterBits();
+
         result.addAll(writeRegister(0x45, ch2SetRegisterValue));
 
-        int rldSensRegisterValue = RLD_ENABLED_BIT + RLD_LOFF_SENS_BIT +
-                ch1Model.getRldSenseEnabledBits() + ch2Model.getRldSenseEnabledBits();
+        int rldSensRegisterValue = RLD_ENABLED_BIT + ch1Model.getRldSenseEnabledBits() + ch2Model.getRldSenseEnabledBits();
         result.addAll(writeRegister(RLD_SENS_REGISTER, rldSensRegisterValue));
 
        int loffSensRegisterValue = ch1Model.getLoffSenseEnabledBits() + ch2Model.getLoffSenseEnabledBits();
