@@ -23,8 +23,6 @@ public class ComPort {
     Thread serialReaderThread;
     SerialWriter serialWriter;
     Thread serialWriterThread;
-    private String comPortName;
-
 
     public void connect(String comPortName) throws Exception {
         if (isConnected) {
@@ -69,11 +67,16 @@ public class ComPort {
             }
             inputStream.close();
             outputStream.close();
-            commPort.close();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    commPort.close();
+                }
+            }).start();
+//            commPort.close();
         } catch (IOException e) {
             log.error(e);
         }
-
     }
 
     public void writeToPort(List<Byte> bytes) {

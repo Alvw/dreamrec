@@ -7,6 +7,7 @@ import com.github.dreamrec.ads.ChannelModel;
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfWriter;
 import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -172,6 +173,7 @@ public class Controller {
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
 //        temDebugMethod();
+        String failConnectMessage = "Connection failed. Check com port settings.\nReset power on a target amplifier. Restart application.";
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
@@ -179,10 +181,13 @@ public class Controller {
             AdsManager adsManager = new AdsManager();
             comport.writeToPort(adsManager.writeModelState(adsModel));
         } catch (NoSuchPortException e) {
-            String msg = "No port with the name " + applicationProperties.getComPortName() +
-                    ".\nCheck Com Port settings and power connection.\nRestart application.";
+            String msg = "No port with the name " + applicationProperties.getComPortName() + "\n" + failConnectMessage;
             log.error(msg, e);
             JOptionPane.showMessageDialog(null, msg);
+            System.exit(0);
+        }catch (PortInUseException e) {
+            log.error(failConnectMessage, e);
+            JOptionPane.showMessageDialog(null, failConnectMessage);
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
