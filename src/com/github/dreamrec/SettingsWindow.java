@@ -34,21 +34,23 @@ public class SettingsWindow extends JFrame {
     private JCheckBox accelerometerEnable;
     private JComboBox accelerometerHiPassFrequency;
 
-    private ColoredLabel markerLabel = new ColoredLabel();
-    private Color recordColor = Color.GREEN;
-    private JLabel reportLabel = new JLabel();
-    private JPanel reportPanel = new JPanel();
 
     private boolean isRecording = false;
     private String start = "Start";
     private String stop = "Stop";
+    private String saveAs = "SaveAs";
     private JButton startButton = new JButton(start);
-    private JButton saveAsButton = new JButton("Save As");
+    private JButton saveAsButton = new JButton(saveAs);
 
-    private Color okColor = Color.GREEN;
-    private Color problemColor = Color.RED;
-    private ColoredLabel[] channelLoffStatPositive;
-    private ColoredLabel[] channelLoffStatNegative;
+    private Color recordColor = Color.GREEN;
+    private IconLabel markerLabel = new IconLabel();
+    private JLabel reportLabel = new JLabel();
+    private JPanel reportPanel = new JPanel();
+    
+    Icon iconGreen = new ImageIcon("img/greenBall.png");
+    Icon iconRed = new ImageIcon("img/redBall14.png");
+    private IconLabel[] channelLoffStatPositive;
+    private IconLabel[] channelLoffStatNegative;
 
     private String title = "EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)",  "Lead Off Detection"};
@@ -74,8 +76,8 @@ public class SettingsWindow extends JFrame {
         channelHiPassFrequency = new JComboBox[adsChannelsNumber];
         channelEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
-        channelLoffStatPositive = new ColoredLabel[adsChannelsNumber];
-        channelLoffStatNegative = new ColoredLabel[adsChannelsNumber];
+        channelLoffStatPositive = new IconLabel[adsChannelsNumber];
+        channelLoffStatNegative = new IconLabel[adsChannelsNumber];
 
         int textFieldLength = 10;
         for (int i = 0; i < adsChannelsNumber; i++) {
@@ -83,8 +85,8 @@ public class SettingsWindow extends JFrame {
             channelHiPassFrequency[i] = new JComboBox(HiPassFrequency.values());
             channelEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
-            channelLoffStatPositive[i] = new ColoredLabel();
-            channelLoffStatNegative[i] = new ColoredLabel();
+            channelLoffStatPositive[i] = new IconLabel();
+            channelLoffStatNegative[i] = new IconLabel();
         }
 
 
@@ -143,6 +145,8 @@ public class SettingsWindow extends JFrame {
             }
         });
 
+
+        
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent windowEvent) {
@@ -266,7 +270,7 @@ public class SettingsWindow extends JFrame {
         }
     }
 
-    public void setReport(boolean isRecording, String report) {
+    public void setReport(String report) {
         reportLabel.setText(report);
         if (isRecording) {
             markerLabel.setColor(recordColor);
@@ -303,26 +307,25 @@ public class SettingsWindow extends JFrame {
 
     public void updateLoffStatus(int loffStatusRegisterValue) {
         if ((loffStatusRegisterValue & 8) == 0) {
-            channelLoffStatPositive[0].setColor(okColor);
+            channelLoffStatPositive[0].setIcon(iconGreen);
         } else {
-            channelLoffStatPositive[0].setColor(problemColor);
+            channelLoffStatPositive[0].setIcon(iconRed);
         }
         if ((loffStatusRegisterValue & 16) == 0) {
-            channelLoffStatNegative[0].setColor(okColor);
+            channelLoffStatNegative[0].setIcon(iconGreen);
         } else {
-            channelLoffStatNegative[0].setColor(problemColor);
+            channelLoffStatNegative[0].setIcon(iconRed);
         }
         if ((loffStatusRegisterValue & 32) == 0) {
-            channelLoffStatPositive[1].setColor(okColor);
+            channelLoffStatPositive[1].setIcon(iconGreen);
         } else {
-            channelLoffStatPositive[1].setColor(problemColor);
+            channelLoffStatPositive[1].setIcon(iconRed);
         }
         if ((loffStatusRegisterValue & 64) == 0) {
-            channelLoffStatNegative[1].setColor(okColor);
+            channelLoffStatNegative[1].setIcon(iconGreen);
         } else {
-            channelLoffStatNegative[1].setColor(problemColor);
+            channelLoffStatNegative[1].setIcon(iconRed);
         }
-
     }
 
     private void saveDataToModel() {

@@ -8,6 +8,7 @@ import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfWriter;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -112,7 +113,7 @@ public class Controller {
                 isLoffUpdated = true;
             }
             if (edfWriter.isReportUpdated()) {
-                settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+                settingsWindow.setReport(edfWriter.getReport());
             }
 
         }
@@ -129,7 +130,7 @@ public class Controller {
 
     public void saveToFile() {
         try {
-            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            JFileChooser fileChooser = new EdfFileChooser();
             int fileChooserState = fileChooser.showSaveDialog(mainWindow);
             if (fileChooserState == JFileChooser.APPROVE_OPTION) {
                 new DataSaveManager().saveToFile(fileChooser.getSelectedFile(), model);
@@ -141,7 +142,7 @@ public class Controller {
 
     public void saveAsEdf() {
         try {
-            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            JFileChooser fileChooser = new EdfFileChooser();
             int fileChooserState = fileChooser.showSaveDialog(mainWindow);
             if (fileChooserState == JFileChooser.APPROVE_OPTION) {
                 new DataSaveManager().saveAsEdf(fileChooser.getSelectedFile(), model);
@@ -153,7 +154,7 @@ public class Controller {
 
     public void readFromFile() {
         try {
-            JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
+            JFileChooser fileChooser = new EdfFileChooser();
             int fileChooserState = fileChooser.showOpenDialog(mainWindow);
             if (fileChooserState == JFileChooser.APPROVE_OPTION) {
                 new DataSaveManager().readFromFile(fileChooser.getSelectedFile(), model);
@@ -171,7 +172,7 @@ public class Controller {
         edfWriter = new EdfWriter(adsModel);
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
-        settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+        settingsWindow.setReport(edfWriter.getReport());
 //        temDebugMethod();
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on a target amplifier. Restart application.";
         try {
@@ -202,7 +203,7 @@ public class Controller {
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
         edfWriter.stopRecording();
-        settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+        settingsWindow.setReport(edfWriter.getReport());
     }
 
     public void changeXSize(int xSize) {
@@ -248,15 +249,19 @@ public class Controller {
         comport.disconnect();
     }
 
-    private File chooseFileToSave() {
-        File file = null;
-        JFileChooser fileChooser = new DrmFileChooser(applicationProperties);
-        int fileChooserState = fileChooser.showSaveDialog(null);
-        if (fileChooserState == JFileChooser.APPROVE_OPTION) {
-            file = fileChooser.getSelectedFile();
+    public void renameFile(File srcFile, File destFile) throws IOException {
+        if ((srcFile != null) & (destFile != null)) {
+            boolean renamedOk = srcFile.renameTo(destFile);
+            if (renamedOk) {
+                srcFile = destFile;
+            } else {
+                FileUtils.copyFile(srcFile, destFile);
+                srcFile.delete();
+                srcFile = destFile;
+            }
         }
-        return file;
     }
+
 
     private void saveAdsModelToProperties() {
         applicationProperties.setSps(adsModel.getSps());
@@ -289,7 +294,7 @@ public class Controller {
                     try {
                         notifyListeners(frame);
                         if (edfWriter.isReportUpdated()) {
-                            settingsWindow.setReport(edfWriter.isRecording(), edfWriter.getReport());
+                            settingsWindow.setReport(edfWriter.getReport());
                         }
                         Thread.sleep(200);
                         //settingsWindow.setReport(true, "Recording of Edf...  Record duration: " + n + " sec");

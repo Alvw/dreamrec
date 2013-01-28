@@ -3,6 +3,7 @@ package com.github.dreamrec.edf;
 import com.github.dreamrec.*;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -30,7 +31,7 @@ public class EdfWriter implements AdsDataListener {
     private long startTime;
     private int numberOfDataRecords = -1;
     private Charset characterSet = Charset.forName("US-ASCII");
-    private File file;
+    private File edfFile;
     private String fileExtension = ".edf";
     private String report;   // can be Html
     private boolean isReportUpdated;
@@ -50,11 +51,14 @@ public class EdfWriter implements AdsDataListener {
             log.error(e);
         }
     }
-    
+
+    public File getEdfFile() {
+        return edfFile;
+    }
+
     public void startRecording(){
         isRecording = true;
-        report = "Connecting...";
-        isReportUpdated = true;
+        createReport("Connecting...");
     }
 
     public void stopRecording() {
@@ -63,15 +67,15 @@ public class EdfWriter implements AdsDataListener {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
             outStream.close();
-            report = "Finished!    Duration: "+numberOfDataRecords+" sec.   "+"Saved to: "+file.getName();
-            isReportUpdated = true;
+            createReport("Finished!    Duration: "+numberOfDataRecords+" sec.   "+"Saved to: "+ edfFile.getName());
         } catch (IOException e) {
             log.error(e);
         }
     }
-
-    public boolean isRecording(){
-        return isRecording;
+    
+    private void createReport(String report){
+        this.report = report;
+        isReportUpdated = true;
     }
 
     public String getReport(){
@@ -82,6 +86,7 @@ public class EdfWriter implements AdsDataListener {
     public boolean isReportUpdated () {
         return isReportUpdated;
     }
+
 
     @Override
     public void onDataReceived(int[] dataFrame) {
@@ -99,7 +104,7 @@ public class EdfWriter implements AdsDataListener {
             }
             inputFramesCounter++;
             if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
-                // change format to Little_endian and save to file
+                // change format to Little_endian and save to edfFile
                 for (int i = 0; i < edfFrame.length; i++) {
                     Short element = (short) edfFrame[i];
                     try {
@@ -114,8 +119,7 @@ public class EdfWriter implements AdsDataListener {
                 } else {
                     numberOfDataRecords++;
                 }
-                report = "Recording...   Duration: "+numberOfDataRecords+" sec";
-                isReportUpdated = true;
+                createReport("Recording...   Duration: "+numberOfDataRecords+" sec");
             }
         }
     }
@@ -124,11 +128,11 @@ public class EdfWriter implements AdsDataListener {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
         String suggestedFileName = format.format(new Date(startTime)) + fileExtension;
         try {
-            file = new File(suggestedFileName);
-            outStream = new RandomAccessFile(file, "rw");
+            edfFile = new File(suggestedFileName);
+            outStream = new RandomAccessFile(edfFile, "rw");
         } catch (Exception e) {
             log.error(e);
-            //throw new ApplicationException("Error while creating file " + fileName);
+            //throw new ApplicationException("Error while creating edfFile " + fileName);
         }
     }
 
