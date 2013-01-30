@@ -191,7 +191,7 @@ public class EdfWriter implements AdsDataListener {
         String accelerometerTransducerType = "none";
         String accelerometerDigitalMaximum = "1024";
         String accelerometerDigitalMinimum = "-1024";
-        String accelerometerPhysicalMaximum = "10";
+        String accelerometerPhysicalMaximum = "1";
         String accelerometerPhysicalMinimum = "0";
 
         edfHeader.append(adjustLength(version, 8));

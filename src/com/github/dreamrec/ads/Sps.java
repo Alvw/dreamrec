@@ -22,13 +22,7 @@ public enum Sps {
     private Sps(int registerBits, int value) {
         this.registerBits = registerBits;
         this.value = value;
-
-        if (value ==  250) {
-            accelerometerDivider = 25;
-        }
-        else{
-            accelerometerDivider = 50;
-        }
+        accelerometerDivider = 10;
     }
 
     public static Sps valueOf(int value) throws IllegalArgumentException {

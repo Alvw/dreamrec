@@ -48,7 +48,7 @@ public class SettingsWindow extends JFrame {
     private JPanel reportPanel = new JPanel();
     
     Icon iconGreen = new ImageIcon("img/greenBall.png");
-    Icon iconRed = new ImageIcon("img/redBall14.png");
+    Icon iconRed = new ImageIcon("img/redBall.png");
     private IconLabel[] channelLoffStatPositive;
     private IconLabel[] channelLoffStatNegative;
 

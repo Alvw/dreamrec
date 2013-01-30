@@ -174,7 +174,7 @@ public class Controller {
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.getReport());
 //        temDebugMethod();
-        String failConnectMessage = "Connection failed. Check com port settings.\nReset power on a target amplifier. Restart application.";
+        String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
         try {
             comport.connect(applicationProperties.getComPortName());
             frameDecoder = new FrameDecoder(adsModel.getFrameSize());
