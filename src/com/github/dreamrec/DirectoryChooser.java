@@ -1,5 +1,6 @@
 package com.github.dreamrec;
 
+import com.github.dreamrec.edf.EdfFileChooser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -11,16 +12,16 @@ import java.io.File;
  *
  */
 public class DirectoryChooser extends JFileChooser {
-    private File currentDir;
+    private File directory;
     private static final Log log = LogFactory.getLog(EdfFileChooser.class);
 
     public DirectoryChooser() {
         setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
 
-    public DirectoryChooser(File currentDir) {
+    public DirectoryChooser(File directory) {
         this();
-        this.currentDir = currentDir;
+        this.directory = directory;
     }
 
     public File chooseDirectory() {
@@ -33,16 +34,18 @@ public class DirectoryChooser extends JFileChooser {
         }
     }
 
-    public File chooseDirectory(File currentDir) {
-        this.currentDir = currentDir;
+    public File chooseDirectory(File directory) {
+        this.directory = directory;
         return chooseDirectory();
     }
 
 
     @Override
     public int showOpenDialog(Component component) throws HeadlessException {
-        if(currentDir != null){
-            setCurrentDirectory(currentDir);
+        if(directory != null){
+            if(directory.isDirectory()) {
+                setSelectedFile(directory);
+            }
         }
         return super.showOpenDialog(component);
     }

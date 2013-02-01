@@ -7,10 +7,8 @@ public enum HiPassFrequency {
     DISABLED(0, "Disabled"),
     H001(0.01 , "0.01"),
     H01(0.1 , "0.1"),
-    H1(1, "1"),
-    H10(10, "10");
+    H1(1, "1");
 
-        
     private double value;
     private String label;
 

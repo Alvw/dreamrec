@@ -6,23 +6,23 @@ import java.awt.*;
 /**
  *
  */
-public class IconLabel extends JLabel {
+public class MarkerLabel extends JLabel {
 
     private Color  backgroundColor;
     private Dimension defaultDimension = new Dimension(10,10);
 
-    public IconLabel() {
+    public MarkerLabel() {
         setPreferredSize(defaultDimension);
         setOpaque(true);
         backgroundColor = getBackground();
     }
 
-    public IconLabel(Dimension dimension) {
+    public MarkerLabel(Dimension dimension) {
         this();
         setPreferredSize(dimension);
     }
 
-    public IconLabel(Icon icon) {
+    public MarkerLabel(Icon icon) {
         this();
         setIcon(icon);
 

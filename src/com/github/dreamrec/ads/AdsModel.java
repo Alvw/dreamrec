@@ -6,9 +6,12 @@ import java.util.ArrayList;
  *
  */
 public class AdsModel {
+    
+    public static final int MAX_DIV = 50;
+    public static final int NUMBER_OF_ACCELEROMETER_CHANNELS = 3;
 
     private Sps sps;     // samples per second (sample rate)
-    public static final int MAX_DIV = 50;
+    private String comPortName;
 
     private ArrayList<AdsChannelModel> adsChannels = new ArrayList<AdsChannelModel>();
     private ArrayList<ChannelModel> accelerometerChannels = new ArrayList<ChannelModel>();
@@ -19,7 +22,6 @@ public class AdsModel {
      * Methods where channel type (Ads or Accelerometer) is not specified explicitly at the name threats
      * adsChannels and  accelerometerChannels as common/united array of Channels
      */
-
 
 
     public int getNumberOfChannels() {
@@ -212,6 +214,14 @@ public class AdsModel {
     public void setSps(Sps sps) {
         this.sps = sps;
 
+    }
+
+    public String getComPortName() {
+        return comPortName;
+    }
+
+    public void setComPortName(String comPortName) {
+        this.comPortName = comPortName;
     }
 
 

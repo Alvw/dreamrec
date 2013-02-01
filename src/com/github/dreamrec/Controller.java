@@ -5,6 +5,8 @@ import com.github.dreamrec.ads.AdsManager;
 import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
 import com.github.dreamrec.comport.ComPort;
+import com.github.dreamrec.edf.EdfFileChooser;
+import com.github.dreamrec.edf.EdfModel;
 import com.github.dreamrec.edf.EdfWriter;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
@@ -15,7 +17,6 @@ import org.apache.commons.logging.LogFactory;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,16 +45,17 @@ public class Controller {
   private HiPassPreFilter acc2PreFilter;
   private HiPassPreFilter acc3PreFilter;*/
     private FrameDecoder frameDecoder;
-    private AdsModel adsModel;
-    private ComPort comport;
+    private EdfModel edfModel;
     private EdfWriter edfWriter;
+    private ComPort comport;
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
 
-    public Controller(Model model, AdsModel adsModel, ComPort comport, ApplicationProperties applicationProperties) {
+    public Controller(Model model, AdsModel adsModel,  ApplicationProperties applicationProperties) {
         this.model = model;
-        this.adsModel = adsModel;
-        this.comport = comport;
+        edfModel = new EdfModel(adsModel);
+        edfModel.setCurrentDirectory(applicationProperties.getLastVisitedDirectory());
+        comport = new ComPort();
         this.applicationProperties = applicationProperties;
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -71,8 +73,8 @@ public class Controller {
 */
     }
 
-    public AdsModel getAdsModel() {
-        return adsModel;
+    public EdfModel getEdfModel() {
+        return edfModel;
     }
 
     public void addAdsDataListener(AdsDataListener adsDataListener) {
@@ -169,18 +171,18 @@ public class Controller {
         model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());
-        edfWriter = new EdfWriter(adsModel);
+        edfWriter = new EdfWriter(edfModel);
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.getReport());
 //        temDebugMethod();
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on a target amplifier. Restart application.";
         try {
-            comport.connect(applicationProperties.getComPortName());
-            frameDecoder = new FrameDecoder(adsModel.getFrameSize());
+            comport.connect(edfModel.getAdsModel().getComPortName());
+            frameDecoder = new FrameDecoder(edfModel.getAdsModel().getFrameSize());
             comport.setComPortListener(frameDecoder);
             AdsManager adsManager = new AdsManager();
-            comport.writeToPort(adsManager.writeModelState(adsModel));
+            comport.writeToPort(adsManager.writeModelState(edfModel.getAdsModel()));
         } catch (NoSuchPortException e) {
             String msg = "No port with the name " + applicationProperties.getComPortName() + "\n" + failConnectMessage;
             log.error(msg, e);
@@ -264,16 +266,18 @@ public class Controller {
 
 
     private void saveAdsModelToProperties() {
-        applicationProperties.setSps(adsModel.getSps());
-        for (int i = 0; i < adsModel.getNumberOfAdsChannels(); i++) {
-            AdsChannelModel channel = adsModel.getAdsChannel(i);
+        applicationProperties.setSps(edfModel.getAdsModel().getSps());
+        applicationProperties.setComPortName(edfModel.getAdsModel().getComPortName());
+        applicationProperties.setLastVisitedDirectory(edfModel.getCurrentDirectory());
+        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+            AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             applicationProperties.setChannelDivider(i, channel.getDivider());
             applicationProperties.setChannelName(i, channel.getName());
             applicationProperties.setChannelHiPassFrequency(i, channel.getHiPassFilterFrequency());
             applicationProperties.setChannelEnabled(i, channel.isEnabled());
         }
-        for (int i = 0; i < adsModel.getNumberOfAccelerometerChannels(); i++) {
-            ChannelModel channel = adsModel.getAccelerometerChannel(i);
+        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAccelerometerChannels(); i++) {
+            ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);
             applicationProperties.setAccelerometerDivider(channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
             applicationProperties.setAccelerometerHiPassFrequency(channel.getHiPassFilterFrequency());

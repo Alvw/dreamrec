@@ -6,11 +6,17 @@ import com.github.dreamrec.HiPassPreFilter;
  * 
  */
 public class ChannelModel {
-    private final String PHYSICAL_DIMENSION = "g";
     protected Divider divider;
+    private final String PHYSICAL_DIMENSION = "g";
     protected String name;
     protected HiPassPreFilter hiPassPreFilter;
     protected boolean isEnabled;
+    private final String  electrodeType = "none";
+
+
+    public String getElectrodeType() {
+        return electrodeType;
+    }
 
     public boolean isPositiveOk() {
         return isPositiveOk;

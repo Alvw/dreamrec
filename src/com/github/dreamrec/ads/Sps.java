@@ -1,7 +1,5 @@
 package com.github.dreamrec.ads;
 
-import java.util.ArrayList;
-
 /**
  *
  */
@@ -16,19 +14,12 @@ public enum Sps {
 
     private int registerBits;
     private int value;
-    private int accelerometerDivider;
+    private Divider[] accelerometerDivider = {Divider.D10, Divider.D25, Divider.D50};
 
 
     private Sps(int registerBits, int value) {
         this.registerBits = registerBits;
         this.value = value;
-
-        if (value ==  250) {
-            accelerometerDivider = 25;
-        }
-        else{
-            accelerometerDivider = 50;
-        }
     }
 
     public static Sps valueOf(int value) throws IllegalArgumentException {
@@ -51,9 +42,16 @@ public enum Sps {
         return frequencies;
     }
 
-    public Integer getAccelerometerFrequency(){
-        return value / accelerometerDivider;
+    public Integer[] getAccelerometerAvailableFrequencies(){
+        Integer[] frequencies = new Integer[accelerometerDivider.length];
+        int i = 0;
+        for (Divider divider : accelerometerDivider) {
+            frequencies[i] = (Integer) value / divider.getValue();
+            i++;
+        }
+        return frequencies;
     }
+
 
     public int getRegisterBits(){
         return registerBits;

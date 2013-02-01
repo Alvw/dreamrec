@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.swing.*;
+import java.io.File;
 
 /**
  *
@@ -24,20 +25,23 @@ public class ApplicationProperties {
 
     public static final String SPS = "sps";
 
-    public static final String CHANNEL_HI_PASS_FREQUENCY = "hiPassFrequency_channel";
-    public static final String CHANNEL_DIVIDER = "divider_channel";
-    public static final String CHANNEL_GAIN = "gain_channel";
-    public static final String CHANNEL_COMMUTATOR_STATE = "commutatorState_channel";
-    public static final String CHANNEL_NAME = "name_channel";
-    public static final String CHANNEL_IS_ENABLED = "isEnabled_channel";
+    public static final String CHANNEL_HI_PASS_FREQUENCY = "hiPassFrequencyChannel";
+    public static final String CHANNEL_DIVIDER = "dividerChannel";
+    public static final String CHANNEL_GAIN = "gainChannel";
+    public static final String CHANNEL_COMMUTATOR_STATE = "commutatorStateChannel";
+    public static final String CHANNEL_NAME = "nameChannel";
+    public static final String CHANNEL_IS_ENABLED = "isEnabledChannel";
+    public static final String CHANNEL_ELECTRODE_TYPE = "electrodeTypeChannel";
+    public static final String CHANNEL_LOFF_ENABLED = "loffEnabledChannel";
+    public static final String CHANNEL_RLD_SENSE_ENABLED = "rldSenseEnabledChannel";
 
-    public static final String ACCELEROMETER_HI_PASS_FREQUENCY = "hiPassFrequency_accelerometer";
-    public static final String ACCELEROMETER_DIVIDER = "divider_accelerometer";
-    public static final String ACCELEROMETER_NAME = "name_accelerometer";
-    public static final String ACCELEROMETER_IS_ENABLED = "isEnabled_accelerometer";
+    public static final String ACCELEROMETER_HI_PASS_FREQUENCY = "hiPassFrequencyAccelerometer";
+    public static final String ACCELEROMETER_DIVIDER = "dividerAccelerometer";
+    public static final String ACCELEROMETER_NAME = "nameAccelerometer";
+    public static final String ACCELEROMETER_IS_ENABLED = "isEnabledAccelerometer";
     
     public static final String NUMBER_OF_CHANNELS = "numberOfChannels";
-    public static final String NUMBER_OF_ACCELEROMETER_CHANNELS = "numberOfAccelerometerChannels";
+
 
     private PropertiesConfiguration config;
 
@@ -49,17 +53,18 @@ public class ApplicationProperties {
             JOptionPane.showMessageDialog(null, "Error reading from properties file: " + APPLICATION_PROPERTIES);
         }
     }
+    
 
     public int getNumberOfChannels () {
         return config.getInt(NUMBER_OF_CHANNELS);
     }
 
-    public int getNumberOfAccelerometerChannels () {
-        return config.getInt(NUMBER_OF_ACCELEROMETER_CHANNELS);
-    }
-
     public String getComPortName() {
         return config.getString(COM_PORT_NAME);
+    }
+    
+    public void setComPortName(String comPortName){
+        config.setProperty(COM_PORT_NAME, comPortName);
     }
 
     public int getFrequencyDivider() {
@@ -87,12 +92,19 @@ public class ApplicationProperties {
         config.setProperty(X_SIZE, xSize);
     }
 
-    public void setLastVisitedDirectory(String directory) {
-        config.setProperty(DIRECTORY_NAME, directory);
+    public void setLastVisitedDirectory(File directory) {
+        if (directory != null) {
+            config.setProperty(DIRECTORY_NAME, directory);
+        }        
     }
 
-    public String getLastVisitedDirectory() {
-        return config.getString(DIRECTORY_NAME);
+    public File getLastVisitedDirectory() {
+        if (config.getString(DIRECTORY_NAME) != null) {
+            return new File(config.getString(DIRECTORY_NAME));
+        }
+        else {
+            return null;
+        }
     }
 
     public Sps getSps() {        
@@ -149,17 +161,22 @@ public class ApplicationProperties {
         return config.getString(CHANNEL_NAME+channelNumber);
     }
 
+    public String getChannelElectrodeType(int channelNumber){
+        return config.getString(CHANNEL_ELECTRODE_TYPE+channelNumber);
+    }
+
     public boolean isChannelEnabled(int channelNumber){
         return config.getBoolean(CHANNEL_IS_ENABLED + channelNumber);
     }
 
+    public void setChannelEnabled(int channelNumber, boolean isEnabled){
+        config.setProperty(CHANNEL_IS_ENABLED + channelNumber, isEnabled);
+    }
+
+
 
     public boolean isAccelerometerEnabled(){
         return config.getBoolean(ACCELEROMETER_IS_ENABLED);
-    }
-
-    public void setChannelEnabled(int channelNumber, boolean isEnabled){
-         config.setProperty(CHANNEL_IS_ENABLED + channelNumber, isEnabled);
     }
 
     public void setAccelerometerEnabled(boolean isEnabled){
@@ -191,7 +208,7 @@ public class ApplicationProperties {
 
     public Divider getChannelDivider(int channelNumber) {
         try{
-            return Divider.valueOf(config.getInt(CHANNEL_DIVIDER+channelNumber));
+            return Divider.valueOf(config.getInt(CHANNEL_DIVIDER + channelNumber));
         }
         catch (IllegalArgumentException e){
             String msg = "application.properties file: "+channelNumber+"channel "+e.getMessage();
@@ -244,6 +261,23 @@ public class ApplicationProperties {
 
     public void setAccelerometerHiPassFrequency(HiPassFrequency frequency){
         config.setProperty(ACCELEROMETER_HI_PASS_FREQUENCY, frequency);
+    }
+
+    public boolean isChannelLoffEnable(int channelNumber) {
+        return config.getBoolean(CHANNEL_LOFF_ENABLED+channelNumber);
+    }
+
+
+    public boolean isChannelRldSenseEnable(int channelNumber) {
+        return config.getBoolean(CHANNEL_RLD_SENSE_ENABLED+channelNumber);
+    }
+
+    public void setChannelRldSenseEnabled(int channelNumber, boolean isRldEnabled){
+        config.setProperty(CHANNEL_RLD_SENSE_ENABLED+channelNumber, isRldEnabled);
+    }
+
+    public void setChannelLoffEnabled(int channelNumber, boolean isLoffEnabled){
+        config.setProperty(CHANNEL_LOFF_ENABLED+channelNumber, isLoffEnabled);
     }
 
     public void save() {

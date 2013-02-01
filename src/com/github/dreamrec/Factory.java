@@ -87,12 +87,6 @@ public class Factory {
    /* public static IDataProvider getDataProvider(ApplicationProperties applicationProperties) throws ApplicationException {
         return new Ads1292DataProvider(applicationProperties);
     }*/
-
-    public static ComPort getComPort(ApplicationProperties appProperties){
-        return new ComPort();
-    }
-    
-
     
     public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
         // array_size = Number of Channels
@@ -101,6 +95,7 @@ public class Factory {
 
         AdsModel adsModel = new AdsModel();
         adsModel.setSps(applicationProperties.getSps());
+        adsModel.setComPortName(applicationProperties.getComPortName());
         for (int chNum = 0; chNum < applicationProperties.getNumberOfChannels(); chNum++) {
             AdsChannelModel adsChannelModel = new AdsChannelModel();
             adsChannelModel.setDivider(applicationProperties.getChannelDivider(chNum));
@@ -109,13 +104,16 @@ public class Factory {
             adsChannelModel.setName(applicationProperties.getChannelName(chNum));
             adsChannelModel.setGain(applicationProperties.getChannelGain(chNum));
             adsChannelModel.setCommutatorState(applicationProperties.getChannelCommutatorState(chNum));
+            adsChannelModel.setLoffEnable(applicationProperties.isChannelLoffEnable(chNum));
+            adsChannelModel.setRldSenseEnabled(applicationProperties.isChannelRldSenseEnable(chNum));
             adsChannelModel.setRldSenseEnabledBits(rldSenseEnabledBits[chNum]);
             adsChannelModel.setLoffSenseEnabledBits(loffSenseEnabledBits[chNum]);
             adsChannelModel.setEnabled(applicationProperties.isChannelEnabled(chNum));
+            adsChannelModel.setElectrodeType(applicationProperties.getChannelElectrodeType(chNum));
             adsModel.addAdsChannel(adsChannelModel);
         }
 
-        for (int chNum = 0; chNum < applicationProperties.getNumberOfAccelerometerChannels(); chNum++) {
+        for (int chNum = 0; chNum < AdsModel.NUMBER_OF_ACCELEROMETER_CHANNELS; chNum++) {
             ChannelModel accelerometerChannelModel = new ChannelModel();
             accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));

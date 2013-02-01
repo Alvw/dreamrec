@@ -8,10 +8,21 @@ public class AdsChannelModel extends ChannelModel {
     private final String PHYSICAL_DIMENSION = "uV";
     private Gain gain;
     private CommutatorState commutatorState;
-    protected boolean isLoffEnable = true;
-    private boolean isRldSenseEnabled = true;   // DRL
+    protected boolean isLoffEnable;
+
+    private boolean isRldSenseEnabled;   // DRL
     private int rldSenseEnabledBits;
     private int loffSenseEnabledBits;
+    private String  electrodeType;
+
+
+    public void setElectrodeType(String electrodeType) {
+        this.electrodeType = electrodeType;
+    }
+
+    public String getElectrodeType() {
+        return electrodeType;
+    }
 
     public String getPhysicalDimension() {
         return PHYSICAL_DIMENSION;
@@ -31,6 +42,14 @@ public class AdsChannelModel extends ChannelModel {
 
     public boolean isLoffEnable() {
         return isLoffEnable;
+    }
+
+    public void setLoffEnable(boolean loffEnable) {
+        isLoffEnable = loffEnable;
+    }
+
+    public void setRldSenseEnabled(boolean rldSenseEnabled) {
+        isRldSenseEnabled = rldSenseEnabled;
     }
 
 
