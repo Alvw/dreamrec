@@ -137,6 +137,8 @@ public class EdfWriter implements AdsDataListener {
                 edfFile = new File(newEdfFileName);
             }
         }
+        // delete old file with the same name if exist
+        edfFile.delete();
         try {
             outStream = new RandomAccessFile(edfFile, "rw");
         } catch (Exception e) {
