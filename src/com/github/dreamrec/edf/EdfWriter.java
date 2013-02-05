@@ -176,24 +176,9 @@ public class EdfWriter implements AdsDataListener {
         StringBuilder edfHeader = new StringBuilder();
 
         String version = "0";
-        String defaultLocalPatientIdentification = "Patient: Rabbit";
-        String defaultLocalRecordingIdentification = "Record: Test ";
 
-        String localPatientIdentification;
-        String localRecordingIdentification;
-
-        if (StringUtils.isBlank(edfModel.getPatientIdentification())){
-            localPatientIdentification = defaultLocalPatientIdentification;
-        }
-        else {
-            localPatientIdentification = "Patient: "+edfModel.getPatientIdentification();
-        }
-        if (StringUtils.isBlank(edfModel.getRecordingIdentification())){
-            localRecordingIdentification = defaultLocalRecordingIdentification;
-        }
-        else {
-            localRecordingIdentification = "Record: " + edfModel.getRecordingIdentification();
-        }
+        String localPatientIdentification = "Patient: "+ edfModel.getPatientIdentification();
+        String localRecordingIdentification = "Record: " + edfModel.getRecordingIdentification();
                 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");
