@@ -2,6 +2,7 @@ package com.github.dreamrec;
 
 import com.github.dreamrec.ads.*;
 import com.github.dreamrec.comport.ComPort;
+import com.github.dreamrec.edf.EdfModel;
 import com.github.dreamrec.gcomponent.GComponentFastModel;
 import com.github.dreamrec.gcomponent.GComponentModel;
 import com.github.dreamrec.gcomponent.GComponentSlowModel;
@@ -88,7 +89,7 @@ public class Factory {
         return new Ads1292DataProvider(applicationProperties);
     }*/
     
-    public static AdsModel getAdsModel(ApplicationProperties applicationProperties){
+    private static AdsModel createAdsModel(ApplicationProperties applicationProperties){
         // array_size = Number of Channels
         int[] rldSenseEnabledBits = {0x03, 0x0C};
         int[] loffSenseEnabledBits = {0x03, 0x0C};
@@ -123,6 +124,14 @@ public class Factory {
             adsModel.addAccelerometerChannel(accelerometerChannelModel);
         }
         return adsModel;
+    }
+
+    public static EdfModel getEdfModel(ApplicationProperties applicationProperties) {
+        EdfModel edfModel = new EdfModel(createAdsModel(applicationProperties));
+        edfModel.setCurrentDirectory(applicationProperties.getLastVisitedDirectory());
+        edfModel.setPatientIdentification(applicationProperties.getPatientIdentification());
+        edfModel.setRecordingIdentification(applicationProperties.getRecordingIdentification());
+        return edfModel;
     }
 
     static class ScrollBarModelAdapter implements GraphScrollBarModel {

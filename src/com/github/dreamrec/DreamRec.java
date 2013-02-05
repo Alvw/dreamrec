@@ -6,9 +6,7 @@ import com.github.dreamrec.edf.EdfWriter;
 public class DreamRec {
     public static void main(String[] args) {
         ApplicationProperties applicationProperties = new ApplicationProperties();
-        Model model = Factory.getModel(applicationProperties);
-        AdsModel adsModel = Factory.getAdsModel(applicationProperties);
-        Controller controller = new Controller(model,adsModel, applicationProperties);
+        Controller controller = new Controller(applicationProperties);
 //        MainWindow mainWindow = new MainWindow(controller, model, applicationProperties);
 //        controller.setMainWindow(mainWindow);
         SettingsWindow settingsWindow = new SettingsWindow(controller);

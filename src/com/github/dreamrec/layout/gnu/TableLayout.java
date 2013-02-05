@@ -221,7 +221,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
             for (int col=0; col<ncols; ++col)
             {
                 Component comp = components[col][row];
-                if (comp != null)
+                if (comp != null && comp.isVisible())
                 {
                     TableOption option = (TableOption) options.get(comp);
                     if (option==null) option = defaultOption;
@@ -388,7 +388,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
             for (int c=0; c<ncols; ++c)
             {
                 Component comp = components[c][r];
-                if (comp != null)
+                if (comp != null && comp.isVisible())
                 {
                     TableOption option = (TableOption) options.get(comp);
                     if (option==null) option = defaultOption;
@@ -422,8 +422,8 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
 
                     // System.out.println(" "+comp.getClass().getName()+" at ("+x+"+"+xoff+","+y+"+"+yoff+"), available "+d.width+","+d.height);
                     comp.setBounds(x+xoff,y+yoff,d.width,d.height);
+                    x += columnWidth[c] + hGap;
                 }
-                x += columnWidth[c] + hGap;
             }
             y += rowHeight + vGap;
         }

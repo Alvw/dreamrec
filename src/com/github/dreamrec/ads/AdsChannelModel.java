@@ -43,6 +43,13 @@ public class AdsChannelModel extends ChannelModel {
         isRldSenseEnabled = rldSenseEnabled;
     }
 
+    public boolean isLoffEnable() {
+        return isLoffEnable;
+    }
+
+    public boolean isRldSenseEnabled() {
+        return isRldSenseEnabled;
+    }
 
     public Gain getGain() {
         return gain;

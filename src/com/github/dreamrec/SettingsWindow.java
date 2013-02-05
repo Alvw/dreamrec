@@ -6,18 +6,12 @@ import com.github.dreamrec.edf.EdfModel;
 import com.github.dreamrec.edf.EdfWriter;
 import com.github.dreamrec.layout.gnu.TableLayout;
 import com.github.dreamrec.layout.gnu.TableOption;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -38,6 +32,8 @@ public class SettingsWindow extends JFrame {
     private JComboBox[] channelHiPassFrequency;
     private JCheckBox[] channelEnable;
     private JTextField[] channelName;
+    private JCheckBox[] channelDrlEnabled;
+    private JCheckBox[] channelLoffEnable;
 
     private JComboBox accelerometerFrequency;
     private JTextField accelerometerName;
@@ -55,27 +51,33 @@ public class SettingsWindow extends JFrame {
     private JTextField fileToSave;
     
     private boolean isRecording = false;
+    private boolean isAdvanced = false;
     private String start = "Start";
     private String stop = "Stop";
     private String saveAs = "SaveAs";
     private String browse = "Browse";
-    private JButton startButton = new JButton(start);
-    private JButton saveAsButton = new JButton(saveAs);
+    private JButton startButton = new JButton();
     private JButton browsButton = new JButton(browse);
+
+    private String advancedLabel = "Advanced";
+    private JButton advancedButton = new JButton();
 
     private Color recordColor = Color.GREEN;
     private MarkerLabel markerLabel = new MarkerLabel();
     private JLabel reportLabel = new JLabel();
   
-   
+    Icon iconPlus =  new ImageIcon("img/plus.png");
+    Icon iconMinus =  new ImageIcon("img/minus.png");
     Icon iconGreen = new ImageIcon("img/greenBall.png");
     Icon iconRed = new ImageIcon("img/redBall.png");
     private MarkerLabel[] channelLoffStatPositive;
     private MarkerLabel[] channelLoffStatNegative;
 
     private String title = "EDF Recorder";
-    private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)",  "Lead Off Detection"};
-
+    private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "DRL", "Lead Off Enable", "Lead Off Detection"};
+    private JLabel[] channelsHeadersLabels;
+            
+    private ArrayList<JComponent> advancedFields;
 
     public SettingsWindow(Controller controller) {
         this.controller = controller;
@@ -89,6 +91,7 @@ public class SettingsWindow extends JFrame {
 
     private void init() {
         int adsChannelsNumber = edfModel.getAdsModel().getNumberOfAdsChannels();
+        advancedButton.setIcon(iconPlus);
 
         spsField = new JComboBox(Sps.values());
         spsField.setSelectedItem(edfModel.getAdsModel().getSps());
@@ -108,6 +111,8 @@ public class SettingsWindow extends JFrame {
         channelName = new JTextField[adsChannelsNumber];
         channelLoffStatPositive = new MarkerLabel[adsChannelsNumber];
         channelLoffStatNegative = new MarkerLabel[adsChannelsNumber];
+        channelDrlEnabled = new JCheckBox[adsChannelsNumber];
+        channelLoffEnable = new JCheckBox[adsChannelsNumber];
 
         textFieldLength = 10;
         for (int i = 0; i < adsChannelsNumber; i++) {
@@ -115,6 +120,8 @@ public class SettingsWindow extends JFrame {
             channelHiPassFrequency[i] = new JComboBox(HiPassFrequency.values());
             channelEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
+            channelDrlEnabled[i] = new JCheckBox();
+            channelLoffEnable[i] = new JCheckBox();
             channelLoffStatPositive[i] = new MarkerLabel();
             channelLoffStatNegative[i] = new MarkerLabel();
         }
@@ -124,6 +131,14 @@ public class SettingsWindow extends JFrame {
         accelerometerName = new JTextField(textFieldLength);
         accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
         accelerometerFrequency = new JComboBox();
+
+        channelsHeadersLabels = new JLabel[channelsHeaders.length];
+        for (int i = 0; i < channelsHeaders.length; i++) {
+            channelsHeadersLabels[i] = new JLabel(channelsHeaders[i]);
+        }
+
+        setStartButtonText();
+        setAdvanced();
     }
 
     private void setActions() {
@@ -161,18 +176,26 @@ public class SettingsWindow extends JFrame {
                 if (isRecording) {
                     isRecording = false;
                     enableFields();
-                    startButton.setText(start);
+                    setStartButtonText();
                     controller.stopRecording();
                 } else {
                     if((getFileToSave() != null) & EdfFileChooser.isExistingFileReplace(getFileToSave(),mainFrame)) {
                         isRecording = true;
                         comPortName.setEnabled(false);
                         disableFields();
-                        startButton.setText(stop);
                         saveDataToModel();
+                        setStartButtonText();
                         controller.startRecording();
                     }
                 }
+
+            }
+        });
+        
+        advancedButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                setAdvanced();
             }
         });
         
@@ -187,6 +210,20 @@ public class SettingsWindow extends JFrame {
             }
         });
 
+        patientIdentification.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent focusEvent) {
+                patientIdentification.selectAll();
+            }
+        });
+
+
+        recordingIdentification.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent focusEvent) {
+                recordingIdentification.selectAll();
+            }
+        });
 
         
         addWindowListener(new WindowAdapter() {
@@ -205,30 +242,36 @@ public class SettingsWindow extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
+
+        int hgap = 0;
+        int vgap = 0;
+        JPanel advancedPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
+        advancedPanel.add(new JLabel(advancedLabel));
+        advancedPanel.add(advancedButton);
         
-        JPanel spsPanel = new JPanel();
+        JPanel spsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
         spsPanel.add(new JLabel(spsLabel));
         spsPanel.add(spsField);
         
-        JPanel comPortPanel = new JPanel();
+        JPanel comPortPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
         comPortPanel.add(new Label(comPortLabel));
         comPortPanel.add(comPortName);
 
-        int hgap = 20;
-        int vgap = 10;
+        hgap = 20;
+        vgap = 10;
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
+        topPanel.add(advancedPanel);
         topPanel.add(comPortPanel);
         topPanel.add(spsPanel);
         topPanel.add(buttonPanel);
-
+        
 
         hgap = 20;
         vgap = 5;
         JPanel channelsPanel = new JPanel(new TableLayout(channelsHeaders.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE), hgap, vgap));
 
-        for (int i = 0; i < channelsHeaders.length; i++) {
-            channelsPanel.add(new JLabel(channelsHeaders[i]));
-
+        for (JLabel header : channelsHeadersLabels) {
+              channelsPanel.add(header);            
         }
 
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
@@ -237,6 +280,8 @@ public class SettingsWindow extends JFrame {
             channelsPanel.add(channelName[i]);
             channelsPanel.add(channelFrequency[i]);
             channelsPanel.add(channelHiPassFrequency[i]);
+            channelsPanel.add(channelDrlEnabled[i]);
+            channelsPanel.add(channelLoffEnable[i]);
 
             JPanel loffPanel = new JPanel();
             loffPanel.add(channelLoffStatPositive[i]);
@@ -251,26 +296,24 @@ public class SettingsWindow extends JFrame {
             channelsPanel.add(accelerometerName);
             channelsPanel.add(accelerometerFrequency);
             channelsPanel.add(accelerometerHiPassFrequency);
-            channelsPanel.add(new JLabel(""));
-            channelsPanel.add(new JLabel(""));            
         }
-
-
         int top = 10;
         int left = 5;
         int bottom = 10;
         int right = 5;
         channelsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
+
         hgap = 0;
         vgap = 0;
         JPanel channelsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        //JPanel channelsBorderPanel = new JPanel(new BorderLayout(hgap, vgap));
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
         channelsBorderPanel.add(channelsPanel);
 
         hgap = 5;
         vgap = 5;
         int cols = 2;
-        JPanel identificationPanel = new JPanel(new TableLayout(cols, new TableOption(TableOption.LEFT, TableOption.LEFT), hgap, vgap));
+        JPanel identificationPanel = new JPanel(new TableLayout(cols, new TableOption(TableOption.LEFT, TableOption.CENTRE), hgap, vgap));
         identificationPanel.add(new JLabel(patientIdentificationLabel)); 
         identificationPanel.add(patientIdentification);
         identificationPanel.add(new JLabel(recordingIdentificationLabel));
@@ -332,6 +375,8 @@ public class SettingsWindow extends JFrame {
             channelName[i].setEnabled(isEnable);
             channelFrequency[i].setEnabled(isEnable);
             channelHiPassFrequency[i].setEnabled(isEnable);
+            channelDrlEnabled[i].setEnabled(isEnable);
+            channelLoffEnable[i].setEnabled(isEnable);
         }
     }
 
@@ -370,13 +415,17 @@ public class SettingsWindow extends JFrame {
     private void loadDataFromModel() {
         spsField.setSelectedItem(edfModel.getAdsModel().getSps());
         comPortName.setText(edfModel.getAdsModel().getComPortName());
-        fileToSave.setText(FileUtils.getFile(edfModel.getCurrentDirectory(), EdfWriter.FILENAME_PATTERN).toString());
+        fileToSave.setText(new File(edfModel.getCurrentDirectory(), EdfWriter.FILENAME_PATTERN).toString());
+        patientIdentification.setText(edfModel.getPatientIdentification());
+        recordingIdentification.setText(edfModel.getRecordingIdentification());
         int numberOfAdsChannels = edfModel.getAdsModel().getNumberOfAdsChannels();
         for (int i = 0; i < numberOfAdsChannels; i++) {
             AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             channelName[i].setText(channel.getName());
             channelEnable[i].setSelected(channel.isEnabled());
             channelHiPassFrequency[i].setSelectedItem(channel.getHiPassFilterFrequency());
+            channelDrlEnabled[i].setSelected(channel.isRldSenseEnabled());
+            channelLoffEnable[i].setSelected(channel.isLoffEnable());
             if (!channel.isEnabled()) {
                 disableAdsChannel(i);
             }
@@ -429,6 +478,8 @@ public class SettingsWindow extends JFrame {
             channel.setDivider(getChannelDivider(i));
             channel.setHiPassFilterFrequency(getChannelFrequency(i), getChannelHiPassFrequency(i));
             channel.setEnabled(isChannelEnable(i));
+            channel.setLoffEnable(isChannelLoffEnable(i));
+            channel.setRldSenseEnabled(isChannelDrlEnabled(i));
         }
 
         int numberOfAccelerometerChannels = edfModel.getAdsModel().getNumberOfAccelerometerChannels();
@@ -476,33 +527,72 @@ public class SettingsWindow extends JFrame {
          }
     }
 
-
+    private void disableEnableAdsChannel(int channelNumber, boolean isEnable) {
+        channelFrequency[channelNumber].setEnabled(isEnable);
+        channelHiPassFrequency[channelNumber].setEnabled(isEnable);
+        channelName[channelNumber].setEnabled(isEnable);
+        channelDrlEnabled[channelNumber].setEnabled(isEnable);
+        channelLoffEnable[channelNumber].setEnabled(isEnable);
+    }
+    
     private void disableAdsChannel(int channelNumber) {
-        channelFrequency[channelNumber].setEnabled(false);
-        channelHiPassFrequency[channelNumber].setEnabled(false);
-        channelName[channelNumber].setEnabled(false);
+        disableEnableAdsChannel(channelNumber, false); 
     }
 
     private void enableAdsChannel(int channelNumber) {
-        channelFrequency[channelNumber].setEnabled(true);
-        channelHiPassFrequency[channelNumber].setEnabled(true);
-        channelName[channelNumber].setEnabled(true);
+        disableEnableAdsChannel(channelNumber, true);
     }
 
-    private void disableAccelerometer() {
-        accelerometerName.setEnabled(false);
-        accelerometerFrequency.setEnabled(false);
-        accelerometerHiPassFrequency.setEnabled(false);
+    private void disableEnableAccelerometer(boolean isEnable) {
+        accelerometerName.setEnabled(isEnable);
+        accelerometerFrequency.setEnabled(isEnable);
+        accelerometerHiPassFrequency.setEnabled(isEnable);
 
     }
 
     private void enableAccelerometer() {
-        accelerometerName.setEnabled(true);
-        accelerometerFrequency.setEnabled(true);
-        accelerometerHiPassFrequency.setEnabled(true);
+         disableEnableAccelerometer(true);
     }
 
+    private void disableAccelerometer() {
+        disableEnableAccelerometer(false);
+    }
+    
+    private void showHideAdvanced(boolean isVisible){
+        channelsHeadersLabels[5].setVisible(isVisible);
+        channelsHeadersLabels[6].setVisible(isVisible);
+        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+            channelDrlEnabled[i].setVisible(isVisible);
+            channelLoffEnable[i].setVisible(isVisible);
+        }
+    }
+    
+    private void setStartButtonText() {
+        String startButtonLabel = isRecording ? stop : start;
+        startButton.setText(startButtonLabel);     
+    }
 
+    private void setAdvanced() {
+        if(isAdvanced){
+            advancedButton.setIcon(iconMinus);
+            showAdvanced();
+            isAdvanced = false;
+        }
+        else{
+            advancedButton.setIcon(iconPlus);
+            hideAdvanced();
+            isAdvanced = true;
+        }
+        pack();
+    }
+
+    private void showAdvanced(){
+         showHideAdvanced(true);
+    }
+
+    private void hideAdvanced(){
+        showHideAdvanced(false);
+    }
 
     private Divider getChannelDivider(int channelNumber) {
         int divider = edfModel.getAdsModel().getSps().getValue() / getChannelFrequency(channelNumber);
@@ -525,6 +615,14 @@ public class SettingsWindow extends JFrame {
 
     private boolean isChannelEnable(int channelNumber) {
         return channelEnable[channelNumber].isSelected();
+    }
+
+    private boolean isChannelLoffEnable(int channelNumber){
+        return channelLoffEnable[channelNumber].isSelected();
+    }
+
+    private boolean isChannelDrlEnabled(int channelNumber){
+        return channelDrlEnabled[channelNumber].isSelected();
     }
 
     private String getChannelName(int channelNumber) {

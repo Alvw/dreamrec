@@ -2,7 +2,6 @@ package com.github.dreamrec;
 
 import com.github.dreamrec.ads.AdsChannelModel;
 import com.github.dreamrec.ads.AdsManager;
-import com.github.dreamrec.ads.AdsModel;
 import com.github.dreamrec.ads.ChannelModel;
 import com.github.dreamrec.comport.ComPort;
 import com.github.dreamrec.edf.EdfFileChooser;
@@ -51,12 +50,11 @@ public class Controller {
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
 
-    public Controller(Model model, AdsModel adsModel,  ApplicationProperties applicationProperties) {
-        this.model = model;
-        edfModel = new EdfModel(adsModel);
-        edfModel.setCurrentDirectory(applicationProperties.getLastVisitedDirectory());
-        comport = new ComPort();
+    public Controller(ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
+        model = Factory.getModel(applicationProperties);
+        edfModel = Factory.getEdfModel(applicationProperties);
+        comport = new ComPort();
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
@@ -176,6 +174,7 @@ public class Controller {
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.getReport());
 //        temDebugMethod();
+//        settingsWindow.updateLoffStatus(16);
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
         try {
             comport.connect(edfModel.getAdsModel().getComPortName());
@@ -269,12 +268,16 @@ public class Controller {
         applicationProperties.setSps(edfModel.getAdsModel().getSps());
         applicationProperties.setComPortName(edfModel.getAdsModel().getComPortName());
         applicationProperties.setLastVisitedDirectory(edfModel.getCurrentDirectory());
+        applicationProperties.setPatientIdentification(edfModel.getPatientIdentification());
+        applicationProperties.setRecordingIdentification(edfModel.getRecordingIdentification());
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             applicationProperties.setChannelDivider(i, channel.getDivider());
             applicationProperties.setChannelName(i, channel.getName());
             applicationProperties.setChannelHiPassFrequency(i, channel.getHiPassFilterFrequency());
             applicationProperties.setChannelEnabled(i, channel.isEnabled());
+            applicationProperties.setChannelLoffEnabled(i, channel.isLoffEnable());
+            applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
         }
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);

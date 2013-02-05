@@ -5,6 +5,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.swing.*;
 import java.io.File;
@@ -23,6 +24,9 @@ public class ApplicationProperties {
     public static final String FREQUENCY_DIVIDER = "frequencyDivider";
     public static final String LO_PASS_BUFFER_SIZE = "loPassBufferSize";
 
+    public static final String PATIENT_IDENTIFICATION = "patientIdentification";
+    public static final String RECORDING_IDENTIFICATION = "recordingIdentification";
+
     public static final String SPS = "sps";
 
     public static final String CHANNEL_HI_PASS_FREQUENCY = "hiPassFrequencyChannel";
@@ -39,7 +43,7 @@ public class ApplicationProperties {
     public static final String ACCELEROMETER_DIVIDER = "dividerAccelerometer";
     public static final String ACCELEROMETER_NAME = "nameAccelerometer";
     public static final String ACCELEROMETER_IS_ENABLED = "isEnabledAccelerometer";
-    
+
     public static final String NUMBER_OF_CHANNELS = "numberOfChannels";
 
 
@@ -53,17 +57,17 @@ public class ApplicationProperties {
             JOptionPane.showMessageDialog(null, "Error reading from properties file: " + APPLICATION_PROPERTIES);
         }
     }
-    
 
-    public int getNumberOfChannels () {
+
+    public int getNumberOfChannels() {
         return config.getInt(NUMBER_OF_CHANNELS);
     }
 
     public String getComPortName() {
         return config.getString(COM_PORT_NAME);
     }
-    
-    public void setComPortName(String comPortName){
+
+    public void setComPortName(String comPortName) {
         config.setProperty(COM_PORT_NAME, comPortName);
     }
 
@@ -95,36 +99,33 @@ public class ApplicationProperties {
     public void setLastVisitedDirectory(File directory) {
         if (directory != null) {
             config.setProperty(DIRECTORY_NAME, directory);
-        }        
+        }
     }
 
     public File getLastVisitedDirectory() {
         if (config.getString(DIRECTORY_NAME) != null) {
             return new File(config.getString(DIRECTORY_NAME));
-        }
-        else {
+        } else {
             return null;
         }
     }
 
-    public Sps getSps() {        
-        try{
+    public Sps getSps() {
+        try {
             return Sps.valueOf(config.getInt(SPS));
-        } 
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
-        }    
+        }
     }
 
     public Divider getAccelerometerDivider() {
-        try{
+        try {
             return Divider.valueOf(config.getInt(ACCELEROMETER_DIVIDER));
-        }
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file: "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file: " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
@@ -132,20 +133,18 @@ public class ApplicationProperties {
     }
 
     public HiPassFrequency getAccelerometerHiPassFrequency() {
-        try{
+        try {
             HiPassFrequency hiPassFrequency;
             String hiPassFrequencyLabel = config.getString(ACCELEROMETER_HI_PASS_FREQUENCY);
-            if(hiPassFrequencyLabel.equals(HiPassFrequency.DISABLED.getLabel())){
+            if (hiPassFrequencyLabel.equals(HiPassFrequency.DISABLED.getLabel())) {
                 hiPassFrequency = HiPassFrequency.DISABLED;
-            }
-            else{
+            } else {
                 Double hiPassFrequencyValue = new Double(hiPassFrequencyLabel);
                 hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
             }
             return hiPassFrequency;
-        }
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file: "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file: " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
@@ -154,52 +153,49 @@ public class ApplicationProperties {
 
 
     public String getAccelerometerName(int channelNumber) {
-        return config.getString(ACCELEROMETER_NAME +channelNumber);
+        return config.getString(ACCELEROMETER_NAME + channelNumber);
     }
 
     public String getChannelName(int channelNumber) {
-        return config.getString(CHANNEL_NAME+channelNumber);
+        return config.getString(CHANNEL_NAME + channelNumber);
     }
 
-    public String getChannelElectrodeType(int channelNumber){
-        return config.getString(CHANNEL_ELECTRODE_TYPE+channelNumber);
+    public String getChannelElectrodeType(int channelNumber) {
+        return config.getString(CHANNEL_ELECTRODE_TYPE + channelNumber);
     }
 
-    public boolean isChannelEnabled(int channelNumber){
+    public boolean isChannelEnabled(int channelNumber) {
         return config.getBoolean(CHANNEL_IS_ENABLED + channelNumber);
     }
 
-    public void setChannelEnabled(int channelNumber, boolean isEnabled){
+    public void setChannelEnabled(int channelNumber, boolean isEnabled) {
         config.setProperty(CHANNEL_IS_ENABLED + channelNumber, isEnabled);
     }
 
 
-
-    public boolean isAccelerometerEnabled(){
+    public boolean isAccelerometerEnabled() {
         return config.getBoolean(ACCELEROMETER_IS_ENABLED);
     }
 
-    public void setAccelerometerEnabled(boolean isEnabled){
+    public void setAccelerometerEnabled(boolean isEnabled) {
         config.setProperty(ACCELEROMETER_IS_ENABLED, isEnabled);
     }
 
 
     public HiPassFrequency getChannelHiPassFrequency(int channelNumber) {
-        try{
+        try {
             HiPassFrequency hiPassFrequency;
             String hiPassFrequencyLabel = config.getString(CHANNEL_HI_PASS_FREQUENCY + channelNumber);
-            if(hiPassFrequencyLabel.equals(HiPassFrequency.DISABLED.getLabel())){
+            if (hiPassFrequencyLabel.equals(HiPassFrequency.DISABLED.getLabel())) {
                 hiPassFrequency = HiPassFrequency.DISABLED;
 
-            }
-            else{
+            } else {
                 Double hiPassFrequencyValue = new Double(hiPassFrequencyLabel);
                 hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
             }
             return hiPassFrequency;
-        }
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file: "+channelNumber+"channel "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file: " + channelNumber + "channel " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
@@ -207,11 +203,10 @@ public class ApplicationProperties {
     }
 
     public Divider getChannelDivider(int channelNumber) {
-        try{
+        try {
             return Divider.valueOf(config.getInt(CHANNEL_DIVIDER + channelNumber));
-        }
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file: "+channelNumber+"channel "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file: " + channelNumber + "channel " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
@@ -219,11 +214,10 @@ public class ApplicationProperties {
     }
 
     public Gain getChannelGain(int channelNumber) {
-        try{
+        try {
             return Gain.valueOf(config.getInt(CHANNEL_GAIN + channelNumber));
-        }
-        catch (IllegalArgumentException e){
-            String msg = "application.properties file: "+channelNumber+"channel "+e.getMessage();
+        } catch (IllegalArgumentException e) {
+            String msg = "application.properties file: " + channelNumber + "channel " + e.getMessage();
             log.error(msg);
             JOptionPane.showMessageDialog(null, msg);
             throw new IllegalArgumentException(msg);
@@ -231,7 +225,7 @@ public class ApplicationProperties {
     }
 
     public CommutatorState getChannelCommutatorState(int channelNumber) {
-        return CommutatorState.valueOf(config.getString(CHANNEL_COMMUTATOR_STATE+channelNumber));
+        return CommutatorState.valueOf(config.getString(CHANNEL_COMMUTATOR_STATE + channelNumber));
     }
 
 
@@ -239,45 +233,60 @@ public class ApplicationProperties {
         config.setProperty(SPS, sps);
     }
 
-    public void setChannelDivider(int channelNumber, Divider divider){
-        config.setProperty(CHANNEL_DIVIDER+channelNumber, divider);
+    public void setChannelDivider(int channelNumber, Divider divider) {
+        config.setProperty(CHANNEL_DIVIDER + channelNumber, divider);
     }
 
-    public void setAccelerometerDivider(Divider divider){
+    public void setAccelerometerDivider(Divider divider) {
         config.setProperty(ACCELEROMETER_DIVIDER, divider);
     }
 
-    public void setChannelName(int channelNumber, String name){
-        config.setProperty(CHANNEL_NAME+channelNumber, name);
+    public void setChannelName(int channelNumber, String name) {
+        config.setProperty(CHANNEL_NAME + channelNumber, name);
     }
 
-    public void setAccelerometerName(int channelNumber, String name){
-        config.setProperty(ACCELEROMETER_NAME+channelNumber, name);
+    public void setAccelerometerName(int channelNumber, String name) {
+        config.setProperty(ACCELEROMETER_NAME + channelNumber, name);
     }
 
-    public void setChannelHiPassFrequency(int channelNumber, HiPassFrequency frequency){
-        config.setProperty(CHANNEL_HI_PASS_FREQUENCY+channelNumber, frequency);
+    public void setChannelHiPassFrequency(int channelNumber, HiPassFrequency frequency) {
+        config.setProperty(CHANNEL_HI_PASS_FREQUENCY + channelNumber, frequency);
     }
 
-    public void setAccelerometerHiPassFrequency(HiPassFrequency frequency){
+    public void setAccelerometerHiPassFrequency(HiPassFrequency frequency) {
         config.setProperty(ACCELEROMETER_HI_PASS_FREQUENCY, frequency);
     }
 
     public boolean isChannelLoffEnable(int channelNumber) {
-        return config.getBoolean(CHANNEL_LOFF_ENABLED+channelNumber);
+        return config.getBoolean(CHANNEL_LOFF_ENABLED + channelNumber);
     }
 
+    public String getPatientIdentification() {
+        return config.getString(PATIENT_IDENTIFICATION);
+    }
+
+    public String getRecordingIdentification() {
+        return config.getString(RECORDING_IDENTIFICATION);
+    }
+
+    public void setPatientIdentification(String identification) {
+        config.setProperty(PATIENT_IDENTIFICATION, identification);
+    }
+
+    public void setRecordingIdentification(String identification) {
+        config.setProperty(RECORDING_IDENTIFICATION, identification);
+    }
 
     public boolean isChannelRldSenseEnable(int channelNumber) {
-        return config.getBoolean(CHANNEL_RLD_SENSE_ENABLED+channelNumber);
+        return config.getBoolean(CHANNEL_RLD_SENSE_ENABLED + channelNumber);
     }
 
-    public void setChannelRldSenseEnabled(int channelNumber, boolean isRldEnabled){
-        config.setProperty(CHANNEL_RLD_SENSE_ENABLED+channelNumber, isRldEnabled);
+    public void setChannelRldSenseEnabled(int channelNumber, boolean isRldEnabled) {
+        config.setProperty(CHANNEL_RLD_SENSE_ENABLED + channelNumber, isRldEnabled);
     }
 
-    public void setChannelLoffEnabled(int channelNumber, boolean isLoffEnabled){
-        config.setProperty(CHANNEL_LOFF_ENABLED+channelNumber, isLoffEnabled);
+    public void setChannelLoffEnabled(int channelNumber, boolean isLoffEnabled) {
+        config.setProperty(CHANNEL_LOFF_ENABLED + channelNumber, isLoffEnabled);
     }
 
     public void save() {
