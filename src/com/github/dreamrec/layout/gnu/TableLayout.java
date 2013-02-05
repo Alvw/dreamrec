@@ -269,14 +269,30 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
 
         for (i=0; i<ncols; ++i)
         {
-            MinWidth += minWidth[i];
-            PrefWidth += prefWidth[i] + hgap;
+            if (isColVisible(i))
+            {
+                MinWidth += minWidth[i];
+                PrefWidth += prefWidth[i] + hgap;
+            }
         }
         for (i=0; i<nrows; ++i)
         {
             MinHeight += minHeight[i];
             PrefHeight += prefHeight[i] + vgap;
         }
+    }
+
+    public boolean isColVisible(int colNumber)
+    {
+        boolean  isVisible = false;
+        for (int row=0; row<nrows; ++row)
+        {
+            Component comp = components[colNumber][row];
+            if(comp != null && comp.isVisible()) {
+                isVisible = true;
+            }
+        }
+        return isVisible;
     }
 
     public Dimension minimumLayoutSize(Container parent)
@@ -361,7 +377,7 @@ public class TableLayout implements LayoutManager,LayoutManager2 {
             for (int c=0; c<ncols; ++c)
             {
                 Component comp = components[c][r];
-                if (comp != null)
+                if (comp != null && comp.isVisible())
                 {
                     TableOption option = (TableOption) options.get(comp);
                     if (option==null) option = defaultOption;

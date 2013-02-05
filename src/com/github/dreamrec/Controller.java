@@ -173,8 +173,8 @@ public class Controller {
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
         settingsWindow.setReport(edfWriter.getReport());
-//        temDebugMethod();
-//        settingsWindow.updateLoffStatus(16);
+        //settingsWindow.updateLoffStatus(16);
+       // temDebugMethod();
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
         try {
             comport.connect(edfModel.getAdsModel().getComPortName());
@@ -278,6 +278,7 @@ public class Controller {
             applicationProperties.setChannelEnabled(i, channel.isEnabled());
             applicationProperties.setChannelLoffEnabled(i, channel.isLoffEnable());
             applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
+            applicationProperties.setChannelElectrodeType(i, channel.getElectrodeType());
         }
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAccelerometerChannels(); i++) {
             ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);

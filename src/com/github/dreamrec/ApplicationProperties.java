@@ -172,6 +172,9 @@ public class ApplicationProperties {
         config.setProperty(CHANNEL_IS_ENABLED + channelNumber, isEnabled);
     }
 
+    public void setChannelElectrodeType (int channelNumber, String electrodeType) {
+        config.setProperty(CHANNEL_ELECTRODE_TYPE + channelNumber, electrodeType);
+    }
 
     public boolean isAccelerometerEnabled() {
         return config.getBoolean(ACCELEROMETER_IS_ENABLED);
