@@ -47,15 +47,11 @@ public class SettingsWindow extends JFrame {
     private JTextField patientIdentification;
     private JTextField recordingIdentification;
 
-    private String fileToSaveLabel = "<html><center>[dd-mm-yyyy_hh-mm].edf<br> by default</center></html>";
-    private String defaultFileToSave = "dd-mm-yyyy_hh-mm.edf";
     private JTextField fileToSave;
-    
-    private boolean isRecording = false;
+
     private boolean isAdvanced = false;
     private String start = "Start";
     private String stop = "Stop";
-    private String saveAs = "SaveAs";
     private String browse = "Browse";
     private JButton startButton = new JButton(start);
     private JButton browsButton = new JButton(browse);
@@ -63,16 +59,19 @@ public class SettingsWindow extends JFrame {
     private String advancedLabel = "Advanced";
     private JButton advancedButton = new JButton();
 
-    private Color recordColor = Color.GREEN;
+    private Color colorProcess = Color.GREEN;
+    private Color colorProblem = Color.RED;
+    private Color colorInfo = Color.GRAY;
     private MarkerLabel markerLabel = new MarkerLabel();
-    private JLabel reportLabel = new JLabel();
+    private JLabel reportLabel = new JLabel(" ");
   
     Icon iconPlus =  new ImageIcon("img/plus.png");
     Icon iconMinus =  new ImageIcon("img/minus.png");
-    Icon iconGreen = new ImageIcon("img/greenBall.png");
-    Icon iconRed = new ImageIcon("img/redBall.png");
+    Icon iconConnected = new ImageIcon("img/greenBall.png");
+    Icon iconDisconnected = new ImageIcon("img/redBall.png");
     private MarkerLabel[] channelLoffStatPositive;
     private MarkerLabel[] channelLoffStatNegative;
+
 
     private String title = "EDF Recorder";
     private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "Electrode Type", "DRL", "Lead Off", "Lead Off Detection"};
@@ -170,14 +169,12 @@ public class SettingsWindow extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                if (isRecording) {
-                    isRecording = false;
+                if (controller.isRecording()) {
                     startButton.setText(start);
                     enableFields();
                     controller.stopRecording();
                 } else {
                     if((getFileToSave() != null) & EdfFileChooser.isExistingFileReplace(getFileToSave(),mainFrame)) {
-                        isRecording = true;
                         startButton.setText(stop);
                         comPortName.setEnabled(false);
                         disableFields();
@@ -251,7 +248,7 @@ public class SettingsWindow extends JFrame {
         comPortPanel.add(comPortName);
 
         hgap = 20;
-        vgap = 10;
+        vgap = 15;
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
         topPanel.add(comPortPanel);
         topPanel.add(spsPanel);
@@ -326,25 +323,25 @@ public class SettingsWindow extends JFrame {
 
         hgap = 5;
         vgap = 5;
-        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
         identificationBorderPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
         identificationBorderPanel.add(identificationPanel);
 
         hgap = 0;
         vgap = 0;
-        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
-        saveAsPanel.add(fileToSave);
+        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
         saveAsPanel.add(browsButton);
+        saveAsPanel.add(fileToSave);
 
         hgap = 10;
         vgap = 5;
-        JPanel saveAsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        JPanel saveAsBorderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
         saveAsBorderPanel.setBorder(BorderFactory.createTitledBorder("Save As"));
         saveAsBorderPanel.add(saveAsPanel);
 
-        
-        JPanel reportPanel = new JPanel();
-        reportPanel.add(new JLabel(" "));
+        hgap = 10;
+        vgap = 5;
+        JPanel reportPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
         reportPanel.add(markerLabel);
         reportPanel.add(reportLabel);
 
@@ -410,14 +407,23 @@ public class SettingsWindow extends JFrame {
         }
     }
 
+    private void setReport(String report, Color markerColor) {
+        int rowLength = 100;
+        String htmlReport = convertToHtml(report, rowLength);
+        reportLabel.setText(htmlReport);
+        markerLabel.setColor(markerColor);
+    }
+    
+    public void setProcessReport(String report) {
+        setReport(report, colorProcess);
+    }
+
+    public void setProblemReport(String report) {
+        setReport(report, colorProblem);
+    }
+
     public void setReport(String report) {
-        reportLabel.setText(report);
-        if (isRecording) {
-            markerLabel.setColor(recordColor);
-        } else {
-            markerLabel.setBackgroundColor();
-        }
-        pack();
+        setReport(report, colorInfo);
     }
 
     private void loadDataFromModel() {
@@ -453,24 +459,24 @@ public class SettingsWindow extends JFrame {
 
     public void updateLoffStatus(int loffStatusRegisterValue) {
         if ((loffStatusRegisterValue & 8) == 0) {
-            channelLoffStatPositive[0].setIcon(iconGreen);
+            channelLoffStatPositive[0].setIcon(iconConnected);
         } else {
-            channelLoffStatPositive[0].setIcon(iconRed);
+            channelLoffStatPositive[0].setIcon(iconDisconnected);
         }
         if ((loffStatusRegisterValue & 16) == 0) {
-            channelLoffStatNegative[0].setIcon(iconGreen);
+            channelLoffStatNegative[0].setIcon(iconConnected);
         } else {
-            channelLoffStatNegative[0].setIcon(iconRed);
+            channelLoffStatNegative[0].setIcon(iconDisconnected);
         }
         if ((loffStatusRegisterValue & 32) == 0) {
-            channelLoffStatPositive[1].setIcon(iconGreen);
+            channelLoffStatPositive[1].setIcon(iconConnected);
         } else {
-            channelLoffStatPositive[1].setIcon(iconRed);
+            channelLoffStatPositive[1].setIcon(iconDisconnected);
         }
         if ((loffStatusRegisterValue & 64) == 0) {
-            channelLoffStatNegative[1].setIcon(iconGreen);
+            channelLoffStatNegative[1].setIcon(iconConnected);
         } else {
-            channelLoffStatNegative[1].setIcon(iconRed);
+            channelLoffStatNegative[1].setIcon(iconDisconnected);
         }
     }
 
@@ -661,6 +667,41 @@ public class SettingsWindow extends JFrame {
     }
 
 
+    private String convertToHtml(String text, int rowLength){
+        StringBuilder html = new StringBuilder("<html>");
+        String[] givenRows = text.split("\n");
+        for (String givenRow : givenRows) {
+            String[] splitRows = split(givenRow, rowLength);
+            for (String row : splitRows) {
+                html.append(row);
+                html.append("<br>");
+            }
+        }
+        html.append("</html>");
+        return html.toString();
+    }
+
+    // split input string to the  array of strings with length() <= rowLength
+    private String[] split(String text, int rowLength) {
+        ArrayList<String>  resultRows = new ArrayList<String>();
+        StringBuilder row = new StringBuilder();
+        String[] words = text.split(" ");
+        for (String word : words) {
+            if((row.length() + word.length()) < rowLength){
+                row.append(word);
+                row.append(" ");
+            }
+            else{
+                resultRows.add(row.toString());
+                row = new StringBuilder(word);
+                row.append(" ");
+            }
+        }
+        resultRows.add(row.toString());
+        String[] resultArray = new String[resultRows.size()];
+        return resultRows.toArray(resultArray);
+    }    
+    
 
     private class AdsChannelEnableListener implements ActionListener {
         private int channelNumber;

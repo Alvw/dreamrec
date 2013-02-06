@@ -47,6 +47,7 @@ public class Controller {
     private EdfModel edfModel;
     private EdfWriter edfWriter;
     private ComPort comport;
+    private boolean isRecording = false;
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
 
 
@@ -58,7 +59,6 @@ public class Controller {
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 updateModel();
-
 //                mainWindow.repaint();
             }
         });
@@ -74,6 +74,11 @@ public class Controller {
     public EdfModel getEdfModel() {
         return edfModel;
     }
+
+    public boolean isRecording() {
+        return isRecording;
+    }
+
 
     public void addAdsDataListener(AdsDataListener adsDataListener) {
         adsDataListeners.add(adsDataListener);
@@ -112,10 +117,11 @@ public class Controller {
                 settingsWindow.updateLoffStatus(frame[frame.length - 1]);
                 isLoffUpdated = true;
             }
+        }
+        if(isRecording()) {
             if (edfWriter.isReportUpdated()) {
-                settingsWindow.setReport(edfWriter.getReport());
+                settingsWindow.setProcessReport(edfWriter.getReport());
             }
-
         }
         if (isAutoScroll) {
             model.setFastGraphIndexMaximum();
@@ -166,16 +172,17 @@ public class Controller {
     }
 
     public void startRecording() {
+        isRecording = true;
         model.clear();
         model.setFrequency(250);
         model.setStartTime(System.currentTimeMillis());
         edfWriter = new EdfWriter(edfModel);
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
-        settingsWindow.setReport(edfWriter.getReport());
-        //settingsWindow.updateLoffStatus(16);
-       // temDebugMethod();
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
+       settingsWindow.setProblemReport(failConnectMessage);
+        settingsWindow.updateLoffStatus(16);
+        //temDebugMethod();
         try {
             comport.connect(edfModel.getAdsModel().getComPortName());
             frameDecoder = new FrameDecoder(edfModel.getAdsModel().getFrameSize());
@@ -193,6 +200,7 @@ public class Controller {
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
+            settingsWindow.setProblemReport(e.getMessage());
         }
         repaintTimer.start();
         isAutoScroll = true;
@@ -200,6 +208,7 @@ public class Controller {
     }
 
     public void stopRecording() {
+        isRecording = false;
         repaintTimer.stop();
         isAutoScroll = false;
         comport.writeToPort(new AdsManager().startPinLo());
@@ -302,11 +311,10 @@ public class Controller {
                     try {
                         notifyListeners(frame);
                         if (edfWriter.isReportUpdated()) {
-                            settingsWindow.setReport(edfWriter.getReport());
+                            settingsWindow.setProcessReport(edfWriter.getReport());
                         }
-                        Thread.sleep(200);
+                        Thread.sleep(50);
                         //settingsWindow.setReport(true, "Recording of Edf...  Record duration: " + n + " sec");
-                        System.out.println(n);
                         n++;
                     } catch (InterruptedException e) {
                         e.printStackTrace();

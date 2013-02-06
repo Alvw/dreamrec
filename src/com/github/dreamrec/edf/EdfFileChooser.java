@@ -113,7 +113,7 @@ public class EdfFileChooser extends JFileChooser {
     public static boolean isExistingFileReplace(File file, Component parentComponentForMsgPanel) {
         if(file != null){
             if (file.exists()) {
-                String msg = "<html><center>" + file + "<br> already exists. Do you want to replace it?</center></html>";
+                String msg = "<html><center>" + file + "<br> - already exists. Do you want to replace it?</center></html>";
                 String title = "";
                 int selectedOption = JOptionPane.showConfirmDialog(parentComponentForMsgPanel, msg, title, JOptionPane.YES_NO_OPTION);
                 if (selectedOption == JOptionPane.NO_OPTION) {

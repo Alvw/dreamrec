@@ -187,7 +187,8 @@ public class EdfWriter implements AdsDataListener {
         String startTimeOfRecording = timeFormat.format(new Date(startTime));
 
         int numberOfSignals = edfModel.getAdsModel().getNumberOfActiveChannels();  // number of signals in data record = number of active channels
-        int numberOfBytesInHeaderRecord = (8 * 6 + 80 * 2 + 44 + 4) + numberOfSignals * (16 + 80 * 2 + 32 + 8 * 6);
+        //(8 * 6 + 80 * 2 + 44 + 4) + numberOfSignals * (16 + 80 * 2 + 32 + 8 * 6);
+        int numberOfBytesInHeaderRecord =  256 * (1 + numberOfSignals);
         String reserved = "";
 
         String durationOfDataRecord = Integer.toString(RECORD_PERIOD);
