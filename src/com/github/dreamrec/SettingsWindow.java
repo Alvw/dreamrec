@@ -65,8 +65,8 @@ public class SettingsWindow extends JFrame {
     private MarkerLabel markerLabel = new MarkerLabel();
     private JLabel reportLabel = new JLabel(" ");
   
-    Icon iconPlus =  new ImageIcon("img/plus.png");
-    Icon iconMinus =  new ImageIcon("img/minus.png");
+    Icon iconShow =  new ImageIcon("img/arrow-open.png");
+    Icon iconHide =  new ImageIcon("img/arrow-close.png");
     Icon iconConnected = new ImageIcon("img/greenBall.png");
     Icon iconDisconnected = new ImageIcon("img/redBall.png");
     private MarkerLabel[] channelLoffStatPositive;
@@ -74,8 +74,7 @@ public class SettingsWindow extends JFrame {
 
 
     private String title = "EDF Recorder";
-    private String[] channelsHeaders = {"Number", "Enable", "Name", "Frequency (Hz)", "Hi Pass Filter (Hz)", "Electrode Type", "DRL", "Lead Off", "Lead Off Detection"};
-    private JLabel[] channelsHeadersLabels;
+    private JComponent[] channelsHeaders = {new JLabel("Number"), new JLabel("Enable"), new JLabel("Name"), new JLabel("Frequency (Hz)"), new JLabel("Hi Pass Filter (Hz)"),  new JLabel("Lead Off Detection"), new JLabel("DRL"), new JLabel("Lead Off"), advancedButton};
 
 
     public SettingsWindow(Controller controller) {
@@ -90,18 +89,18 @@ public class SettingsWindow extends JFrame {
 
     private void init() {
         int adsChannelsNumber = edfModel.getAdsModel().getNumberOfAdsChannels();
-        advancedButton.setIcon(iconPlus);
+        advancedButton.setIcon(iconShow);
 
         spsField = new JComboBox(Sps.values());
         spsField.setSelectedItem(edfModel.getAdsModel().getSps());
         int textFieldLength = 5;
         comPortName = new JTextField(textFieldLength);
         
-        textFieldLength = 50;
+        textFieldLength = 60;
         patientIdentification = new JTextField(textFieldLength);
         recordingIdentification = new JTextField(textFieldLength);
         
-        textFieldLength = 47;
+        textFieldLength = 57;
         fileToSave = new JTextField(textFieldLength);
         
         channelFrequency = new JComboBox[adsChannelsNumber];
@@ -119,7 +118,7 @@ public class SettingsWindow extends JFrame {
             channelHiPassFrequency[i] = new JComboBox(HiPassFrequency.values());
             channelEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
-            channelElectrodeType[i] = new JTextField(textFieldLength);
+           // channelElectrodeType[i] = new JTextField(textFieldLength);
             channelDrlEnabled[i] = new JCheckBox();
             channelLoffEnable[i] = new JCheckBox();
             channelLoffStatPositive[i] = new MarkerLabel();
@@ -129,11 +128,6 @@ public class SettingsWindow extends JFrame {
         accelerometerName = new JTextField(textFieldLength);
         accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
         accelerometerFrequency = new JComboBox();
-
-        channelsHeadersLabels = new JLabel[channelsHeaders.length];
-        for (int i = 0; i < channelsHeaders.length; i++) {
-            channelsHeadersLabels[i] = new JLabel(channelsHeaders[i]);
-        }
         setAdvanced();
     }
 
@@ -192,6 +186,9 @@ public class SettingsWindow extends JFrame {
                 setAdvanced();
             }
         });
+
+        advancedButton.setToolTipText(advancedLabel);
+
         
         browsButton.addActionListener(new ActionListener() {
             @Override
@@ -239,17 +236,17 @@ public class SettingsWindow extends JFrame {
 
         int hgap = 0;
         int vgap = 0;        
-        JPanel spsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
+        JPanel spsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         spsPanel.add(new JLabel(spsLabel));
         spsPanel.add(spsField);
         
-        JPanel comPortPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
+        JPanel comPortPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         comPortPanel.add(new Label(comPortLabel));
         comPortPanel.add(comPortName);
 
-        hgap = 20;
+        hgap = 60;
         vgap = 15;
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         topPanel.add(comPortPanel);
         topPanel.add(spsPanel);
         topPanel.add(buttonPanel);
@@ -258,10 +255,10 @@ public class SettingsWindow extends JFrame {
         hgap = 20;
         vgap = 5;
         JPanel channelsPanel = new JPanel(new TableLayout(channelsHeaders.length, new TableOption(TableOption.CENTRE, TableOption.CENTRE), hgap, vgap));
-
-        for (JLabel header : channelsHeadersLabels) {
-              channelsPanel.add(header);            
-        }
+    
+        for (JComponent component : channelsHeaders) {
+              channelsPanel.add(component);
+        }   
 
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             channelsPanel.add(new JLabel(" " + i + " "));
@@ -269,14 +266,14 @@ public class SettingsWindow extends JFrame {
             channelsPanel.add(channelName[i]);
             channelsPanel.add(channelFrequency[i]);
             channelsPanel.add(channelHiPassFrequency[i]);
-            channelsPanel.add(channelElectrodeType[i]);
-            channelsPanel.add(channelDrlEnabled[i]);
-            channelsPanel.add(channelLoffEnable[i]);
-
             JPanel loffPanel = new JPanel();
             loffPanel.add(channelLoffStatPositive[i]);
             loffPanel.add(channelLoffStatNegative[i]);
             channelsPanel.add(loffPanel);
+           // channelsPanel.add(channelElectrodeType[i]);
+            channelsPanel.add(channelDrlEnabled[i]);
+            channelsPanel.add(channelLoffEnable[i]);
+            channelsPanel.add(new JLabel(" "));
         }
         
         if(edfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
@@ -287,30 +284,12 @@ public class SettingsWindow extends JFrame {
             channelsPanel.add(accelerometerFrequency);
             channelsPanel.add(accelerometerHiPassFrequency);
         }
-        int top = 10;
-        int left = 0;
-        int bottom = 0;
-        int right = 0;
-        channelsPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
-        
-        hgap = 0;
-        vgap = 0;
-        JPanel advancedPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
-        advancedPanel.add(new JLabel(advancedLabel));
-        advancedPanel.add(advancedButton);
-        top = 0;
-        left = 0;
-        bottom = 0;
-        right = 20;
-        advancedPanel.setBorder(BorderFactory.createEmptyBorder(top, left, bottom, right));
 
         hgap = 0;
-        vgap = 0;
-        //JPanel channelsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
-        JPanel channelsBorderPanel = new JPanel(new BorderLayout(hgap, vgap));
+        vgap = 10;
+        JPanel channelsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
-        channelsBorderPanel.add(channelsPanel, BorderLayout.NORTH);
-        channelsBorderPanel.add(advancedPanel, BorderLayout.CENTER);
+        channelsBorderPanel.add(channelsPanel);
 
         hgap = 5;
         vgap = 5;
@@ -323,19 +302,19 @@ public class SettingsWindow extends JFrame {
 
         hgap = 5;
         vgap = 5;
-        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
+        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         identificationBorderPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
         identificationBorderPanel.add(identificationPanel);
 
         hgap = 0;
         vgap = 0;
-        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
+        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         saveAsPanel.add(browsButton);
         saveAsPanel.add(fileToSave);
 
         hgap = 10;
         vgap = 5;
-        JPanel saveAsBorderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, hgap, vgap));
+        JPanel saveAsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         saveAsBorderPanel.setBorder(BorderFactory.createTitledBorder("Save As"));
         saveAsBorderPanel.add(saveAsPanel);
 
@@ -381,7 +360,7 @@ public class SettingsWindow extends JFrame {
             channelHiPassFrequency[i].setEnabled(isEnable);
             channelDrlEnabled[i].setEnabled(isEnable);
             channelLoffEnable[i].setEnabled(isEnable); 
-            channelElectrodeType[i].setEnabled(isEnable);
+           // channelElectrodeType[i].setEnabled(isEnable);
         }
     }
 
@@ -440,7 +419,7 @@ public class SettingsWindow extends JFrame {
             channelHiPassFrequency[i].setSelectedItem(channel.getHiPassFilterFrequency());
             channelDrlEnabled[i].setSelected(channel.isRldSenseEnabled());
             channelLoffEnable[i].setSelected(channel.isLoffEnable());
-            channelElectrodeType[i].setText(channel.getElectrodeType());
+            //channelElectrodeType[i].setText(channel.getElectrodeType());
             if (!channel.isEnabled()) {
                 enableAdsChannel(i, false);
             }
@@ -495,7 +474,7 @@ public class SettingsWindow extends JFrame {
             channel.setEnabled(isChannelEnable(i));
             channel.setLoffEnable(isChannelLoffEnable(i));
             channel.setRldSenseEnabled(isChannelDrlEnabled(i));
-            channel.setElectrodeType(getElectrodeType(i));
+           // channel.setElectrodeType(getElectrodeType(i));
         }
 
         int numberOfAccelerometerChannels = edfModel.getAdsModel().getNumberOfAccelerometerChannels();
@@ -549,7 +528,7 @@ public class SettingsWindow extends JFrame {
         channelName[channelNumber].setEnabled(isEnable);
         channelDrlEnabled[channelNumber].setEnabled(isEnable);
         channelLoffEnable[channelNumber].setEnabled(isEnable);
-        channelElectrodeType[channelNumber].setEnabled(isEnable);
+       // channelElectrodeType[channelNumber].setEnabled(isEnable);
     }
     
 
@@ -563,31 +542,28 @@ public class SettingsWindow extends JFrame {
 
 
     
-    private void showAdvanced(boolean isVisible){
-        channelsHeadersLabels[5].setVisible(isVisible);
-        channelsHeadersLabels[6].setVisible(isVisible);
-        channelsHeadersLabels[7].setVisible(isVisible);
+    private void showAdvanced(boolean isVisible) {
+        channelsHeaders[channelsHeaders.length - 2].setVisible(isVisible);
+        channelsHeaders[channelsHeaders.length - 3].setVisible(isVisible);
         for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
-            channelElectrodeType[i].setVisible(isVisible);
+           // channelElectrodeType[i].setVisible(isVisible);
             channelDrlEnabled[i].setVisible(isVisible);
             channelLoffEnable[i].setVisible(isVisible);
         }
+        pack();
     }
 
     private void setAdvanced() {
         if(isAdvanced){
-            advancedButton.setIcon(iconMinus);
+            advancedButton.setIcon(iconHide);
             showAdvanced(true);
             isAdvanced = false;
         }
         else{
-            advancedButton.setIcon(iconPlus);
+            advancedButton.setIcon(iconShow);
             showAdvanced(false);
             isAdvanced = true;
         }
-        pack();
-        // place the window to the screen center
-        setLocationRelativeTo(null);
     }
 
 
