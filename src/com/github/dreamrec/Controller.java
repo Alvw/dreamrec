@@ -181,7 +181,7 @@ public class Controller {
         edfWriter.startRecording();
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
        //settingsWindow.setProblemReport(failConnectMessage);
-        //settingsWindow.updateLoffStatus(16);
+       //settingsWindow.updateLoffStatus(16);
         //temDebugMethod();
         try {
             comport.connect(edfModel.getAdsModel().getComPortName());
@@ -201,7 +201,7 @@ public class Controller {
         } catch (Throwable e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, failConnectMessage);
-            System.exit(0);
+           // System.exit(0);
         }
         repaintTimer.start();
         isAutoScroll = true;

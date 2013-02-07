@@ -69,6 +69,7 @@ public class SettingsWindow extends JFrame {
     Icon iconHide =  new ImageIcon("img/arrow-close.png");
     Icon iconConnected = new ImageIcon("img/greenBall.png");
     Icon iconDisconnected = new ImageIcon("img/redBall.png");
+    Icon iconDisabled = new ImageIcon("img/grayBall.png");
     private MarkerLabel[] channelLoffStatPositive;
     private MarkerLabel[] channelLoffStatNegative;
 
@@ -96,7 +97,7 @@ public class SettingsWindow extends JFrame {
         int textFieldLength = 5;
         comPortName = new JTextField(textFieldLength);
         
-        textFieldLength = 60;
+        textFieldLength = 27;
         patientIdentification = new JTextField(textFieldLength);
         recordingIdentification = new JTextField(textFieldLength);
         
@@ -121,8 +122,8 @@ public class SettingsWindow extends JFrame {
            // channelElectrodeType[i] = new JTextField(textFieldLength);
             channelDrlEnabled[i] = new JCheckBox();
             channelLoffEnable[i] = new JCheckBox();
-            channelLoffStatPositive[i] = new MarkerLabel();
-            channelLoffStatNegative[i] = new MarkerLabel();
+            channelLoffStatPositive[i] = new MarkerLabel(iconDisabled);
+            channelLoffStatNegative[i] = new MarkerLabel(iconDisabled);
         }
         accelerometerEnable = new JCheckBox();
         accelerometerName = new JTextField(textFieldLength);
@@ -291,20 +292,23 @@ public class SettingsWindow extends JFrame {
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
         channelsBorderPanel.add(channelsPanel);
 
-        hgap = 5;
-        vgap = 5;
-        int cols = 2;
-        JPanel identificationPanel = new JPanel(new TableLayout(cols, new TableOption(TableOption.LEFT, TableOption.CENTRE), hgap, vgap));
-        identificationPanel.add(new JLabel(patientIdentificationLabel)); 
-        identificationPanel.add(patientIdentification);
-        identificationPanel.add(new JLabel(recordingIdentificationLabel));
-        identificationPanel.add(recordingIdentification);
+        hgap = 0;
+        vgap = 0;
+        JPanel patientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        patientPanel.add(new JLabel(patientIdentificationLabel));
+        patientPanel.add(patientIdentification);
 
-        hgap = 5;
+        JPanel recordingPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        recordingPanel.add(new JLabel(recordingIdentificationLabel));
+        recordingPanel.add(recordingIdentification);
+
+        hgap = 15;
         vgap = 5;
-        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
-        identificationBorderPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
-        identificationBorderPanel.add(identificationPanel);
+        JPanel identificationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        identificationPanel.add(patientPanel);
+        identificationPanel.add(recordingPanel);
+        identificationPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
+
 
         hgap = 0;
         vgap = 0;
@@ -328,7 +332,7 @@ public class SettingsWindow extends JFrame {
         vgap = 5;
         JPanel adsPanel = new JPanel(new BorderLayout(hgap,vgap));
         adsPanel.add(channelsBorderPanel, BorderLayout.NORTH);
-        adsPanel.add(identificationBorderPanel, BorderLayout.CENTER);
+        adsPanel.add(identificationPanel, BorderLayout.CENTER);
         adsPanel.add(saveAsBorderPanel, BorderLayout.SOUTH);
 
         // Root Panel of the SettingsWindow
