@@ -97,11 +97,11 @@ public class SettingsWindow extends JFrame {
         int textFieldLength = 5;
         comPortName = new JTextField(textFieldLength);
         
-        textFieldLength = 27;
+        textFieldLength = 25;
         patientIdentification = new JTextField(textFieldLength);
         recordingIdentification = new JTextField(textFieldLength);
         
-        textFieldLength = 57;
+        textFieldLength = 55;
         fileToSave = new JTextField(textFieldLength);
         
         channelFrequency = new JComboBox[adsChannelsNumber];
@@ -235,7 +235,7 @@ public class SettingsWindow extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(startButton);
 
-        int hgap = 0;
+        int hgap = 5;
         int vgap = 0;        
         JPanel spsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         spsPanel.add(new JLabel(spsLabel));
@@ -292,7 +292,7 @@ public class SettingsWindow extends JFrame {
         channelsBorderPanel.setBorder(BorderFactory.createTitledBorder("Channels"));
         channelsBorderPanel.add(channelsPanel);
 
-        hgap = 0;
+        hgap = 5;
         vgap = 0;
         JPanel patientPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         patientPanel.add(new JLabel(patientIdentificationLabel));
@@ -302,21 +302,27 @@ public class SettingsWindow extends JFrame {
         recordingPanel.add(new JLabel(recordingIdentificationLabel));
         recordingPanel.add(recordingIdentification);
 
-        hgap = 15;
-        vgap = 5;
-        JPanel identificationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
-        identificationPanel.add(patientPanel);
-        identificationPanel.add(recordingPanel);
-        identificationPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
-
-
         hgap = 0;
         vgap = 0;
-        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        JPanel identificationPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
+        identificationPanel.add(patientPanel);
+        identificationPanel.add(new Label("    "));
+        identificationPanel.add(recordingPanel);
+
+        hgap = 15;
+        vgap = 5;
+        JPanel identificationBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
+        identificationBorderPanel.setBorder(BorderFactory.createTitledBorder("Identification"));
+        identificationBorderPanel.add(identificationPanel);
+
+
+        hgap = 5;
+        vgap = 0;
+        JPanel saveAsPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, hgap, vgap));
         saveAsPanel.add(browsButton);
         saveAsPanel.add(fileToSave);
 
-        hgap = 10;
+        hgap = 15;
         vgap = 5;
         JPanel saveAsBorderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, hgap, vgap));
         saveAsBorderPanel.setBorder(BorderFactory.createTitledBorder("Save As"));
@@ -332,13 +338,20 @@ public class SettingsWindow extends JFrame {
         vgap = 5;
         JPanel adsPanel = new JPanel(new BorderLayout(hgap,vgap));
         adsPanel.add(channelsBorderPanel, BorderLayout.NORTH);
-        adsPanel.add(identificationPanel, BorderLayout.CENTER);
+        adsPanel.add(identificationBorderPanel, BorderLayout.CENTER);
         adsPanel.add(saveAsBorderPanel, BorderLayout.SOUTH);
 
         // Root Panel of the SettingsWindow
         add(topPanel, BorderLayout.NORTH);
         add(adsPanel, BorderLayout.CENTER);
         add(reportPanel, BorderLayout.SOUTH);
+
+        // set the same size for identificationPanel and  saveAsPanel
+        int height = Math.max(identificationPanel.getPreferredSize().height, saveAsPanel.getPreferredSize().height);
+        int width = Math.max(identificationPanel.getPreferredSize().width, saveAsPanel.getPreferredSize().width);
+        saveAsPanel.setPreferredSize(new Dimension(width, height));
+        identificationPanel.setPreferredSize(new Dimension(width, height));
+
 
         pack();
         // place the window to the screen center
