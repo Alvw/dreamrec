@@ -179,6 +179,7 @@ public class Controller {
         edfWriter = new EdfWriter(edfModel);
         this.addAdsDataListener(edfWriter);
         edfWriter.startRecording();
+        settingsWindow.setFileToSave(edfWriter.getEdfFile());
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
        //settingsWindow.setProblemReport(failConnectMessage);
        //settingsWindow.updateLoffStatus(16);

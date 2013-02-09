@@ -388,7 +388,7 @@ public class SettingsWindow extends JFrame {
 
 
     }
-
+    
 
     private void enableFields() {
         boolean isEnable = true;
@@ -420,6 +420,10 @@ public class SettingsWindow extends JFrame {
 
     public void setReport(String report) {
         setReport(report, colorInfo);
+    }
+    
+    public void setFileToSave(File file) {
+        fileToSave.setText(file.toString());
     }
 
     private void loadDataFromModel() {
