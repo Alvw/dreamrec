@@ -64,11 +64,11 @@ public class HiPassPreFilter {
         }
 
         if (filteredValue > Short.MAX_VALUE) {
-            log.info("Incoming value exceeds Short.MAX_VALUE: " + filteredValue);
+            log.info("Incoming value exceeds Short.MAX_VALUE: " + filteredValue + ". Incoming value = " +  value);
             filteredValue = Short.MAX_VALUE;
         }
         if (filteredValue < Short.MIN_VALUE) {
-            log.info("Incoming value less than Short.MIN_VALUE: " + filteredValue);
+            log.info("Incoming value less than Short.MIN_VALUE: " + filteredValue + ". Incoming value = " +  value);
             filteredValue = Short.MIN_VALUE;
         }
 

@@ -59,12 +59,12 @@ public class ComPort {
             isConnected = false;
             serialReader.disconnect();
             serialWriter.disconnect();
-            try {
+           /* try {
                 serialReaderThread.join();
                 serialWriterThread.join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
             inputStream.close();
             outputStream.close();
             new Thread(new Runnable() {

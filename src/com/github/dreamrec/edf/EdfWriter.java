@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.Charset;
@@ -19,11 +20,11 @@ import java.util.Date;
  *
  */
 public class EdfWriter implements AdsDataListener {
-    private static final int RECORD_PERIOD = 1;  // duration of EDF data record (in seconds)
+
     public static final  String FILE_EXTENSION = "edf";
     public static final  String FILE_EXTENSION_BIG = "EDF";
     public static final String FILENAME_PATTERN = "dd-mm-yyyy_hh-mm.edf";
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy_HH-mm");
     private static final Log log = LogFactory.getLog(EdfWriter.class);
     private RandomAccessFile outStream = null;
     private EdfModel edfModel;
@@ -31,19 +32,22 @@ public class EdfWriter implements AdsDataListener {
     private int inputFramesCounter;
     private int inputFramesPerRecord;
     private long startTime;
+    private double durationOfDataRecord = 1.0;  // duration of EDF data record (in seconds)
     private int numberOfDataRecords = -1;
     private Charset characterSet = Charset.forName("US-ASCII");
     private File edfFile;
     private String report;   // can be Html
     private boolean isReportUpdated;
     private boolean isRecording;
+    private long startRecordingTime;
+    private long stopRecordingTime;
 
 
     public EdfWriter(EdfModel edfModel) {
         this.edfModel = edfModel;
         startTime = System.currentTimeMillis();
         openFile();
-        inputFramesPerRecord = (edfModel.getAdsModel().getSps().getValue() / AdsModel.MAX_DIV) * RECORD_PERIOD;
+        inputFramesPerRecord = (int)Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / AdsModel.MAX_DIV;
         edfFrame = new int[inputFramesPerRecord * edfModel.getAdsModel().getFrameSize()];
         try {
             outStream.write(createEdfHeader().getBytes(characterSet));
@@ -63,6 +67,12 @@ public class EdfWriter implements AdsDataListener {
 
     public void stopRecording() {
         isRecording = false;
+        durationOfDataRecord = (stopRecordingTime - startRecordingTime) * 0.001/(numberOfDataRecords - 1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss:SS");
+        log.info("Start recording time = " + startRecordingTime + " (" + dateFormat.format(new Date(startRecordingTime)));
+        log.info("Stop recording time = " + stopRecordingTime + " (" + dateFormat.format(new Date(stopRecordingTime)));
+        log.info("Duration of a data record = " + durationOfDataRecord);
+        startTime = startRecordingTime;
         try {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
@@ -115,9 +125,11 @@ public class EdfWriter implements AdsDataListener {
                 }
                 inputFramesCounter = 0;
                 if (numberOfDataRecords == -1) {
+                    startRecordingTime = System.currentTimeMillis();
                     numberOfDataRecords = 1;
                 } else {
                     numberOfDataRecords++;
+                    stopRecordingTime = System.currentTimeMillis();
                 }
                 createReport("Recording...   Duration: "+numberOfDataRecords+" sec");
             }
@@ -191,7 +203,6 @@ public class EdfWriter implements AdsDataListener {
         int numberOfBytesInHeaderRecord =  256 * (1 + numberOfSignals);
         String reserved = "";
 
-        String durationOfDataRecord = Integer.toString(RECORD_PERIOD);
         String channelsDigitalMaximum = "32767";
         String channelsDigitalMinimum = "-32767";
         String channelsPhysicalMaximum = "4725";  // todo function(channel.gain)
@@ -212,7 +223,7 @@ public class EdfWriter implements AdsDataListener {
         edfHeader.append(adjustLength(Integer.toString(numberOfBytesInHeaderRecord), 8));
         edfHeader.append(adjustLength(reserved, 44));
         edfHeader.append(adjustLength(Integer.toString(numberOfDataRecords), 8));
-        edfHeader.append(adjustLength(durationOfDataRecord, 8));
+        edfHeader.append(adjustLength(String.format("%.6f",durationOfDataRecord).replace(",","."), 8));
         edfHeader.append(adjustLength(Integer.toString(numberOfSignals), 4));
 
         StringBuilder labels = new StringBuilder();
@@ -238,7 +249,7 @@ public class EdfWriter implements AdsDataListener {
             digitalMaximums.append(adjustLength(channelsDigitalMaximum, 8));
             preFilterings.append(adjustLength("HP:"+channel.getHiPassFilterFrequency()+"Hz", 80));
 
-            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
+            int nrOfSamplesInEachDataRecord = (int)Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
             reservedForChannels.append(adjustLength(reserved, 32));
@@ -254,7 +265,7 @@ public class EdfWriter implements AdsDataListener {
 
             preFilterings.append(adjustLength("HP:"+channel.getHiPassFilterFrequency()+"Hz", 80));
 
-            int nrOfSamplesInEachDataRecord = RECORD_PERIOD * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
+            int nrOfSamplesInEachDataRecord = (int)Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
             reservedForChannels.append(adjustLength(reserved, 32));
