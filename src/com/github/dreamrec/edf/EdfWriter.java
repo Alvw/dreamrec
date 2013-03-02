@@ -31,7 +31,6 @@ public class EdfWriter implements AdsDataListener {
     private int[] edfFrame;
     private int inputFramesCounter;
     private int inputFramesPerRecord;
-    private long startTime;
     private double durationOfDataRecord = 1.0;  // duration of EDF data record (in seconds)
     private int numberOfDataRecords = -1;
     private Charset characterSet = Charset.forName("US-ASCII");
@@ -45,25 +44,16 @@ public class EdfWriter implements AdsDataListener {
 
     public EdfWriter(EdfModel edfModel) {
         this.edfModel = edfModel;
-        startTime = System.currentTimeMillis();
         openFile();
         inputFramesPerRecord = (int)Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / AdsModel.MAX_DIV;
         edfFrame = new int[inputFramesPerRecord * edfModel.getAdsModel().getFrameSize()];
-        try {
-            outStream.write(createEdfHeader().getBytes(characterSet));
-        } catch (IOException e) {
-            log.error(e);
-        }
+        isRecording = true;
     }
 
     public File getEdfFile() {
         return edfFile;
     }
 
-    public void startRecording(){
-        isRecording = true;
-        createReport("Connecting...");
-    }
 
     public void stopRecording() {
         isRecording = false;
@@ -72,7 +62,6 @@ public class EdfWriter implements AdsDataListener {
         log.info("Start recording time = " + startRecordingTime + " (" + dateFormat.format(new Date(startRecordingTime)));
         log.info("Stop recording time = " + stopRecordingTime + " (" + dateFormat.format(new Date(stopRecordingTime)));
         log.info("Duration of a data record = " + durationOfDataRecord);
-        startTime = startRecordingTime;
         try {
             outStream.seek(0);
             outStream.write(createEdfHeader().getBytes(characterSet));
@@ -126,6 +115,11 @@ public class EdfWriter implements AdsDataListener {
                 inputFramesCounter = 0;
                 if (numberOfDataRecords == -1) {
                     startRecordingTime = System.currentTimeMillis();
+                    try {
+                        outStream.write(createEdfHeader().getBytes(characterSet));
+                    } catch (IOException e) {
+                        log.error(e);
+                    }
                     numberOfDataRecords = 1;
                 } else {
                     numberOfDataRecords++;
@@ -137,15 +131,16 @@ public class EdfWriter implements AdsDataListener {
     }
 
     private void openFile() {
+        long openFileTime =  System.currentTimeMillis();
         edfFile = edfModel.getFileToSave();
         if (edfFile == null) {
-            edfFile = new File(edfModel.getCurrentDirectory(), dateFormat.format(new Date(startTime)) + "." + FILE_EXTENSION);
+            edfFile = new File(edfModel.getCurrentDirectory(), dateFormat.format(new Date(openFileTime)) + "." + FILE_EXTENSION);
         }
         else{
             // change  FILENAME_PATTERN = dd-mm-yyyy_hh-mm.edf  to the current date-month-year_hour-minutes
             if (edfFile.toString().endsWith(FILENAME_PATTERN)){
                 String edfFileName = edfFile.toString();
-                String newEdfFileName = edfFileName.substring(0, (edfFileName.length()-FILENAME_PATTERN.length()))+ dateFormat.format(new Date(startTime)) + "." + FILE_EXTENSION;
+                String newEdfFileName = edfFileName.substring(0, (edfFileName.length()-FILENAME_PATTERN.length()))+ dateFormat.format(new Date(startRecordingTime)) + "." + FILE_EXTENSION;
                 edfFile = new File(newEdfFileName);
             }
         }
@@ -195,8 +190,8 @@ public class EdfWriter implements AdsDataListener {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH.mm.ss");
 
-        String startDateOfRecording = dateFormat.format(new Date(startTime));
-        String startTimeOfRecording = timeFormat.format(new Date(startTime));
+        String startDateOfRecording = dateFormat.format(new Date(startRecordingTime));
+        String startTimeOfRecording = timeFormat.format(new Date(startRecordingTime));
 
         int numberOfSignals = edfModel.getAdsModel().getNumberOfActiveChannels();  // number of signals in data record = number of active channels
         //(8 * 6 + 80 * 2 + 44 + 4) + numberOfSignals * (16 + 80 * 2 + 32 + 8 * 6);
