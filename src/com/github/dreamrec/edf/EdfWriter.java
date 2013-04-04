@@ -41,6 +41,7 @@ public class EdfWriter implements AdsDataListener {
     private boolean isRecording;
     private long startRecordingTime;
     private long stopRecordingTime;
+    private boolean isFirstFrame = true;
 
 
     public EdfWriter(EdfModel edfModel) {
@@ -91,13 +92,14 @@ public class EdfWriter implements AdsDataListener {
     @Override
     public void onDataReceived(int[] dataFrame) {
         if (isRecording) {
-            if (numberOfDataRecords == -1) {
+            if (isFirstFrame) {
                 try {
                     startRecordingTime = System.currentTimeMillis();
                     outStream.write(createEdfHeader().getBytes(characterSet));
                 } catch (IOException e) {
                     log.error(e);
                 }
+                isFirstFrame = false;
             }
             ArrayList<ChannelModel> activeChannels = edfModel.getAdsModel().getActiveChannels();
             int channelPosition = 0;
