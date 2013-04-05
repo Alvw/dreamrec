@@ -86,13 +86,6 @@ public class AdsModel {
         return isAccelerometerEnabled;
     }
 
-    public HiPassFrequency getAccelerometerHiPassFrequency() {
-        HiPassFrequency hiPassFrequency = null;
-        if (accelerometerChannels.size() > 0){
-            hiPassFrequency = accelerometerChannels.get(0).getHiPassFilterFrequency();
-        }
-        return hiPassFrequency;
-    }
 
     // return general part of Accelerometer Channels names (without last char, that specifies accelerometer channel X,Y, Z)
     public String getAccelerometerName() {

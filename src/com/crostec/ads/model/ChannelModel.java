@@ -1,6 +1,5 @@
 package com.crostec.ads.model;
 
-import com.crostec.ads.HiPassPreFilter;
 
 /**
  * 
@@ -9,7 +8,6 @@ public class ChannelModel {
     protected Divider divider;
     private final String PHYSICAL_DIMENSION = "g";
     protected String name;
-    protected HiPassPreFilter hiPassPreFilter;
     protected boolean isEnabled;
     private final String  electrodeType = "none";
 
@@ -37,9 +35,6 @@ public class ChannelModel {
     protected boolean  isPositiveOk;   // is positive electrode good connected
     protected boolean isNegativeOk;   // is negative electrode good connected
 
-    public HiPassPreFilter getHiPassPreFilter() {
-        return hiPassPreFilter;
-    }
 
     public int getIntDivider(){
         int intDivider = 0;
@@ -60,14 +55,6 @@ public class ChannelModel {
 
     public String getPhysicalDimension() {
         return PHYSICAL_DIMENSION;
-    }
-
-    public void setHiPassFilterFrequency(int channelFrequency, HiPassFrequency hiPassFrequency){
-        hiPassPreFilter =  new HiPassPreFilter(channelFrequency, hiPassFrequency);
-    }
-
-    public HiPassFrequency getHiPassFilterFrequency() {
-        return hiPassPreFilter.getCutOffFrequency();
     }
 
     public void setDivider(Divider divider) {

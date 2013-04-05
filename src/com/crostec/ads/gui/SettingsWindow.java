@@ -436,7 +436,6 @@ public class SettingsWindow extends JFrame {
             AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             channelName[i].setText(channel.getName());
             channelEnable[i].setSelected(channel.isEnabled());
-            channelHiPassFrequency[i].setSelectedItem(channel.getHiPassFilterFrequency());
             channelDrlEnabled[i].setSelected(channel.isRldSenseEnabled());
             channelLoffEnable[i].setSelected(channel.isLoffEnable());
             //channelElectrodeType[i].setText(channel.getElectrodeType());
@@ -448,7 +447,6 @@ public class SettingsWindow extends JFrame {
         if (edfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
             accelerometerName.setText(edfModel.getAdsModel().getAccelerometerName());
             accelerometerEnable.setSelected(edfModel.getAdsModel().isAccelerometerEnabled());
-            accelerometerHiPassFrequency.setSelectedItem(edfModel.getAdsModel().getAccelerometerHiPassFrequency());
             if(!edfModel.getAdsModel().isAccelerometerEnabled()){
                 enableAccelerometer(false);
             }
@@ -490,7 +488,6 @@ public class SettingsWindow extends JFrame {
             AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             channel.setName(getChannelName(i));
             channel.setDivider(getChannelDivider(i));
-            channel.setHiPassFilterFrequency(getChannelFrequency(i), getChannelHiPassFrequency(i));
             channel.setEnabled(isChannelEnable(i));
             channel.setLoffEnable(isChannelLoffEnable(i));
             channel.setRldSenseEnabled(isChannelDrlEnabled(i));
@@ -507,7 +504,6 @@ public class SettingsWindow extends JFrame {
             }
             channel.setEnabled(isAccelerometerEnable());
             channel.setDivider(getAccelerometerDivider());
-            channel.setHiPassFilterFrequency(getAccelerometerFrequency(), getAccelerometerHiPassFrequency());
         }
     }
 

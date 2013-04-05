@@ -23,7 +23,6 @@ public class Factory {
             AdsChannelModel adsChannelModel = new AdsChannelModel();
             adsChannelModel.setDivider(applicationProperties.getChannelDivider(chNum));
             int chFrequency = applicationProperties.getSps().getValue() /  applicationProperties.getChannelDivider(chNum).getValue();
-            adsChannelModel.setHiPassFilterFrequency(chFrequency, applicationProperties.getChannelHiPassFrequency(chNum));
             adsChannelModel.setName(applicationProperties.getChannelName(chNum));
             adsChannelModel.setGain(applicationProperties.getChannelGain(chNum));
             adsChannelModel.setCommutatorState(applicationProperties.getChannelCommutatorState(chNum));
@@ -41,7 +40,6 @@ public class Factory {
             accelerometerChannelModel.setDivider(applicationProperties.getAccelerometerDivider());
             accelerometerChannelModel.setName(applicationProperties.getAccelerometerName(chNum));
             int chFrequency = applicationProperties.getSps().getValue() /  applicationProperties.getAccelerometerDivider().getValue();
-            accelerometerChannelModel.setHiPassFilterFrequency(chFrequency, applicationProperties.getAccelerometerHiPassFrequency());
             accelerometerChannelModel.setEnabled(applicationProperties.isAccelerometerEnabled());
             adsModel.addAccelerometerChannel(accelerometerChannelModel);
         }

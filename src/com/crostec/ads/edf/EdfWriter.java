@@ -3,7 +3,6 @@ package com.crostec.ads.edf;
 import com.crostec.ads.AdsDataListener;
 import com.crostec.ads.model.AdsModel;
 import com.crostec.ads.model.ChannelModel;
-import com.crostec.ads.HiPassPreFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -105,10 +104,9 @@ public class EdfWriter implements AdsDataListener {
             int channelPosition = 0;
             for (ChannelModel channel : activeChannels) {
                 int channelSampleNumber = AdsModel.MAX_DIV / channel.getDivider().getValue();
-                HiPassPreFilter channelFilter = channel.getHiPassPreFilter();
+
                 for (int j = 0; j < channelSampleNumber; j++) {
-                    int filteredValue = channelFilter.getFilteredValue(dataFrame[channelPosition + j]);
-                    edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = filteredValue;
+                    edfFrame[channelPosition * inputFramesPerRecord + inputFramesCounter * channelSampleNumber + j] = dataFrame[channelPosition + j];
                 }
                 channelPosition += channelSampleNumber;
             }
@@ -116,9 +114,8 @@ public class EdfWriter implements AdsDataListener {
             if (inputFramesCounter == inputFramesPerRecord) {  // when edfFrame is ready
                 // change dateFormat to Little_endian and save to edfFile
                 for (int i = 0; i < edfFrame.length; i++) {
-                    Short element = (short) edfFrame[i];
                     try {
-                        outStream.writeShort(toLittleEndian(element));
+                        outStream.write(toLittleEndian(edfFrame[i]));
                     } catch (IOException e) {
                         log.error(e);
                     }
@@ -248,7 +245,7 @@ public class EdfWriter implements AdsDataListener {
             physicalMaximums.append(adjustLength(channelsPhysicalMaximum, 8));
             digitalMinimums.append(adjustLength(channelsDigitalMinimum, 8));
             digitalMaximums.append(adjustLength(channelsDigitalMaximum, 8));
-            preFilterings.append(adjustLength("HP:" + channel.getHiPassFilterFrequency() + "Hz", 80));
+            preFilterings.append(adjustLength("None", 80));
 
             int nrOfSamplesInEachDataRecord = (int) Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
@@ -264,7 +261,7 @@ public class EdfWriter implements AdsDataListener {
             digitalMinimums.append(adjustLength(accelerometerDigitalMinimum, 8));
             digitalMaximums.append(adjustLength(accelerometerDigitalMaximum, 8));
 
-            preFilterings.append(adjustLength("HP:" + channel.getHiPassFilterFrequency() + "Hz", 80));
+            preFilterings.append(adjustLength("None", 80));
 
             int nrOfSamplesInEachDataRecord = (int) Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
@@ -313,10 +310,13 @@ public class EdfWriter implements AdsDataListener {
     /**
      * change Big_endian dateFormat of numbers (java)  to Little_endian dateFormat (for edf and microcontroller)
      */
-    private Short toLittleEndian(Short value) {
-        int capacity = 2;
-        return ByteBuffer.allocate(capacity)
-                .order(ByteOrder.BIG_ENDIAN).putShort(value)
-                .order(ByteOrder.LITTLE_ENDIAN).getShort(0);
+    private byte[] toLittleEndian(int value) {
+        int capacity = 4;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(capacity).putInt(value);
+        byte[] result = new byte[3];
+        result[0] = byteBuffer.get(3);
+        result[1] = byteBuffer.get(2);
+        result[2] = byteBuffer.get(1);
+        return result;
     }
 }

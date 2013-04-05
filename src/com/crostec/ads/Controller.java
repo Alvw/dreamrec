@@ -145,7 +145,6 @@ public class Controller {
             AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
             applicationProperties.setChannelDivider(i, channel.getDivider());
             applicationProperties.setChannelName(i, channel.getName());
-            applicationProperties.setChannelHiPassFrequency(i, channel.getHiPassFilterFrequency());
             applicationProperties.setChannelEnabled(i, channel.isEnabled());
             applicationProperties.setChannelLoffEnabled(i, channel.isLoffEnable());
             applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
@@ -155,7 +154,6 @@ public class Controller {
             ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);
             applicationProperties.setAccelerometerDivider(channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
-            applicationProperties.setAccelerometerHiPassFrequency(channel.getHiPassFilterFrequency());
             applicationProperties.setAccelerometerEnabled(channel.isEnabled());
         }
     }

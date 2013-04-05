@@ -24,7 +24,6 @@ public class ApplicationProperties {
 
     public static final String SPS = "sps";
 
-    public static final String CHANNEL_HI_PASS_FREQUENCY = "hiPassFrequencyChannel";
     public static final String CHANNEL_DIVIDER = "dividerChannel";
     public static final String CHANNEL_GAIN = "gainChannel";
     public static final String CHANNEL_COMMUTATOR_STATE = "commutatorStateChannel";
@@ -159,26 +158,6 @@ public class ApplicationProperties {
     }
 
 
-    public HiPassFrequency getChannelHiPassFrequency(int channelNumber) {
-        try {
-            HiPassFrequency hiPassFrequency;
-            String hiPassFrequencyLabel = config.getString(CHANNEL_HI_PASS_FREQUENCY + channelNumber);
-            if (hiPassFrequencyLabel.equals(HiPassFrequency.DISABLED.getLabel())) {
-                hiPassFrequency = HiPassFrequency.DISABLED;
-
-            } else {
-                Double hiPassFrequencyValue = new Double(hiPassFrequencyLabel);
-                hiPassFrequency = HiPassFrequency.valueOf(hiPassFrequencyValue);
-            }
-            return hiPassFrequency;
-        } catch (IllegalArgumentException e) {
-            String msg = "application.properties file: " + channelNumber + "channel " + e.getMessage();
-            log.error(msg);
-            JOptionPane.showMessageDialog(null, msg);
-            throw new IllegalArgumentException(msg);
-        }
-    }
-
     public Divider getChannelDivider(int channelNumber) {
         try {
             return Divider.valueOf(config.getInt(CHANNEL_DIVIDER + channelNumber));
@@ -226,9 +205,6 @@ public class ApplicationProperties {
         config.setProperty(ACCELEROMETER_NAME + channelNumber, name);
     }
 
-    public void setChannelHiPassFrequency(int channelNumber, HiPassFrequency frequency) {
-        config.setProperty(CHANNEL_HI_PASS_FREQUENCY + channelNumber, frequency);
-    }
 
     public void setAccelerometerHiPassFrequency(HiPassFrequency frequency) {
         config.setProperty(ACCELEROMETER_HI_PASS_FREQUENCY, frequency);
