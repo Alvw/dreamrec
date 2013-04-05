@@ -7,6 +7,7 @@ import com.crostec.ads.HiPassPreFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -34,7 +35,6 @@ public class EdfWriter implements AdsDataListener {
     private int inputFramesPerRecord;
     private double durationOfDataRecord = 1.0;  // duration of EDF data record (in seconds)
     private int numberOfDataRecords = -1;
-    private Charset characterSet = Charset.forName("US-ASCII");
     private File edfFile;
     private String report;   // can be Html
     private boolean isReportUpdated;
@@ -66,7 +66,7 @@ public class EdfWriter implements AdsDataListener {
         log.info("Duration of a data record = " + durationOfDataRecord);
         try {
             outStream.seek(0);
-            outStream.write(createEdfHeader().getBytes(characterSet));
+            outStream.write(createEdfHeader());
             outStream.close();
             createReport("Finished!    Duration: " + numberOfDataRecords + " sec.   " + "Saved to: " + edfFile.getName());
         } catch (IOException e) {
@@ -95,7 +95,7 @@ public class EdfWriter implements AdsDataListener {
             if (isFirstFrame) {
                 try {
                     startRecordingTime = System.currentTimeMillis();
-                    outStream.write(createEdfHeader().getBytes(characterSet));
+                    outStream.write(createEdfHeader());
                 } catch (IOException e) {
                     log.error(e);
                 }
@@ -183,11 +183,12 @@ public class EdfWriter implements AdsDataListener {
 
     ns - number of signals
     */
-    public String createEdfHeader() {
+    public byte[] createEdfHeader() {
+        Charset characterSet = Charset.forName("US-ASCII");
         StringBuilder edfHeader = new StringBuilder();
 
 
-        String version = new String(new byte[] {(byte)0xff})+"BIOSEMI";
+        String version = "BIOSEMI";
 
         String localPatientIdentification = "Patient: " + edfModel.getPatientIdentification();
         String localRecordingIdentification = "Record: " + edfModel.getRecordingIdentification();
@@ -282,7 +283,12 @@ public class EdfWriter implements AdsDataListener {
         edfHeader.append(samplesNumbers);
         edfHeader.append(reservedForChannels);
 
-        return edfHeader.toString();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(edfHeader.length() + 1);
+        byteBuffer.put((byte)255);
+        byteBuffer.put(edfHeader.toString().getBytes(characterSet));
+        return byteBuffer.array();
+
     }
 
 
