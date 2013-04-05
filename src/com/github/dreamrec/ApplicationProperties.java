@@ -5,7 +5,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 import javax.swing.*;
 import java.io.File;
@@ -16,13 +15,9 @@ import java.io.File;
 public class ApplicationProperties {
     private static final Log log = LogFactory.getLog(ApplicationProperties.class);
     private static final String APPLICATION_PROPERTIES = "application.properties";
-    private static final String X_SIZE = "xSize";
     public static final String DIRECTORY_NAME = "data_save_directory";
-    public static final String DATA_FREQUENCY = "frequency";
     public static final String REPAINT_DELAY = "repaintDelay";
     public static final String COM_PORT_NAME = "comPort";
-    public static final String FREQUENCY_DIVIDER = "frequencyDivider";
-    public static final String LO_PASS_BUFFER_SIZE = "loPassBufferSize";
 
     public static final String PATIENT_IDENTIFICATION = "patientIdentification";
     public static final String RECORDING_IDENTIFICATION = "recordingIdentification";
@@ -71,29 +66,8 @@ public class ApplicationProperties {
         config.setProperty(COM_PORT_NAME, comPortName);
     }
 
-    public int getFrequencyDivider() {
-        return config.getInt(FREQUENCY_DIVIDER);
-    }
-
-
-    public int getLoPassBufferSize() {
-        return config.getInt(LO_PASS_BUFFER_SIZE);
-    }
-
     public int getRepaintDelay() {
         return config.getInt(REPAINT_DELAY);
-    }
-
-    public int getIncomingDataFrequency() {
-        return config.getInt(DATA_FREQUENCY);
-    }
-
-    public int getXSize() {
-        return config.getInt(X_SIZE);
-    }
-
-    public void setXSize(int xSize) {
-        config.setProperty(X_SIZE, xSize);
     }
 
     public void setLastVisitedDirectory(File directory) {
