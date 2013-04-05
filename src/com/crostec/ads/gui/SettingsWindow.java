@@ -1,10 +1,10 @@
 package com.crostec.ads.gui;
 
 import com.crostec.ads.Controller;
+import com.crostec.ads.edf.BdfModel;
 import com.crostec.ads.model.*;
-import com.crostec.ads.edf.EdfFileChooser;
-import com.crostec.ads.edf.EdfModel;
-import com.crostec.ads.edf.EdfWriter;
+import com.crostec.ads.edf.BdfFileChooser;
+import com.crostec.ads.edf.BdfWriter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  */
 public class SettingsWindow extends JFrame {
-    private EdfModel edfModel;
+    private BdfModel bdfModel;
     private Controller controller;
 
 
@@ -28,7 +28,6 @@ public class SettingsWindow extends JFrame {
     private String[] accelerometerNamesEnds = {"X", "Y", "Z"};
 
     private JComboBox[] channelFrequency;
-    private JComboBox[] channelHiPassFrequency;
     private JCheckBox[] channelEnable;
     private JTextField[] channelName;
     private JCheckBox[] channelDrlEnabled;
@@ -38,7 +37,6 @@ public class SettingsWindow extends JFrame {
     private JComboBox accelerometerFrequency;
     private JTextField accelerometerName;
     private JCheckBox accelerometerEnable;
-    private JComboBox accelerometerHiPassFrequency;
     private JFrame mainFrame = this;
 
     private String patientIdentificationLabel = "Patient";
@@ -79,7 +77,7 @@ public class SettingsWindow extends JFrame {
 
     public SettingsWindow(Controller controller) {
         this.controller = controller;
-        edfModel = controller.getEdfModel();
+        bdfModel = controller.getBdfModel();
         init();
         arrangeForm();
         setActions();
@@ -88,11 +86,11 @@ public class SettingsWindow extends JFrame {
     }
 
     private void init() {
-        int adsChannelsNumber = edfModel.getAdsModel().getNumberOfAdsChannels();
+        int adsChannelsNumber = bdfModel.getAdsModel().getNumberOfAdsChannels();
         advancedButton.setIcon(iconShow);
 
         spsField = new JComboBox(Sps.values());
-        spsField.setSelectedItem(edfModel.getAdsModel().getSps());
+        spsField.setSelectedItem(bdfModel.getAdsModel().getSps());
         int textFieldLength = 5;
         comPortName = new JTextField(textFieldLength);
         
@@ -104,7 +102,6 @@ public class SettingsWindow extends JFrame {
         fileToSave = new JTextField(textFieldLength);
         
         channelFrequency = new JComboBox[adsChannelsNumber];
-        channelHiPassFrequency = new JComboBox[adsChannelsNumber];
         channelEnable = new JCheckBox[adsChannelsNumber];
         channelName = new JTextField[adsChannelsNumber];
         channelElectrodeType = new JTextField[adsChannelsNumber];
@@ -115,7 +112,6 @@ public class SettingsWindow extends JFrame {
         textFieldLength = 16;
         for (int i = 0; i < adsChannelsNumber; i++) {
             channelFrequency[i] = new JComboBox();
-            channelHiPassFrequency[i] = new JComboBox(HiPassFrequency.values());
             channelEnable[i] = new JCheckBox();
             channelName[i] = new JTextField(textFieldLength);
            // channelElectrodeType[i] = new JTextField(textFieldLength);
@@ -126,14 +122,13 @@ public class SettingsWindow extends JFrame {
         }
         accelerometerEnable = new JCheckBox();
         accelerometerName = new JTextField(textFieldLength);
-        accelerometerHiPassFrequency = new JComboBox(HiPassFrequency.values());
         accelerometerFrequency = new JComboBox();
         setAdvanced();
     }
 
     private void setActions() {
 
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             channelEnable[i].addActionListener(new AdsChannelEnableListener(i));
         }
 
@@ -168,7 +163,7 @@ public class SettingsWindow extends JFrame {
                     enableFields();
                     controller.stopRecording();
                 } else {
-                    if((getFileToSave() != null) & EdfFileChooser.isExistingFileReplace(getFileToSave(),mainFrame)) {
+                    if((getFileToSave() != null) & BdfFileChooser.isExistingFileReplace(getFileToSave(), mainFrame)) {
                         startButton.setText(stop);
                         comPortName.setEnabled(false);
                         disableFields();
@@ -193,7 +188,7 @@ public class SettingsWindow extends JFrame {
         browsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-               EdfFileChooser fileChooser = new EdfFileChooser(edfModel.getCurrentDirectory());
+               BdfFileChooser fileChooser = new BdfFileChooser(bdfModel.getCurrentDirectory());
                File selectedFile = fileChooser.chooseFileToSave();
                if(selectedFile !=  null) {
                    fileToSave.setText(selectedFile.toString());
@@ -260,12 +255,11 @@ public class SettingsWindow extends JFrame {
               channelsPanel.add(component);
         }   
 
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             channelsPanel.add(new JLabel(" " + i + " "));
             channelsPanel.add(channelEnable[i]);
             channelsPanel.add(channelName[i]);
             channelsPanel.add(channelFrequency[i]);
-            channelsPanel.add(channelHiPassFrequency[i]);
             JPanel loffPanel = new JPanel();
             loffPanel.add(channelLoffStatPositive[i]);
             loffPanel.add(channelLoffStatNegative[i]);
@@ -276,13 +270,12 @@ public class SettingsWindow extends JFrame {
             channelsPanel.add(new JLabel(" "));
         }
         
-        if(edfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
+        if(bdfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
             // Add line of accelerometer
-            channelsPanel.add(new JLabel(" " + edfModel.getAdsModel().getNumberOfAdsChannels() + " "));
+            channelsPanel.add(new JLabel(" " + bdfModel.getAdsModel().getNumberOfAdsChannels() + " "));
             channelsPanel.add(accelerometerEnable);
             channelsPanel.add(accelerometerName);
             channelsPanel.add(accelerometerFrequency);
-            channelsPanel.add(accelerometerHiPassFrequency);
         }
 
         hgap = 0;
@@ -366,14 +359,12 @@ public class SettingsWindow extends JFrame {
 
         accelerometerName.setEnabled(isEnable);
         accelerometerEnable.setEnabled(isEnable);
-        accelerometerHiPassFrequency.setEnabled(isEnable);
         accelerometerFrequency.setEnabled(isEnable);
 
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             channelEnable[i].setEnabled(isEnable);
             channelName[i].setEnabled(isEnable);
             channelFrequency[i].setEnabled(isEnable);
-            channelHiPassFrequency[i].setEnabled(isEnable);
             channelDrlEnabled[i].setEnabled(isEnable);
             channelLoffEnable[i].setEnabled(isEnable); 
            // channelElectrodeType[i].setEnabled(isEnable);
@@ -392,12 +383,12 @@ public class SettingsWindow extends JFrame {
     private void enableFields() {
         boolean isEnable = true;
         disableEnableFields(isEnable);
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
             if (!isChannelEnable(i)) {
                 enableAdsChannel(i, false);
             }
         }
-        if (!edfModel.getAdsModel().isAccelerometerEnabled()){
+        if (!bdfModel.getAdsModel().isAccelerometerEnabled()){
             enableAccelerometer(false);
         }
     }
@@ -426,14 +417,14 @@ public class SettingsWindow extends JFrame {
     }
 
     private void loadDataFromModel() {
-        spsField.setSelectedItem(edfModel.getAdsModel().getSps());
-        comPortName.setText(edfModel.getAdsModel().getComPortName());
-        fileToSave.setText(new File(edfModel.getCurrentDirectory(), EdfWriter.FILENAME_PATTERN).toString());
-        patientIdentification.setText(edfModel.getPatientIdentification());
-        recordingIdentification.setText(edfModel.getRecordingIdentification());
-        int numberOfAdsChannels = edfModel.getAdsModel().getNumberOfAdsChannels();
+        spsField.setSelectedItem(bdfModel.getAdsModel().getSps());
+        comPortName.setText(bdfModel.getAdsModel().getComPortName());
+        fileToSave.setText(new File(bdfModel.getCurrentDirectory(), BdfWriter.FILENAME_PATTERN).toString());
+        patientIdentification.setText(bdfModel.getPatientIdentification());
+        recordingIdentification.setText(bdfModel.getRecordingIdentification());
+        int numberOfAdsChannels = bdfModel.getAdsModel().getNumberOfAdsChannels();
         for (int i = 0; i < numberOfAdsChannels; i++) {
-            AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
+            AdsChannelModel channel = bdfModel.getAdsModel().getAdsChannel(i);
             channelName[i].setText(channel.getName());
             channelEnable[i].setSelected(channel.isEnabled());
             channelDrlEnabled[i].setSelected(channel.isRldSenseEnabled());
@@ -444,14 +435,14 @@ public class SettingsWindow extends JFrame {
             }
         }
 
-        if (edfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
-            accelerometerName.setText(edfModel.getAdsModel().getAccelerometerName());
-            accelerometerEnable.setSelected(edfModel.getAdsModel().isAccelerometerEnabled());
-            if(!edfModel.getAdsModel().isAccelerometerEnabled()){
+        if (bdfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0) {
+            accelerometerName.setText(bdfModel.getAdsModel().getAccelerometerName());
+            accelerometerEnable.setSelected(bdfModel.getAdsModel().isAccelerometerEnabled());
+            if(!bdfModel.getAdsModel().isAccelerometerEnabled()){
                 enableAccelerometer(false);
             }
         }
-        setChannelsFrequencies(edfModel.getAdsModel().getSps());
+        setChannelsFrequencies(bdfModel.getAdsModel().getSps());
     }
 
     public void updateLoffStatus(int loffStatusRegisterValue) {
@@ -478,14 +469,14 @@ public class SettingsWindow extends JFrame {
     }
 
     private void saveDataToModel() {
-        edfModel.getAdsModel().setSps(getSps());
-        int numberOfAdsChannels = edfModel.getAdsModel().getNumberOfAdsChannels();
-        edfModel.getAdsModel().setComPortName(getComPortName());
-        edfModel.setPatientIdentification(getPatientIdentification());
-        edfModel.setRecordingIdentification(getRecordingIdentification());
-        edfModel.setFileToSave(getFileToSave());
+        bdfModel.getAdsModel().setSps(getSps());
+        int numberOfAdsChannels = bdfModel.getAdsModel().getNumberOfAdsChannels();
+        bdfModel.getAdsModel().setComPortName(getComPortName());
+        bdfModel.setPatientIdentification(getPatientIdentification());
+        bdfModel.setRecordingIdentification(getRecordingIdentification());
+        bdfModel.setFileToSave(getFileToSave());
         for (int i = 0; i < numberOfAdsChannels; i++) {
-            AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
+            AdsChannelModel channel = bdfModel.getAdsModel().getAdsChannel(i);
             channel.setName(getChannelName(i));
             channel.setDivider(getChannelDivider(i));
             channel.setEnabled(isChannelEnable(i));
@@ -494,9 +485,9 @@ public class SettingsWindow extends JFrame {
            // channel.setElectrodeType(getElectrodeType(i));
         }
 
-        int numberOfAccelerometerChannels = edfModel.getAdsModel().getNumberOfAccelerometerChannels();
+        int numberOfAccelerometerChannels = bdfModel.getAdsModel().getNumberOfAccelerometerChannels();
         for (int i = 0; i < numberOfAccelerometerChannels; i++) {
-            ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);
+            ChannelModel channel = bdfModel.getAdsModel().getAccelerometerChannel(i);
             if (i < accelerometerNamesEnds.length) {
                 channel.setName(getAccelerometerName() + accelerometerNamesEnds[i]);
             } else {
@@ -508,7 +499,7 @@ public class SettingsWindow extends JFrame {
     }
 
     private void setChannelsFrequencies(Sps sps) {
-        int numberOfAdsChannels = edfModel.getAdsModel().getNumberOfAdsChannels();
+        int numberOfAdsChannels = bdfModel.getAdsModel().getNumberOfAdsChannels();
         Integer[] channelsAvailableFrequencies = sps.getChannelsAvailableFrequencies();
         // set available frequencies
         for (int i = 0; i < numberOfAdsChannels; i++) {
@@ -517,18 +508,18 @@ public class SettingsWindow extends JFrame {
                 channelFrequency[i].addItem(frequency);
             }
             // select channel frequency
-            ChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
+            ChannelModel channel = bdfModel.getAdsModel().getAdsChannel(i);
             Integer frequency = sps.getValue() / channel.getDivider().getValue();
             channelFrequency[i].setSelectedItem(frequency);
         }
-        if(edfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0){
+        if(bdfModel.getAdsModel().getNumberOfAccelerometerChannels() > 0){
             Integer[] accelerometerAvailableFrequencies = sps.getAccelerometerAvailableFrequencies();
             accelerometerFrequency.removeAllItems();
             for (Integer frequency : accelerometerAvailableFrequencies) {
                 accelerometerFrequency.addItem(frequency);
             }
             // select channel frequency
-            Integer frequency = sps.getValue() / edfModel.getAdsModel().getAccelerometerDivider().getValue();
+            Integer frequency = sps.getValue() / bdfModel.getAdsModel().getAccelerometerDivider().getValue();
             accelerometerFrequency.setSelectedItem(frequency);
              if(numberOfAdsChannels > 0){
                  // put the size if field   accelerometerFrequency equal to the size of fields  channelFrequency
@@ -540,7 +531,6 @@ public class SettingsWindow extends JFrame {
 
     private void enableAdsChannel(int channelNumber, boolean isEnable) {
         channelFrequency[channelNumber].setEnabled(isEnable);
-        channelHiPassFrequency[channelNumber].setEnabled(isEnable);
         channelName[channelNumber].setEnabled(isEnable);
         channelDrlEnabled[channelNumber].setEnabled(isEnable);
         channelLoffEnable[channelNumber].setEnabled(isEnable);
@@ -552,7 +542,6 @@ public class SettingsWindow extends JFrame {
     private void enableAccelerometer(boolean isEnable) {
         accelerometerName.setEnabled(isEnable);
         accelerometerFrequency.setEnabled(isEnable);
-        accelerometerHiPassFrequency.setEnabled(isEnable);
 
     }
 
@@ -561,7 +550,7 @@ public class SettingsWindow extends JFrame {
     private void showAdvanced(boolean isVisible) {
         channelsHeaders[channelsHeaders.length - 2].setVisible(isVisible);
         channelsHeaders[channelsHeaders.length - 3].setVisible(isVisible);
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
            // channelElectrodeType[i].setVisible(isVisible);
             channelDrlEnabled[i].setVisible(isVisible);
             channelLoffEnable[i].setVisible(isVisible);
@@ -584,12 +573,12 @@ public class SettingsWindow extends JFrame {
 
 
     private Divider getChannelDivider(int channelNumber) {
-        int divider = edfModel.getAdsModel().getSps().getValue() / getChannelFrequency(channelNumber);
+        int divider = bdfModel.getAdsModel().getSps().getValue() / getChannelFrequency(channelNumber);
         return Divider.valueOf(divider);
     }
 
     private Divider getAccelerometerDivider() {
-        int divider = edfModel.getAdsModel().getSps().getValue() / getAccelerometerFrequency();
+        int divider = bdfModel.getAdsModel().getSps().getValue() / getAccelerometerFrequency();
         return Divider.valueOf(divider);
     }
 
@@ -598,9 +587,6 @@ public class SettingsWindow extends JFrame {
         return (Integer) channelFrequency[channelNumber].getSelectedItem();
     }
 
-    private HiPassFrequency getChannelHiPassFrequency(int channelNumber) {
-        return (HiPassFrequency) channelHiPassFrequency[channelNumber].getSelectedItem();
-    }
 
     private boolean isChannelEnable(int channelNumber) {
         return channelEnable[channelNumber].isSelected();
@@ -635,7 +621,7 @@ public class SettingsWindow extends JFrame {
     }
 
     private File getFileToSave(){      
-          return EdfFileChooser.getCanonicalFile(new File(fileToSave.getText()), mainFrame);
+          return BdfFileChooser.getCanonicalFile(new File(fileToSave.getText()), mainFrame);
     }
 
     private boolean isAccelerometerEnable() {
@@ -644,10 +630,6 @@ public class SettingsWindow extends JFrame {
 
     private String getAccelerometerName() {
         return accelerometerName.getText();
-    }
-
-    private HiPassFrequency  getAccelerometerHiPassFrequency() {
-        return (HiPassFrequency) accelerometerHiPassFrequency.getSelectedItem();
     }
 
     private int getAccelerometerFrequency() {

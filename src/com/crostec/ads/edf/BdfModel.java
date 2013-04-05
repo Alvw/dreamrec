@@ -7,14 +7,14 @@ import java.io.File;
 /**
  * 
  */
-public class EdfModel {
+public class BdfModel {
     private AdsModel adsModel;
     private String patientIdentification;
     private String recordingIdentification;
     private File fileToSave;
     private File currentDirectory;
 
-    public EdfModel(AdsModel adsModel) {
+    public BdfModel(AdsModel adsModel) {
         this.adsModel = adsModel;
     }
 

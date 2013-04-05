@@ -1,6 +1,6 @@
 package com.crostec.ads.gui;
 
-import com.crostec.ads.edf.EdfFileChooser;
+import com.crostec.ads.edf.BdfFileChooser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class DirectoryChooser extends JFileChooser {
     private File directory;
-    private static final Log log = LogFactory.getLog(EdfFileChooser.class);
+    private static final Log log = LogFactory.getLog(BdfFileChooser.class);
 
     public DirectoryChooser() {
         setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

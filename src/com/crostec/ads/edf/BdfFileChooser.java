@@ -14,17 +14,17 @@ import java.io.IOException;
 /**
  *
  */
-public class EdfFileChooser extends JFileChooser {
+public class BdfFileChooser extends JFileChooser {
 
     private File fileToSelect;
-    private static final Log log = LogFactory.getLog(EdfFileChooser.class);
+    private static final Log log = LogFactory.getLog(BdfFileChooser.class);
     private boolean isFileExistCheckEnabled = false;
 
-    public EdfFileChooser() {
+    public BdfFileChooser() {
         setFileFilter();
     }
 
-    public EdfFileChooser(File fileOrDir) {
+    public BdfFileChooser(File fileOrDir) {
         super(fileOrDir);
         setFileFilter();
     }
@@ -71,7 +71,7 @@ public class EdfFileChooser extends JFileChooser {
                 // for files with no extension add "edf" extension
                 String file = getSelectedFile().toString();
                 if (FilenameUtils.getExtension(file).equals("")) {
-                    file += ("." + EdfWriter.FILE_EXTENSION);
+                    file += ("." + BdfWriter.FILE_EXTENSION);
                     setSelectedFile(new File(file));
                 }
                 if (isFileExistCheckEnabled) {
@@ -103,7 +103,7 @@ public class EdfFileChooser extends JFileChooser {
 
 
     private void setFileFilter() {
-        FileFilter fileFilter = new FileNameExtensionFilter(EdfWriter.FILE_EXTENSION_BIG, EdfWriter.FILE_EXTENSION);
+        FileFilter fileFilter = new FileNameExtensionFilter(BdfWriter.FILE_EXTENSION_BIG, BdfWriter.FILE_EXTENSION);
         addChoosableFileFilter(fileFilter);
         setFileFilter(fileFilter);
         setFileSelectionMode(JFileChooser.FILES_ONLY);

@@ -1,8 +1,8 @@
 package com.crostec.ads;
 
 import com.crostec.ads.comport.ComPort;
-import com.crostec.ads.edf.EdfModel;
-import com.crostec.ads.edf.EdfWriter;
+import com.crostec.ads.edf.BdfModel;
+import com.crostec.ads.edf.BdfWriter;
 import com.crostec.ads.gui.SettingsWindow;
 import com.crostec.ads.model.AdsChannelModel;
 import com.crostec.ads.model.AdsManager;
@@ -32,8 +32,8 @@ public class Controller {
     private ApplicationProperties applicationProperties;
     private static final Log log = LogFactory.getLog(Controller.class);
     private FrameDecoder frameDecoder;
-    private EdfModel edfModel;
-    private EdfWriter edfWriter;
+    private BdfModel bdfModel;
+    private BdfWriter edfWriter;
     private ComPort comport;
     private boolean isRecording = false;
     private ArrayList<AdsDataListener> adsDataListeners = new ArrayList<AdsDataListener>();
@@ -41,7 +41,7 @@ public class Controller {
 
     public Controller(ApplicationProperties applicationProperties) {
         this.applicationProperties = applicationProperties;
-        edfModel = Factory.getEdfModel(applicationProperties);
+        bdfModel = Factory.getEdfModel(applicationProperties);
         comport = new ComPort();
         repaintTimer = new Timer(applicationProperties.getRepaintDelay(), new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -50,8 +50,8 @@ public class Controller {
         });
     }
 
-    public EdfModel getEdfModel() {
-        return edfModel;
+    public BdfModel getBdfModel() {
+        return bdfModel;
     }
 
     public boolean isRecording() {
@@ -88,16 +88,16 @@ public class Controller {
 
     public void startRecording() {
         isRecording = true;
-        edfWriter = new EdfWriter(edfModel);
+        edfWriter = new BdfWriter(bdfModel);
         this.addAdsDataListener(edfWriter);
-        settingsWindow.setFileToSave(edfWriter.getEdfFile());
+        settingsWindow.setFileToSave(edfWriter.getBdfFile());
         String failConnectMessage = "Connection failed. Check com port settings.\nReset power on the target amplifier. Restart the application.";
         try {
-            comport.connect(edfModel.getAdsModel().getComPortName());
-            frameDecoder = new FrameDecoder(edfModel.getAdsModel().getFrameSize());
+            comport.connect(bdfModel.getAdsModel().getComPortName());
+            frameDecoder = new FrameDecoder(bdfModel.getAdsModel().getFrameSize());
             comport.setComPortListener(frameDecoder);
             AdsManager adsManager = new AdsManager();
-            comport.writeToPort(adsManager.writeModelState(edfModel.getAdsModel()));
+            comport.writeToPort(adsManager.writeModelState(bdfModel.getAdsModel()));
         } catch (NoSuchPortException e) {
             String msg = "No port with the name " + applicationProperties.getComPortName() + "\n" + failConnectMessage;
             log.error(msg, e);
@@ -136,13 +136,13 @@ public class Controller {
     }
 
     private void saveAdsModelToProperties() {
-        applicationProperties.setSps(edfModel.getAdsModel().getSps());
-        applicationProperties.setComPortName(edfModel.getAdsModel().getComPortName());
-        applicationProperties.setLastVisitedDirectory(edfModel.getCurrentDirectory());
-        applicationProperties.setPatientIdentification(edfModel.getPatientIdentification());
-        applicationProperties.setRecordingIdentification(edfModel.getRecordingIdentification());
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
-            AdsChannelModel channel = edfModel.getAdsModel().getAdsChannel(i);
+        applicationProperties.setSps(bdfModel.getAdsModel().getSps());
+        applicationProperties.setComPortName(bdfModel.getAdsModel().getComPortName());
+        applicationProperties.setLastVisitedDirectory(bdfModel.getCurrentDirectory());
+        applicationProperties.setPatientIdentification(bdfModel.getPatientIdentification());
+        applicationProperties.setRecordingIdentification(bdfModel.getRecordingIdentification());
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAdsChannels(); i++) {
+            AdsChannelModel channel = bdfModel.getAdsModel().getAdsChannel(i);
             applicationProperties.setChannelDivider(i, channel.getDivider());
             applicationProperties.setChannelName(i, channel.getName());
             applicationProperties.setChannelEnabled(i, channel.isEnabled());
@@ -150,8 +150,8 @@ public class Controller {
             applicationProperties.setChannelRldSenseEnabled(i, channel.isRldSenseEnabled());
             applicationProperties.setChannelElectrodeType(i, channel.getElectrodeType());
         }
-        for (int i = 0; i < edfModel.getAdsModel().getNumberOfAccelerometerChannels(); i++) {
-            ChannelModel channel = edfModel.getAdsModel().getAccelerometerChannel(i);
+        for (int i = 0; i < bdfModel.getAdsModel().getNumberOfAccelerometerChannels(); i++) {
+            ChannelModel channel = bdfModel.getAdsModel().getAccelerometerChannel(i);
             applicationProperties.setAccelerometerDivider(channel.getDivider());
             applicationProperties.setAccelerometerName(i, channel.getName());
             applicationProperties.setAccelerometerEnabled(channel.isEnabled());

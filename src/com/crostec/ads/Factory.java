@@ -1,6 +1,6 @@
 package com.crostec.ads;
 
-import com.crostec.ads.edf.EdfModel;
+import com.crostec.ads.edf.BdfModel;
 import com.crostec.ads.model.AdsChannelModel;
 import com.crostec.ads.model.AdsModel;
 import com.crostec.ads.model.ChannelModel;
@@ -46,12 +46,12 @@ public class Factory {
         return adsModel;
     }
 
-    public static EdfModel getEdfModel(ApplicationProperties applicationProperties) {
-        EdfModel edfModel = new EdfModel(createAdsModel(applicationProperties));
-        edfModel.setCurrentDirectory(applicationProperties.getLastVisitedDirectory());
-        edfModel.setPatientIdentification(applicationProperties.getPatientIdentification());
-        edfModel.setRecordingIdentification(applicationProperties.getRecordingIdentification());
-        return edfModel;
+    public static BdfModel getEdfModel(ApplicationProperties applicationProperties) {
+        BdfModel bdfModel = new BdfModel(createAdsModel(applicationProperties));
+        bdfModel.setCurrentDirectory(applicationProperties.getLastVisitedDirectory());
+        bdfModel.setPatientIdentification(applicationProperties.getPatientIdentification());
+        bdfModel.setRecordingIdentification(applicationProperties.getRecordingIdentification());
+        return bdfModel;
     }
 
 }
