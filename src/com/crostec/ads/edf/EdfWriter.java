@@ -186,7 +186,8 @@ public class EdfWriter implements AdsDataListener {
     public String createEdfHeader() {
         StringBuilder edfHeader = new StringBuilder();
 
-        String version = "0";
+
+        String version = new String(new byte[] {(byte)0xff})+"BIOSEMI";
 
         String localPatientIdentification = "Patient: " + edfModel.getPatientIdentification();
         String localRecordingIdentification = "Record: " + edfModel.getRecordingIdentification();
@@ -200,12 +201,12 @@ public class EdfWriter implements AdsDataListener {
         int numberOfSignals = edfModel.getAdsModel().getNumberOfActiveChannels();  // number of signals in data record = number of active channels
         //(8 * 6 + 80 * 2 + 44 + 4) + numberOfSignals * (16 + 80 * 2 + 32 + 8 * 6);
         int numberOfBytesInHeaderRecord = 256 * (1 + numberOfSignals);
-        String reserved = "";
+        String versionOfDataFormat = "24BIT";
 
-        String channelsDigitalMaximum = "32767";
-        String channelsDigitalMinimum = "-32767";
-        String channelsPhysicalMaximum = "4725";  // todo function(channel.gain)
-        String channelsPhysicalMinimum = "-4725"; // todo function(channel.gain)
+        String channelsDigitalMaximum = "8388608";
+        String channelsDigitalMinimum = "-8388608";
+        String channelsPhysicalMaximum = "1209600";  // todo function(channel.gain)
+        String channelsPhysicalMinimum = "-1209600"; // todo function(channel.gain)
 
         String accelerometerPreFiltering = "HP:0.05Hz LP:250Hz N:50Hz"; // todo function(channel.hiPassBufferSize)
 
@@ -220,7 +221,7 @@ public class EdfWriter implements AdsDataListener {
         edfHeader.append(startDateOfRecording);
         edfHeader.append(startTimeOfRecording);
         edfHeader.append(adjustLength(Integer.toString(numberOfBytesInHeaderRecord), 8));
-        edfHeader.append(adjustLength(reserved, 44));
+        edfHeader.append(adjustLength(versionOfDataFormat, 44));
         edfHeader.append(adjustLength(Integer.toString(numberOfDataRecords), 8));
         edfHeader.append(adjustLength(String.format("%.6f", durationOfDataRecord).replace(",", "."), 8));
         edfHeader.append(adjustLength(Integer.toString(numberOfSignals), 4));
@@ -251,7 +252,7 @@ public class EdfWriter implements AdsDataListener {
             int nrOfSamplesInEachDataRecord = (int) Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
-            reservedForChannels.append(adjustLength(reserved, 32));
+            reservedForChannels.append(adjustLength(versionOfDataFormat, 32));
         }
         for (ChannelModel channel : edfModel.getAdsModel().getAccelerometerActiveChannels()) {
             labels.append(adjustLength(channel.getName(), 16));
@@ -267,7 +268,7 @@ public class EdfWriter implements AdsDataListener {
             int nrOfSamplesInEachDataRecord = (int) Math.round(durationOfDataRecord) * edfModel.getAdsModel().getSps().getValue() / channel.getDivider().getValue();
 
             samplesNumbers.append(adjustLength(Integer.toString(nrOfSamplesInEachDataRecord), 8));
-            reservedForChannels.append(adjustLength(reserved, 32));
+            reservedForChannels.append(adjustLength(versionOfDataFormat, 32));
         }
 
         edfHeader.append(labels);
