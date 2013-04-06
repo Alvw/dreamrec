@@ -72,7 +72,7 @@ public class SettingsWindow extends JFrame {
 
 
     private String title = "EDF Recorder";
-    private JComponent[] channelsHeaders = {new JLabel("Number"), new JLabel("Enable"), new JLabel("Name"), new JLabel("Frequency (Hz)"), new JLabel("Hi Pass Filter (Hz)"),  new JLabel("Lead Off Detection"), new JLabel("DRL"), new JLabel("Lead Off"), advancedButton};
+    private JComponent[] channelsHeaders = {new JLabel("Number"), new JLabel("Enable"), new JLabel("Name"), new JLabel("Frequency (Hz)"),  new JLabel("Lead Off Detection"), new JLabel("DRL"), new JLabel("Lead Off"), advancedButton};
 
 
     public SettingsWindow(Controller controller) {
