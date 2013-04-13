@@ -53,15 +53,6 @@ public class AdsModel {
     }
 
 
-    public Divider[] getAdsDividers() {
-        Divider[] dividers = new Divider[adsChannels.size()];
-        for (int i = 0; i < adsChannels.size(); i++) {
-            dividers[i] = adsChannels.get(i).getDivider();
-        }
-        return dividers;
-    }
-
-
     public Divider getAccelerometerDivider() {
         Divider divider = null;
         if(accelerometerChannels.size() > 0){
