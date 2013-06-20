@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class DirectoryChooser extends JFileChooser {
     private File directory;
-    private static final Log log = LogFactory.getLog(BdfFileChooser.class);
+    private static final Log log = LogFactory.getLog(DirectoryChooser.class);
 
     public DirectoryChooser() {
         setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
